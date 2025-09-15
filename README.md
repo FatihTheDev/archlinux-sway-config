@@ -1,0 +1,1 @@
+# archlinux-sway-config
