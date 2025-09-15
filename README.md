@@ -68,6 +68,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 ## Installation
 
 Method 1 - Install using wget (install wget with ```sudo pacman -S wget```):
+
 ```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/sway-setup.sh | bash```
 
 Note: This is a capital o, not a zero.
