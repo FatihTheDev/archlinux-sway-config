@@ -54,8 +54,6 @@ MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme
 EOF
 fi
 
-xdg-settings set default-web-browser brave.desktop
-
 if [[ ! -f ~/.local/share/applications/ghostty.desktop ]]; then
 cat > ~/.local/share/applications/ghostty.desktop <<'EOF'
 [Desktop Entry]
@@ -67,8 +65,6 @@ Categories=System;TerminalEmulator;
 Terminal=false
 EOF
 fi
-
-xdg-mime default ghostty.desktop x-scheme-handler/terminal
 
 if [[ ! -f ~/.local/share/applications/feh.desktop ]]; then
 cat > ~/.local/share/applications/feh.desktop <<'EOF'
@@ -84,8 +80,6 @@ MimeType=image/jpeg;image/png;image/gif;image/bmp;image/webp;image/svg+xml;
 EOF
 fi
 
-xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif
-
 if [[ ! -f ~/.local/share/applications/qpdfview.desktop ]]; then
 cat > ~/.local/share/applications/qpdfview.desktop <<'EOF'
 [Desktop Entry]
@@ -100,6 +94,9 @@ MimeType=application/pdf;application/x-pdf;image/pdf;
 EOF
 fi
 
+xdg-settings set default-web-browser brave.desktop
+xdg-mime default ghostty.desktop x-scheme-handler/terminal
+xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif
 xdg-mime default qpdfview.desktop application/pdf application/epub+zip application/vnd.djvu
 
 echo "BROWSER=brave" >> ~/.profile
