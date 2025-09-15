@@ -67,14 +67,23 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 
 ## Installation
 
-1. **Clone the repository:**
+Method 1 - Install using wget (install wget with ```sudo pacman -S wget```):
+```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/sway-setup.sh | bash```
 
+Note: This is a capital o, not a zero.
+
+Method 2 - Install by cloning the git repository:
+
+1. **Clone the repository:**
 ```bash
-git clone https://github.com/<your-username>/archlinux-sway-config.git
+git clone https://github.com/FatihTheDev/archlinux-sway-config.git
 cd archlinux-sway-config
 ```
 2. **Run the setup script:**
 ```bash
 bash sway-setup.sh
 ```
+
+The script will install all required packages, configure Sway, Waybar, Wofi, bluetooth, smart volume & brightness keys, and set up GUI utilities.
+
 3.**Restart Sway to apply all changes.**
