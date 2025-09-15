@@ -94,7 +94,7 @@ MimeType=application/pdf;application/x-pdf;image/pdf;
 EOF
 fi
 
-xdg-settings set default-web-browser brave.desktop
+xdg-settings set default-web-browser brave-browser.desktop
 xdg-mime default ghostty.desktop x-scheme-handler/terminal
 xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif
 xdg-mime default qpdfview.desktop application/pdf application/epub+zip application/vnd.djvu
