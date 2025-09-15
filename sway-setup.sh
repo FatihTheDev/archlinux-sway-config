@@ -9,10 +9,10 @@ echo "[1/14] Updating system..."
 sudo pacman -Syu --noconfirm
 
 echo "[2/14] Installing essential packages..."
-sudo pacman -S --noconfirm sway waybar wofi grim slurp wl-clipboard \
+sudo pacman -S --noconfirm sway swaylock waybar wofi grim slurp wl-clipboard \
     ghostty librewolf brave \
     network-manager-applet nm-connection-editor \
-    ttf-font-awesome noto-fonts \
+    ttf-font-awesome noto-fonts papirus-icon-theme \
     pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify brightnessctl \
     azote lxtask 
@@ -88,6 +88,47 @@ bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
 
 # --------------------
+# Floating / tiling mode toggle + resize mode
+# --------------------
+bindsym $mod+Shift+Space floating toggle
+mode "resize" {
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# --------------------
+# Workspace switching
+# --------------------
+# Switch workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# Move window to workspace
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# --------------------
 # Keyboard layouts
 # --------------------
 input * {
@@ -108,83 +149,26 @@ exec_always waybar
 exec_always dunst
 
 # --------------------
-# Volume keys (XF86)
+# Volume control (single OSD)
 # --------------------
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% && \
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d{1,3}(?=%)' | head -1 | \
-    xargs -I{} notify-send "🔊 Volume ↑" "{}%" --hint=int:value:{}
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% && \
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d{1,3}(?=%)' | head -1 | \
-    xargs -I{} notify-send "🔉 Volume ↓" "{}%" --hint=int:value:{}
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && \
-    pactl get-sink-mute @DEFAULT_SINK@ | grep -q "yes" && \
-    notify-send "🔇 Muted" --hint=int:value:0 || \
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d{1,3}(?=%)' | head -1 | \
-    xargs -I{} notify-send "🔊 Unmuted" "{}%" --hint=int:value:{}
+bindsym XF86AudioRaiseVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
+bindsym XF86AudioLowerVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
+bindsym XF86AudioMute exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "$M" "$V%" -h int:value:$V'
+
+# Optional fallback keys
+bindsym $mod+Shift+Right exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
+bindsym $mod+Shift+Left  exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
+bindsym $mod+Shift+m     exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "$M" "$V%" -h int:value:$V'
 
 # --------------------
-# Brightness keys (XF86)
+# Brightness control (single OSD)
 # --------------------
-bindsym XF86MonBrightnessUp exec brightnessctl set +10% && \
-    brightnessctl -m | awk -F, '{print $4}' | tr -d '%' | \
-    xargs -I{} notify-send "☀️ Brightness ↑" "{}%" --hint=int:value:{}
-bindsym XF86MonBrightnessDown exec brightnessctl set 10%- && \
-    brightnessctl -m | awk -F, '{print $4}' | tr -d '%' | \
-    xargs -I{} notify-send "🌙 Brightness ↓" "{}%" --hint=int:value:{}
+bindsym XF86MonBrightnessUp exec sh -c 'brightnessctl set +5% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
+bindsym XF86MonBrightnessDown exec sh -c 'brightnessctl set -5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
 
-# --------------------
-# Smart fallback brightness
-# --------------------
-bindsym $mod+Shift+Up exec bash -c '
-OLD=$(brightnessctl get)
-brightnessctl set +10% >/dev/null 2>&1
-sleep 0.05
-NEW=$(brightnessctl get)
-if [ "$OLD" -eq "$NEW" ]; then brightnessctl set +10%; fi
-brightnessctl -m | awk -F, "{print \$4}" | tr -d "%" | \
-xargs -I{} notify-send "☀️ Brightness ↑" "{}%" --hint=int:value:{}'
-
-bindsym $mod+Shift+Down exec bash -c '
-OLD=$(brightnessctl get)
-brightnessctl set 10%- >/dev/null 2>&1
-sleep 0.05
-NEW=$(brightnessctl get)
-if [ "$OLD" -eq "$NEW" ]; then brightnessctl set 10%-; fi
-brightnessctl -m | awk -F, "{print \$4}" | tr -d "%" | \
-xargs -I{} notify-send "🌙 Brightness ↓" "{}%" --hint=int:value:{}'
-
-# --------------------
-# Smart fallback volume
-# --------------------
-bindsym $mod+Shift+Right exec bash -c '
-OLD=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "\d{1,3}(?=%)" | head -1)
-pactl set-sink-volume @DEFAULT_SINK@ +5% >/dev/null 2>&1
-sleep 0.05
-NEW=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "\d{1,3}(?=%)" | head -1)
-if [ "$OLD" -eq "$NEW" ]; then pactl set-sink-volume @DEFAULT_SINK@ +5%; fi
-pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "\d{1,3}(?=%)" | head -1 | \
-xargs -I{} notify-send "🔊 Volume ↑" "{}%" --hint=int:value:{}'
-
-bindsym $mod+Shift+Left exec bash -c '
-OLD=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "\d{1,3}(?=%)" | head -1)
-pactl set-sink-volume @DEFAULT_SINK@ -5% >/dev/null 2>&1
-sleep 0.05
-NEW=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "\d{1,3}(?=%)" | head -1)
-if [ "$OLD" -eq "$NEW" ]; then pactl set-sink-volume @DEFAULT_SINK@ -5%; fi
-pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "\d{1,3}(?=%)" | head -1 | \
-xargs -I{} notify-send "🔉 Volume ↓" "{}%" --hint=int:value:{}'
-
-bindsym $mod+Shift+m exec bash -c '
-OLD=$(pactl get-sink-mute @DEFAULT_SINK@ | grep -q yes && echo 1 || echo 0)
-pactl set-sink-mute @DEFAULT_SINK@ toggle >/dev/null 2>&1
-sleep 0.05
-NEW=$(pactl get-sink-mute @DEFAULT_SINK@ | grep -q yes && echo 1 || echo 0)
-if [ "$OLD" -eq "$NEW" ]; then pactl set-sink-mute @DEFAULT_SINK@ toggle; fi
-pactl get-sink-mute @DEFAULT_SINK@ | grep -q yes && \
-notify-send "🔇 Muted" --hint=int:value:0 || \
-pactl get-sink-volume @DEFAULT_SINK@ | grep -oP "\d{1,3}(?=%)" | head -1 | \
-xargs -I{} notify-send "🔊 Unmuted" "{}%" --hint=int:value:{}'
-EOF
+# Fallback Brightness keys
+bindsym $mod+Shift+Up exec sh -c 'brightnessctl set +10% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
+bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 10%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
 
 # -----------------------
 # Waybar configuration
@@ -247,9 +231,23 @@ EOF
 echo "[8/14] Configuring Wofi..."
 mkdir -p ~/.config/wofi
 cat > ~/.config/wofi/config << 'EOF'
+[wofi]
 show=drun
 allow-images=true
+icon-theme=Papirus
 term=ghostty
+
+[style]
+window-border-width=1
+window-border-color=#1e1e2e
+window-background=#1e1e2e
+window-radius=8
+list-background=#1e1e2e
+list-text-color=#ffffff
+list-hover-background=#3a5f9e
+list-hover-text-color=#ffffff
+font=Noto Sans 10
+padding=6
 EOF
 
 # -----------------------
