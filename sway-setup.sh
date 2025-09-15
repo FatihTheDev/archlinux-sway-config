@@ -275,7 +275,6 @@ echo "[7/14] Configuring Waybar..."
 
 mkdir -p ~/.config/waybar
 
-if [[ ! -f ~/.config/waybar/config ]]; then
 cat > ~/.config/waybar/config << 'EOF'
 {
   "layer": "top",
@@ -308,7 +307,6 @@ cat > ~/.config/waybar/config << 'EOF'
   }
 }
 EOF
-fi
 
 if [[ ! -f ~/.config/waybar/style.css ]]; then
 cat > ~/.config/waybar/style.css << 'EOF'
