@@ -156,9 +156,68 @@ sudo systemctl enable --now bluetooth
 sudo systemctl enable --now NetworkManager
 
 # -----------------------
+# Waybar configuration
+# -----------------------
+echo "[6/14] Configuring Waybar..."
+
+mkdir -p ~/.config/waybar
+
+cat > ~/.config/waybar/config << \EOF
+{
+  "layer": "top",
+  "position": "top",
+  "modules-left": ["network", "pulseaudio", "bluetooth", "battery"],
+  "modules-center": ["clock"],
+  "modules-right": ["tray"],
+
+  "clock": {
+    "format": "{:%a %b %d  %H:%M}",
+    "tooltip": false
+  },
+  "battery": {
+    "format": "{capacity}%"
+  },
+  "pulseaudio": {
+    "format": "{volume}%",
+    "on-click": "pavucontrol"
+  },
+  "network": {
+    "format": "{ifname} {essid} {signalStrength}%",
+    "on-click": "nm-connection-editor"
+  },
+  "bluetooth": {
+    "format": "{status}",
+    "format-connected": " {num_connections}",
+    "format-disabled": " off",
+    "tooltip-format": "{status}\n{device_alias} ({device_address})",
+    "on-click": "blueman-manager"
+  }
+}
+EOF
+
+if [[ ! -f ~/.config/waybar/style.css ]]; then
+cat > ~/.config/waybar/style.css << \EOF
+* {
+  font-family: "Noto Sans", "Font Awesome 6 Free";
+  font-size: 14px;
+  color: #ffffff;
+}
+
+#clock {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#battery, #pulseaudio, #network, #bluetooth {
+  padding: 0 10px;
+}
+EOF
+fi
+
+# -----------------------
 # Configure Sway
 # -----------------------
-echo "[6/14] Configuring Sway..."
+echo "[7/14] Configuring Sway..."
 mkdir -p ~/.config/sway
 if [ ! -f ~/.config/sway/config ]; then
     cp /etc/sway/config ~/.config/sway/config
@@ -267,65 +326,6 @@ bindsym XF86MonBrightnessDown exec sh -c 'brightnessctl set -5%- >/dev/null 2>&1
 # Fallback Brightness keys
 bindsym $mod+Shift+Up exec sh -c 'brightnessctl set +10% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
 bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 10%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
-
-# -----------------------
-# Waybar configuration
-# -----------------------
-echo "[7/14] Configuring Waybar..."
-
-mkdir -p ~/.config/waybar
-
-cat > ~/.config/waybar/config << \EOF
-{
-  "layer": "top",
-  "position": "top",
-  "modules-left": ["network", "pulseaudio", "bluetooth", "battery"],
-  "modules-center": ["clock"],
-  "modules-right": ["tray"],
-
-  "clock": {
-    "format": "{:%a %b %d  %H:%M}",
-    "tooltip": false
-  },
-  "battery": {
-    "format": "{capacity}%"
-  },
-  "pulseaudio": {
-    "format": "{volume}%",
-    "on-click": "pavucontrol"
-  },
-  "network": {
-    "format": "{ifname} {essid} {signalStrength}%",
-    "on-click": "nm-connection-editor"
-  },
-  "bluetooth": {
-    "format": "{status}",
-    "format-connected": " {num_connections}",
-    "format-disabled": " off",
-    "tooltip-format": "{status}\n{device_alias} ({device_address})",
-    "on-click": "blueman-manager"
-  }
-}
-EOF
-
-if [[ ! -f ~/.config/waybar/style.css ]]; then
-cat > ~/.config/waybar/style.css << \EOF
-* {
-  font-family: "Noto Sans", "Font Awesome 6 Free";
-  font-size: 14px;
-  color: #ffffff;
-}
-
-#clock {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-#battery, #pulseaudio, #network, #bluetooth {
-  padding: 0 10px;
-}
-EOF
-fi
 
 # -----------------------
 # Wofi configuration
