@@ -38,9 +38,19 @@ fi
 
 echo "[4/18] Setting default applications..."
 
+# ensure dirs exist
 mkdir -p ~/.local/share/applications
+mkdir -p ~/.config
 
-# Brave Browser .desktop (fallback)
+# install xdg-utils if missing (non-blocking)
+if ! command -v xdg-mime >/dev/null 2>&1; then
+  echo "Installing xdg-utils..."
+  sudo pacman -S --noconfirm xdg-utils || true
+fi
+
+# Create fallback .desktop files (only if missing)
+
+# Brave desktop (brave-bin typical desktop name is brave-browser.desktop)
 if [[ ! -f ~/.local/share/applications/brave-browser.desktop ]]; then
 cat > ~/.local/share/applications/brave-browser.desktop <<'EOF'
 [Desktop Entry]
@@ -50,22 +60,25 @@ Terminal=false
 Icon=brave-browser
 Type=Application
 Categories=Network;WebBrowser;
-MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/about;x-scheme-handler/unknown;
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
 EOF
 fi
 
+# Ghostty desktop
 if [[ ! -f ~/.local/share/applications/ghostty.desktop ]]; then
 cat > ~/.local/share/applications/ghostty.desktop <<'EOF'
 [Desktop Entry]
 Name=Ghostty
+Comment=Fast modern terminal
 Exec=ghostty
 Icon=utilities-terminal
+Terminal=false
 Type=Application
 Categories=System;TerminalEmulator;
-Terminal=false
 EOF
 fi
 
+# Feh desktop
 if [[ ! -f ~/.local/share/applications/feh.desktop ]]; then
 cat > ~/.local/share/applications/feh.desktop <<'EOF'
 [Desktop Entry]
@@ -80,6 +93,7 @@ MimeType=image/jpeg;image/png;image/gif;image/bmp;image/webp;image/svg+xml;
 EOF
 fi
 
+# qpdfview desktop
 if [[ ! -f ~/.local/share/applications/qpdfview.desktop ]]; then
 cat > ~/.local/share/applications/qpdfview.desktop <<'EOF'
 [Desktop Entry]
@@ -94,14 +108,40 @@ MimeType=application/pdf;application/x-pdf;image/pdf;
 EOF
 fi
 
-xdg-settings set default-web-browser brave-browser.desktop
-xdg-mime default ghostty.desktop x-scheme-handler/terminal
-xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif
-xdg-mime default qpdfview.desktop application/pdf application/epub+zip application/vnd.djvu
+# Update desktop database (user-level) if tool exists; don't fail script on error
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database ~/.local/share/applications || true
+fi
 
-echo "BROWSER=brave" >> ~/.profile
-echo "TERMINAL=ghostty" >> ~/.profile
-echo "DOCUMENT_VIEWER=qpdfview" >> ~/.profile
+# Build (or replace) user-level mimeapps list (freedesktop standard)
+MIMEFILE="$HOME/.config/mimeapps.list"
+cat > "$MIMEFILE" <<'EOF'
+[Default Applications]
+text/html=brave-browser.desktop
+x-scheme-handler/http=brave-browser.desktop
+x-scheme-handler/https=brave-browser.desktop
+application/pdf=qpdfview.desktop
+image/png=feh.desktop
+image/jpeg=feh.desktop
+image/jpg=feh.desktop
+image/gif=feh.desktop
+image/bmp=feh.desktop
+image/webp=feh.desktop
+image/svg+xml=feh.desktop
+x-scheme-handler/terminal=ghostty.desktop
+EOF
+
+# Also set via xdg-mime as a fallback (safe — won't block)
+xdg-mime default qpdfview.desktop application/pdf || true
+xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif || true
+xdg-mime default ghostty.desktop x-scheme-handler/terminal || true
+
+# Export env vars once (avoid duplicates)
+grep -qxF 'export BROWSER=brave' ~/.profile 2>/dev/null || echo 'export BROWSER=brave' >> ~/.profile
+grep -qxF 'export TERMINAL=ghostty' ~/.profile 2>/dev/null || echo 'export TERMINAL=ghostty' >> ~/.profile
+grep -qxF 'export DOCUMENT_VIEWER=qpdfview' ~/.profile 2>/dev/null || echo 'export DOCUMENT_VIEWER=qpdfview' >> ~/.profile
+
+echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
 
 # -----------------------
 # Bluetooth installation
