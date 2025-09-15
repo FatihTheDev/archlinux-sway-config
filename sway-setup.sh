@@ -272,7 +272,10 @@ bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 10%- >/dev/null 2>&1; V=$(
 # Waybar configuration
 # -----------------------
 echo "[7/14] Configuring Waybar..."
+
 mkdir -p ~/.config/waybar
+
+if [[ ! -f ~/.config/waybar/config ]]; then
 cat > ~/.config/waybar/config << 'EOF'
 {
   "layer": "top",
@@ -305,7 +308,9 @@ cat > ~/.config/waybar/config << 'EOF'
   }
 }
 EOF
+fi
 
+if [[ ! -f ~/.config/waybar/style.css ]]; then
 cat > ~/.config/waybar/style.css << 'EOF'
 * {
   font-family: "Noto Sans", "Font Awesome 6 Free";
@@ -322,6 +327,7 @@ cat > ~/.config/waybar/style.css << 'EOF'
   padding: 0 10px;
 }
 EOF
+fi
 
 # -----------------------
 # Wofi configuration
