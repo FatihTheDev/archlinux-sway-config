@@ -139,7 +139,7 @@ input * {
 # --------------------
 # App launcher
 # --------------------
-bindsym $mod exec wofi --show drun
+bindsym $mod+d exec wofi --show drun
 bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 
 # --------------------
