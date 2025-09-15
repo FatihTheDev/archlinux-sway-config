@@ -82,7 +82,7 @@ bindsym $mod+q kill
 # --------------------
 input * {
     xkb_layout "ba,us"
-    xkb_options "grp:ctrl_shift_toggle"
+    xkb_options "grp:alt_shift_toggle"
 }
 
 # --------------------
