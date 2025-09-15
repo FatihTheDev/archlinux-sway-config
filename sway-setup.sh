@@ -307,7 +307,6 @@ cat > ~/.config/dunst/dunstrc << 'EOF'
     foreground = "#ffffff"
     highlight = "#ff0000"
 EOF
-
 # -----------------------
 # Default brightness
 # -----------------------
