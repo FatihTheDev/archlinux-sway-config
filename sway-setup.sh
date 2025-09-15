@@ -10,7 +10,7 @@ sudo pacman -Syu --noconfirm
 
 echo "[2/14] Installing essential packages..."
 sudo pacman -S --noconfirm sway waybar wofi grim slurp wl-clipboard \
-    ghostty librewolf brave \
+    ghostty librewolf brave-bin \
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts \
     pcmanfm-gtk3 alacritty \
