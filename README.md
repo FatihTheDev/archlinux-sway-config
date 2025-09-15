@@ -24,7 +24,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 - **Terminal** → `Super+Enter` (Ghostty)  
 - **File manager** → `Super+E` (PCManFM)  
 - **Task Manager GUI** → `Ctrl+Shift+Esc` (LXTASK)  
-- **Keyboard layouts**: Bosnian (`ba`) and English (`us`), switched with `Ctrl+Shift`  
+- **Keyboard layouts**: Bosnian (`ba`) and English (`us`), switched with `Alt+Shift`  
 - **Screenshot tool** → `Super+Shift+S`  
 - **Volume controls**:
   - XF86 hardware keys supported  
@@ -58,7 +58,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 | Brightness Down              | XF86MonBrightnessDown / Super+Shift+Down |
 | Fullscreen toggle            | Super+F                      |
 | Close window                 | Super+Q                      |
-| Keyboard layout toggle       | Ctrl+Shift                   |
+| Keyboard layout toggle       | Alt+Shift                    |
 | Media Play/Pause             | XF86AudioPlay                |
 | Media Next                   | XF86AudioNext                |
 | Media Previous               | XF86AudioPrev                |
