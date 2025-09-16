@@ -233,6 +233,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # Launchers
 # --------------------
 bindsym $mod+Shift+l exec swaylock -f -c 000000
+bindsym $mod+t exec sudo -E timeshift-gtk
 bindsym $mod+b exec brave
 bindsym $mod+l exec librewolf
 bindsym $mod+Return exec ghostty
@@ -477,10 +478,6 @@ Type=Application
 Categories=System;Utility;
 EOF
 fi
-
-# 3. Mask the system-wide Timeshift desktop so it does not appear
-#    This overrides /usr/share/applications/timeshift.desktop in Wofi
-touch ~/.local/share/applications/timeshift.desktop
 
 echo "✅ Timeshift GUI ready: appears in Wofi, old Timeshift hidden."
 
