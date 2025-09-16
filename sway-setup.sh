@@ -342,6 +342,7 @@ term=ghostty
 EOF
 
 # Style (GTK CSS selectors)
+if [[ ! -f ~/.config/wofi/style.css ]]; then
 cat > ~/.config/wofi/style.css << \EOF
 window {
   border: 1px solid #1e1e2e;
@@ -378,6 +379,7 @@ window {
   color: #ffffff;
 }
 EOF
+fi
 
 # -----------------------
 # Power menu script
