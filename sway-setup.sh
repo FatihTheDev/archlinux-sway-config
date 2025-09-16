@@ -50,19 +50,6 @@ fi
 
 # Create fallback .desktop files (only if missing)
 
-if [[ ! -f ~/.local/share/applications/timeshift-gui.desktop ]]; then
-cat > ~/.local/share/applications/timeshift-gui.desktop <<'EOF'
-[Desktop Entry]
-Name=Timeshift GUI
-Comment=Open Timeshift snapshot manager
-Exec=sudo -E timeshift-gtk
-Terminal=false
-Icon=timeshift
-Type=Application
-Categories=System;Utility;
-EOF
-fi
-
 # Brave desktop (brave-bin typical desktop name is brave-browser.desktop)
 if [[ ! -f ~/.local/share/applications/brave-browser.desktop ]]; then
 cat > ~/.local/share/applications/brave-browser.desktop <<'EOF'
@@ -359,7 +346,7 @@ term=ghostty
 EOF
 
 # Style (GTK CSS selectors)
-touch ~/.config/wofi/style.css
+#touch ~/.config/wofi/style.css
 cat > ~/.config/wofi/style.css <<'EOF'
 window {
   border: 1px solid #1e1e2e;
@@ -460,35 +447,43 @@ brightnessctl set 15%
 sudo usermod -aG video $USER
 
 echo "[12/15] Creating Timeshift GUI wrapper..."
+# 1. Create the wrapper script
 mkdir -p ~/.local/bin
-
 cat > ~/.local/bin/timeshift-gui.sh <<'EOF'
 #!/bin/bash
-# Timeshift GUI wrapper for Sway using Xephyr
+# Wrapper for Timeshift GUI under Sway/Wayland
 
-# Nested display number
-DISPLAY_NUM=:1
+# Preserve environment for GUI apps
+export DISPLAY=:0
+export XAUTHORITY=$HOME/.Xauthority
+export WAYLAND_DISPLAY=wayland-0
+export DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus
 
-# Screen resolution for Xephyr
-SCREEN_RES=1024x768
-
-# Start Xephyr in the background
-Xephyr $DISPLAY_NUM -screen $SCREEN_RES &
-XE_PID=$!
-
-# Give Xephyr a moment to start
-sleep 1
-
-# Run Timeshift GUI as root
-DISPLAY=$DISPLAY_NUM pkexec timeshift-gtk
-
-# Close Xephyr after Timeshift exits
-kill $XE_PID 2>/dev/null
+sudo -E timeshift-gtk
 EOF
-
 chmod +x ~/.local/bin/timeshift-gui.sh
 
-echo "Timeshift GUI wrapper created at ~/.local/bin/timeshift-gui.sh"
+# 2. Create the user-level .desktop file for Wofi and menus
+mkdir -p ~/.local/share/applications
+if [[ ! -f ~/.local/share/applications/timeshift-gui.desktop ]]; then
+cat > ~/.local/share/applications/timeshift-gui.desktop <<'EOF'
+[Desktop Entry]
+Name=Timeshift GUI
+Comment=Open Timeshift snapshot manager
+Exec=/home/$USER/.local/bin/timeshift-gui.sh
+Terminal=false
+Icon=timeshift
+Type=Application
+Categories=System;Utility;
+EOF
+fi
+
+# 3. Mask the system-wide Timeshift desktop so it does not appear
+#    This overrides /usr/share/applications/timeshift.desktop in Wofi
+touch ~/.local/share/applications/timeshift.desktop
+
+echo "✅ Timeshift GUI ready: appears in Wofi, old Timeshift hidden."
+
 
 echo "[13/15] Final touches and reminders..."
 echo "✅ Setup complete!"
