@@ -36,7 +36,7 @@ else
     echo "PipeWire selected."
 fi
 
-echo "[4/18] Setting default applications..."
+echo "[4/15] Setting default applications..."
 
 # ensure dirs exist
 mkdir -p ~/.local/share/applications
