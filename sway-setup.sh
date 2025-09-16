@@ -9,13 +9,13 @@ echo "[1/15] Updating system..."
 sudo pacman -Syu --noconfirm
 
 echo "[2/15] Installing essential packages..."
-sudo pacman -S --noconfirm sway swaylock swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
+sudo pacman -S --noconfirm sway swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     ghostty librewolf brave \
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts papirus-icon-theme \
     pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
-    azote lxtask 
+    azote lxtask jq
 
 # -----------------------
 # Audio system selection
@@ -168,7 +168,7 @@ cat > ~/.config/waybar/config <<'EOF'
   "position": "top",
   "modules-left": ["network", "pulseaudio", "bluetooth", "battery"],
   "modules-center": ["clock"],
-  "modules-right": ["tray"],
+  "modules-right": ["custom/split", "tray"],
 
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
@@ -191,6 +191,10 @@ cat > ~/.config/waybar/config <<'EOF'
     "format-disabled": " off",
     "tooltip-format": "{status}\n{device_alias} ({device_address})",
     "on-click": "blueman-manager"
+  },
+  "custom/split": {
+    "exec": "~/.local/bin/split-indicator.sh",
+    "interval": 1
   }
 }
 EOF
@@ -222,6 +226,75 @@ mkdir -p ~/.config/sway
 if [ ! -f ~/.config/sway/config ]; then
     cp /etc/sway/config ~/.config/sway/config
 fi
+
+# ------------------
+# Screen Locking
+# ------------------
+
+mkdir -p ~/.local/bin/lock.sh
+cat > ~/.local/bin/lock.sh <<'EOF'
+#!/bin/bash
+
+# Launch swayidle to handle auto-lock & screen off
+swayidle -w \
+    timeout 300 'swaylock-effects \
+      --indicator \
+      --indicator-radius 120 \
+      --indicator-thickness 15 \
+      --inside-color 1e1e2eff \
+      --ring-color 4c7899ff \
+      --key-hl-color 990000ff \
+      --bs-hl-color ff0000ff \
+      --text-color ffffffff \
+      --line-color 00000000 \
+      --separator-color 00000000 \
+      --inside-ver-color 285577ff \
+      --ring-ver-color 4c7899ff \
+      --inside-wrong-color ff0000ff \
+      --ring-wrong-color ff0000ff \
+      --grace 2 \
+      --fade-in 0.3' \
+    timeout 600 'swaymsg "output * dpms off"' \
+    resume 'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock-effects \
+      --indicator \
+      --indicator-radius 120 \
+      --indicator-thickness 15 \
+      --inside-color 1e1e2eff \
+      --ring-color 4c7899ff \
+      --key-hl-color 990000ff \
+      --bs-hl-color ff0000ff \
+      --text-color ffffffff \
+      --line-color 00000000 \
+      --separator-color 00000000 \
+      --inside-ver-color 285577ff \
+      --ring-ver-color 4c7899ff \
+      --inside-wrong-color ff0000ff \
+      --ring-wrong-color ff0000ff \
+      --grace 2 \
+      --fade-in 0.3'
+EOF
+chmod +x ~/.local/bin/lock.sh
+
+mkdir -p ~/.local/bin/split-indicator.sh
+cat > ~/.local/bin/split-indicator.sh <<'EOF'
+#!/bin/bash
+
+# Query Sway for the focused container
+layout=$(swaymsg -t get_tree | jq -r '
+  recurse(.nodes[], .floating_nodes[]) | select(.focused==true).layout
+')
+
+# Output for Waybar (JSON format)
+case "$layout" in
+    splith) echo '{"text":"侀 H","tooltip":"Horizontal split"}' ;;
+    splitv) echo '{"text":"全 V","tooltip":"Vertical split"}' ;;
+    tabbed) echo '{"text":" Tabbed","tooltip":"Tabbed layout"}' ;;
+    stacked) echo '{"text":" Stacked","tooltip":"Stacked layout"}' ;;
+    *) echo '{"text":"?","tooltip":"Unknown layout"}' ;;
+esac
+EOF
+chmod +x ~/.local/bin/split-indicator.sh
 
 cat > ~/.config/sway/config <<'EOF'
 set $mod Mod4
