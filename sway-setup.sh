@@ -14,7 +14,7 @@ sudo pacman -S --noconfirm sway swaylock waybar wofi grim slurp wl-clipboard xor
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts papirus-icon-theme \
     pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
-    playerctl dunst libnotify brightnessctl \
+    playerctl dunst libnotify inotify-tools brightnessctl \
     azote lxtask 
 
 # -----------------------
