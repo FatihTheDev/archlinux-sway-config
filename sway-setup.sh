@@ -215,6 +215,12 @@ cat > ~/.config/waybar/style.css <<'EOF'
 #battery, #pulseaudio, #network, #bluetooth {
   padding: 0 10px;
 }
+
+#custom-split {
+  padding: 0 10px;
+  font-weight: bold;
+  color: #4c7899;
+}
 EOF
 fi
 
