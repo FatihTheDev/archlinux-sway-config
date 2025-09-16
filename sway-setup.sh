@@ -14,7 +14,7 @@ sudo pacman -S --noconfirm sway swaylock waybar wofi grim slurp wl-clipboard xor
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts papirus-icon-theme \
     pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
-    playerctl dunst libnotify inotify-tools brightnessctl \
+    playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     azote lxtask 
 
 # -----------------------
@@ -225,6 +225,9 @@ fi
 
 cat > ~/.config/sway/config <<'EOF'
 set $mod Mod4
+
+#For password prompts
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
 # --------------------
 # Launchers
