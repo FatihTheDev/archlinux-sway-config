@@ -202,7 +202,7 @@ EOF
 if [[ ! -f ~/.config/waybar/style.css ]]; then
 cat > ~/.config/waybar/style.css <<'EOF'
 * {
-  font-family: "Noto Sans", "Font Awesome 6 Free";
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", "Font Awesome 6 Free";
   font-size: 15px;
   color: #ffffff;
 }
