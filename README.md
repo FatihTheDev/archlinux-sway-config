@@ -23,7 +23,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
   - LibreWolf → `Super+L`  
 - **Terminal** → `Super+Enter` (Ghostty)  
 - **File manager** → `Super+E` (PCManFM)
-- **Timeshift GUI** → `Super+t`
+- **Timeshift GUI** → `Super+T`
 - **Task Manager GUI** → `Ctrl+Shift+Esc` (LXTASK)  
 - **Keyboard layouts**: Bosnian (`ba`) and English (`us`), switched with `Alt+Shift`  
 - **Screenshot tool** → `Super+Shift+S`  
