@@ -237,7 +237,7 @@ fi
 # Screen Locking
 # ------------------
 
-mkdir -p ~/.local/bin/lock.sh
+mkdir -p ~/.local/bin
 cat > ~/.local/bin/lock.sh <<'EOF'
 #!/bin/bash
 
@@ -468,7 +468,6 @@ EOF
 # Power menu script
 # -----------------------
 echo "[9/15] Creating power menu script..."
-mkdir -p ~/.local/bin
 cat > ~/.local/bin/power-menu.sh <<'EOF'
 #!/bin/bash
 choice=$(printf " Poweroff\n Reboot\n Logout" | wofi --show dmenu --prompt "Power Menu")
