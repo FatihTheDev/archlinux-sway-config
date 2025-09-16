@@ -9,7 +9,7 @@ echo "[1/14] Updating system..."
 sudo pacman -Syu --noconfirm
 
 echo "[2/14] Installing essential packages..."
-sudo pacman -S --noconfirm sway swaylock waybar wofi grim slurp wl-clipboard \
+sudo pacman -S --noconfirm sway swaylock waybar wofi grim slurp wl-clipboard xorg-xwayland \
     ghostty librewolf brave \
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts papirus-icon-theme \
