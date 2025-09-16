@@ -302,8 +302,8 @@ bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 # --------------------
 # Autostart
 # --------------------
-exec_always waybar
-exec_always dunst
+exec waybar
+exec dunst
 
 # --------------------
 # Volume control (single OSD)
@@ -332,24 +332,51 @@ bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 10%- >/dev/null 2>&1; V=$(
 # -----------------------
 echo "[8/14] Configuring Wofi..."
 mkdir -p ~/.config/wofi
+# Main config (functional options)
 cat > ~/.config/wofi/config << \EOF
 [wofi]
 show=drun
 allow-images=true
 icon-theme=Papirus
 term=ghostty
+EOF
 
-[style]
-window-border-width=1
-window-border-color=#1e1e2e
-window-background=#1e1e2e
-window-radius=8
-list-background=#1e1e2e
-list-text-color=#ffffff
-list-hover-background=#3a5f9e
-list-hover-text-color=#ffffff
-font=Noto Sans 10
-padding=6
+# Style (GTK CSS selectors)
+cat > ~/.config/wofi/style.css << \EOF
+window {
+  border: 1px solid #1e1e2e;
+  background-color: #1e1e2e;
+  border-radius: 8px;
+}
+
+#input {
+  border: none;
+  padding: 6px;
+  margin: 6px;
+  background-color: #1e1e2e;
+  color: #ffffff;
+  font-family: "Noto Sans";
+  font-size: 14px;
+}
+
+#entry {
+  padding: 6px;
+  background-color: #1e1e2e;
+  color: #ffffff;
+}
+
+#entry:selected {
+  background-color: #3a5f9e;
+  color: #ffffff;
+}
+
+#img {
+  padding-right: 8px;
+}
+
+#text {
+  color: #ffffff;
+}
 EOF
 
 # -----------------------
