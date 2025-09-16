@@ -5,10 +5,10 @@
 
 set -e
 
-echo "[1/14] Updating system..."
+echo "[1/15] Updating system..."
 sudo pacman -Syu --noconfirm
 
-echo "[2/14] Installing essential packages..."
+echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm sway swaylock waybar wofi grim slurp wl-clipboard xorg-xwayland \
     ghostty librewolf brave \
     network-manager-applet nm-connection-editor \
@@ -27,11 +27,11 @@ read -p "Enter choice [1-2]: " audio_choice
 audio_choice=${audio_choice:-1}
 
 if [ "$audio_choice" -eq 2 ]; then
-    echo "[3/14] Installing PulseAudio..."
+    echo "[3/15] Installing PulseAudio..."
     sudo pacman -S --noconfirm pulseaudio pavucontrol
     echo "PulseAudio selected."
 else
-    echo "[3/14] Installing PipeWire (default)..."
+    echo "[3/15] Installing PipeWire (default)..."
     sudo pacman -S --noconfirm pipewire pipewire-pulse wireplumber pavucontrol
     echo "PipeWire selected."
 fi
@@ -49,6 +49,19 @@ if ! command -v xdg-mime >/dev/null 2>&1; then
 fi
 
 # Create fallback .desktop files (only if missing)
+
+if [[ ! -f ~/.local/share/applications/timeshift-gui.desktop ]]; then
+cat > ~/.local/share/applications/timeshift-gui.desktop <<'EOF'
+[Desktop Entry]
+Name=Timeshift GUI
+Comment=Open Timeshift snapshot manager
+Exec=sudo -E timeshift-gtk
+Terminal=false
+Icon=timeshift
+Type=Application
+Categories=System;Utility;
+EOF
+fi
 
 # Brave desktop (brave-bin typical desktop name is brave-browser.desktop)
 if [[ ! -f ~/.local/share/applications/brave-browser.desktop ]]; then
@@ -146,7 +159,7 @@ echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
 # -----------------------
 # Bluetooth installation
 # -----------------------
-echo "[5/14] Installing Bluetooth stack and GUI..."
+echo "[5/15] Installing Bluetooth stack and GUI..."
 sudo pacman -S --noconfirm bluez bluez-utils blueman
 sudo systemctl enable --now bluetooth
 
@@ -158,7 +171,7 @@ sudo systemctl enable --now NetworkManager
 # -----------------------
 # Waybar configuration
 # -----------------------
-echo "[6/14] Configuring Waybar..."
+echo "[6/15] Configuring Waybar..."
 
 mkdir -p ~/.config/waybar
 
@@ -199,7 +212,7 @@ if [[ ! -f ~/.config/waybar/style.css ]]; then
 cat > ~/.config/waybar/style.css <<'EOF'
 * {
   font-family: "Noto Sans", "Font Awesome 6 Free";
-  font-size: 14px;
+  font-size: 15px;
   color: #ffffff;
 }
 
@@ -217,7 +230,7 @@ fi
 # -----------------------
 # Configure Sway
 # -----------------------
-echo "[7/14] Configuring Sway..."
+echo "[7/15] Configuring Sway..."
 mkdir -p ~/.config/sway
 if [ ! -f ~/.config/sway/config ]; then
     cp /etc/sway/config ~/.config/sway/config
@@ -334,7 +347,7 @@ EOF
 # -----------------------
 # Wofi configuration
 # -----------------------
-echo "[8/14] Configuring Wofi..."
+echo "[8/15] Configuring Wofi..."
 mkdir -p ~/.config/wofi
 # Main config (functional options)
 cat > ~/.config/wofi/config <<'EOF'
@@ -361,7 +374,7 @@ window {
   background-color: #1e1e2e;
   color: #ffffff;
   font-family: "Noto Sans";
-  font-size: 14px;
+  font-size: 15px;
 }
 
 #entry {
@@ -387,7 +400,7 @@ EOF
 # -----------------------
 # Power menu script
 # -----------------------
-echo "[9/14] Creating power menu script..."
+echo "[9/15] Creating power menu script..."
 mkdir -p ~/.local/bin
 cat > ~/.local/bin/power-menu.sh <<'EOF'
 #!/bin/bash
@@ -403,7 +416,7 @@ chmod +x ~/.local/bin/power-menu.sh
 # -----------------------
 # Dunst configuration
 # -----------------------
-echo "[10/14] Configuring Dunst notifications..."
+echo "[10/15] Configuring Dunst notifications..."
 mkdir -p ~/.config/dunst
 cat > ~/.config/dunst/dunstrc <<'EOF'
 [global]
@@ -442,11 +455,42 @@ EOF
 # -----------------------
 # Default brightness
 # -----------------------
-echo "[11/14] Setting default brightness to 15%..."
+echo "[11/15] Setting default brightness to 15%..."
 brightnessctl set 15%
 sudo usermod -aG video $USER
 
-echo "[12/14] Final touches and reminders..."
+echo "[12/15] Creating Timeshift GUI wrapper..."
+mkdir -p ~/.local/bin
+
+cat > ~/.local/bin/timeshift-gui.sh <<'EOF'
+#!/bin/bash
+# Timeshift GUI wrapper for Sway using Xephyr
+
+# Nested display number
+DISPLAY_NUM=:1
+
+# Screen resolution for Xephyr
+SCREEN_RES=1024x768
+
+# Start Xephyr in the background
+Xephyr $DISPLAY_NUM -screen $SCREEN_RES &
+XE_PID=$!
+
+# Give Xephyr a moment to start
+sleep 1
+
+# Run Timeshift GUI as root
+DISPLAY=$DISPLAY_NUM pkexec timeshift-gtk
+
+# Close Xephyr after Timeshift exits
+kill $XE_PID 2>/dev/null
+EOF
+
+chmod +x ~/.local/bin/timeshift-gui.sh
+
+echo "Timeshift GUI wrapper created at ~/.local/bin/timeshift-gui.sh"
+
+echo "[13/15] Final touches and reminders..."
 echo "✅ Setup complete!"
 echo " - Task Manager: Ctrl+Shift+Esc (LXTASK)"
 echo " - Network Manager: Waybar click → nm-connection-editor"
@@ -457,5 +501,5 @@ echo " - Brightness Keys: XF86MonBrightness keys + smart fallback Super+Shift+Up
 echo " - Media Keys: Play/Pause/Next/Prev supported"
 echo " - Keyboard layout switching: Alt+Shift"
 
-echo "[13/14] Restart Sway to apply all changes."
-echo "[14/14] Done!"
+echo "[14/15] Restart Sway to apply all changes."
+echo "[15/15] Done!"
