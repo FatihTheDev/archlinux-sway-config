@@ -52,7 +52,7 @@ fi
 
 # Brave desktop (brave-bin typical desktop name is brave-browser.desktop)
 if [[ ! -f ~/.local/share/applications/brave-browser.desktop ]]; then
-cat > ~/.local/share/applications/brave-browser.desktop <<\EOF
+cat > ~/.local/share/applications/brave-browser.desktop <<'EOF'
 [Desktop Entry]
 Name=Brave Browser
 Exec=brave %U
@@ -66,7 +66,7 @@ fi
 
 # Ghostty desktop
 if [[ ! -f ~/.local/share/applications/ghostty.desktop ]]; then
-cat > ~/.local/share/applications/ghostty.desktop <<\EOF
+cat > ~/.local/share/applications/ghostty.desktop <<'EOF'
 [Desktop Entry]
 Name=Ghostty
 Comment=Fast modern terminal
@@ -80,7 +80,7 @@ fi
 
 # Feh desktop
 if [[ ! -f ~/.local/share/applications/feh.desktop ]]; then
-cat > ~/.local/share/applications/feh.desktop <<\EOF
+cat > ~/.local/share/applications/feh.desktop <<'EOF'
 [Desktop Entry]
 Name=Feh
 Comment=Lightweight image viewer
@@ -95,7 +95,7 @@ fi
 
 # qpdfview desktop
 if [[ ! -f ~/.local/share/applications/qpdfview.desktop ]]; then
-cat > ~/.local/share/applications/qpdfview.desktop <<\EOF
+cat > ~/.local/share/applications/qpdfview.desktop <<'EOF'
 [Desktop Entry]
 Name=qpdfview
 Comment=Tabbed PDF viewer
@@ -115,7 +115,7 @@ fi
 
 # Build (or replace) user-level mimeapps list (freedesktop standard)
 MIMEFILE="$HOME/.config/mimeapps.list"
-cat > "$MIMEFILE" <<\EOF
+cat > "$MIMEFILE" <<'EOF'
 [Default Applications]
 text/html=brave-browser.desktop
 x-scheme-handler/http=brave-browser.desktop
@@ -162,7 +162,7 @@ echo "[6/14] Configuring Waybar..."
 
 mkdir -p ~/.config/waybar
 
-cat > ~/.config/waybar/config << \EOF
+cat > ~/.config/waybar/config <<'EOF'
 {
   "layer": "top",
   "position": "top",
@@ -196,7 +196,7 @@ cat > ~/.config/waybar/config << \EOF
 EOF
 
 if [[ ! -f ~/.config/waybar/style.css ]]; then
-cat > ~/.config/waybar/style.css << \EOF
+cat > ~/.config/waybar/style.css <<'EOF'
 * {
   font-family: "Noto Sans", "Font Awesome 6 Free";
   font-size: 14px;
@@ -223,7 +223,7 @@ if [ ! -f ~/.config/sway/config ]; then
     cp /etc/sway/config ~/.config/sway/config
 fi
 
-cat > ~/.config/sway/config << \EOF
+cat > ~/.config/sway/config <<'EOF'
 set $mod Mod4
 
 # --------------------
@@ -321,11 +321,12 @@ bindsym $mod+Shift+m     exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $S
 # Brightness control (single OSD)
 # --------------------
 bindsym XF86MonBrightnessUp exec sh -c 'brightnessctl set +5% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
-bindsym XF86MonBrightnessDown exec sh -c 'brightnessctl set -5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
+bindsym XF86MonBrightnessDown exec sh -c 'brightnessctl set 5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
 
 # Fallback Brightness keys
 bindsym $mod+Shift+Up exec sh -c 'brightnessctl set +10% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
 bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 10%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
+EOF
 
 # -----------------------
 # Wofi configuration
@@ -333,7 +334,7 @@ bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 10%- >/dev/null 2>&1; V=$(
 echo "[8/14] Configuring Wofi..."
 mkdir -p ~/.config/wofi
 # Main config (functional options)
-cat > ~/.config/wofi/config << \EOF
+cat > ~/.config/wofi/config <<'EOF'
 [wofi]
 show=drun
 allow-images=true
@@ -343,7 +344,7 @@ EOF
 
 # Style (GTK CSS selectors)
 touch ~/.config/wofi/style.css
-cat > ~/.config/wofi/style.css << \EOF
+cat > ~/.config/wofi/style.css <<'EOF'
 window {
   border: 1px solid #1e1e2e;
   background-color: #1e1e2e;
@@ -385,7 +386,7 @@ EOF
 # -----------------------
 echo "[9/14] Creating power menu script..."
 mkdir -p ~/.local/bin
-cat > ~/.local/bin/power-menu.sh << \EOF
+cat > ~/.local/bin/power-menu.sh <<'EOF'
 #!/bin/bash
 choice=$(printf " Poweroff\n Reboot\n Logout" | wofi --show dmenu --prompt "Power Menu")
 case "$choice" in
@@ -401,7 +402,7 @@ chmod +x ~/.local/bin/power-menu.sh
 # -----------------------
 echo "[10/14] Configuring Dunst notifications..."
 mkdir -p ~/.config/dunst
-cat > ~/.config/dunst/dunstrc << \EOF
+cat > ~/.config/dunst/dunstrc <<'EOF'
 [global]
     font = Noto Sans 10
     frame_color = "#4C7899"
