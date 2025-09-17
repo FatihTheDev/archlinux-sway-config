@@ -204,8 +204,8 @@ cat > ~/.config/waybar/config <<'EOF'
     "format": "{name}: {icon}",
     "format-icons": {
       "urgent": "\uf06a",
-      "focused": "\u25CB",
-      "default": "\u25cf"
+      "focused": "\u25cf",
+      "default": "\u25CB"
     }
   }
 }
@@ -292,8 +292,11 @@ chmod +x ~/.local/bin/lock.sh
 cat > ~/.config/sway/config <<'EOF'
 set $mod Mod4
 
-#For password prompts
+# For password prompts
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+
+# To move windows with superkey + left-click
+floating_modifier $mod
 
 # --------------------
 # Launchers
