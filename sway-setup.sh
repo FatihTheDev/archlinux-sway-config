@@ -304,7 +304,7 @@ bindsym $mod+b exec brave
 bindsym $mod+l exec librewolf
 bindsym $mod+Return exec ghostty
 bindsym $mod+e exec pcmanfm
-bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+Shift+s exec sh -c 'mkdir -p "$HOME/Pictures/Screenshots"; grim -g "$(slurp)" "$(zenity --file-selection --save --confirm-overwrite --filename=$HOME/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png")"'
 bindsym $mod+w exec azote
 bindsym Control+Shift+Escape exec lxtask
 
