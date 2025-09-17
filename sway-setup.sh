@@ -10,12 +10,12 @@ sudo pacman -Syu --noconfirm
 
 echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm sway swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
-    ghostty librewolf brave \
+    xorg-xhost ghostty librewolf brave \
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts papirus-icon-theme \
     pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
-    azote lxtask jq
+    azote lxtask
 
 # -----------------------
 # Audio system selection
@@ -166,9 +166,9 @@ cat > ~/.config/waybar/config <<'EOF'
 {
   "layer": "top",
   "position": "top",
-  "modules-left": ["network", "pulseaudio", "bluetooth", "battery"],
+  "modules-left": ["sway/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/split", "tray"],
+  "modules-right": ["network", "battery", "bluetooth", "pulseaudio", "sway/language", "tray"],
 
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
@@ -192,9 +192,20 @@ cat > ~/.config/waybar/config <<'EOF'
     "tooltip-format": "{status}\n{device_alias} ({device_address})",
     "on-click": "blueman-manager"
   },
-  "custom/split": {
-    "exec": "~/.local/bin/split-indicator.sh",
-    "interval": 1
+  "sway/language": {
+	"format": "{short} {variant}",
+  },
+  "tray": {
+    "icon-size": 12,
+    "spacing": 10
+  },
+  "sway/workspaces": {
+    "format": "{name}: {icon}",
+    "format-icons": {
+      "urgent": "\uf06a",
+      "focused": "\u25CB",
+      "default": "\u25cf"
+    }
   }
 }
 EOF
@@ -202,7 +213,7 @@ EOF
 if [[ ! -f ~/.config/waybar/style.css ]]; then
 cat > ~/.config/waybar/style.css <<'EOF'
 * {
-  font-family: "JetBrainsMono Nerd Font", "Noto Sans", "Font Awesome 6 Free";
+  font-family: "Font Awesome 6 Free", "JetBrainsMono Nerd Font", "Noto Sans";
   font-size: 15px;
   color: #ffffff;
 }
@@ -214,12 +225,6 @@ cat > ~/.config/waybar/style.css <<'EOF'
 
 #battery, #pulseaudio, #network, #bluetooth {
   padding: 0 10px;
-}
-
-#custom-split {
-  padding: 0 10px;
-  font-weight: bold;
-  color: #4c7899;
 }
 EOF
 fi
@@ -282,26 +287,6 @@ swayidle -w \
 EOF
 chmod +x ~/.local/bin/lock.sh
 
-mkdir -p ~/.local/bin/split-indicator.sh
-cat > ~/.local/bin/split-indicator.sh <<'EOF'
-#!/bin/bash
-
-# Query Sway for the focused container
-layout=$(swaymsg -t get_tree | jq -r '
-  recurse(.nodes[], .floating_nodes[]) | select(.focused==true).layout
-')
-
-# Output for Waybar (JSON format)
-case "$layout" in
-    splith) echo '{"text":"侀 H","tooltip":"Horizontal split"}' ;;
-    splitv) echo '{"text":"全 V","tooltip":"Vertical split"}' ;;
-    tabbed) echo '{"text":" Tabbed","tooltip":"Tabbed layout"}' ;;
-    stacked) echo '{"text":" Stacked","tooltip":"Stacked layout"}' ;;
-    *) echo '{"text":"?","tooltip":"Unknown layout"}' ;;
-esac
-EOF
-chmod +x ~/.local/bin/split-indicator.sh
-
 cat > ~/.config/sway/config <<'EOF'
 set $mod Mod4
 
@@ -312,7 +297,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # Launchers
 # --------------------
 bindsym $mod+Shift+l exec swaylock -f -c 000000
-bindsym $mod+t exec sudo -E timeshift-gtk
+bindsym $mod+t exec pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY timeshift-gtk  
 bindsym $mod+b exec brave
 bindsym $mod+l exec librewolf
 bindsym $mod+Return exec ghostty
@@ -326,6 +311,8 @@ bindsym Control+Shift+Escape exec lxtask
 # --------------------
 bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
+bindsym $mod+v split vertical  # To make the next window tile vertically
+bindsym $mod+h split horizontal  # To make the next window tile horizontally
 
 # --------------------
 # Floating / tiling mode toggle + resize mode
@@ -379,7 +366,7 @@ input * {
 # --------------------
 # App launcher
 # --------------------
-bindsym $mod+d exec wofi --show drun
+bindsym $mod+d exec wofi --show drun --show-icons --keynav
 bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 
 # --------------------
@@ -415,13 +402,26 @@ EOF
 # Wofi configuration
 # -----------------------
 echo "[8/15] Configuring Wofi..."
+
+# Setting Papirus icon theme as default
+if [[ ! -f ~/.config/gtk-3.0/settings.ini ]]; then
+cat > ~/.config/gtk-3.0/settings.ini <<'EOF'
+[Settings]
+gtk-icon-theme-name=Papirus-Dark
+EOF
+else
+cat > ~/.config/gtk-3.0/settings.ini <<'EOF'
+gtk-icon-theme-name=Papirus-Dark
+EOF
+fi
+
 mkdir -p ~/.config/wofi
 # Main config (functional options)
 cat > ~/.config/wofi/config <<'EOF'
 [wofi]
 show=drun
 allow-images=true
-icon-theme=Papirus
+icon-theme=Papirus-Dark
 term=ghostty
 EOF
 
@@ -527,7 +527,6 @@ sudo usermod -aG video $USER
 
 echo "[12/15] Creating Timeshift GUI wrapper..."
 # 1. Create the wrapper script
-mkdir -p ~/.local/bin
 cat > ~/.local/bin/timeshift-gui.sh <<'EOF'
 #!/bin/bash
 # Wrapper for Timeshift GUI under Sway/Wayland
