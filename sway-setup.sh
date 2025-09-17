@@ -295,9 +295,6 @@ set $mod Mod4
 # For password prompts
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
-# To move windows with superkey + left-click
-floating_modifier $mod
-
 # --------------------
 # Launchers
 # --------------------
@@ -318,6 +315,21 @@ bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
 bindsym $mod+v split vertical  # To make the next window tile vertically
 bindsym $mod+h split horizontal  # To make the next window tile horizontally
+
+# To move windows with superkey + left-click
+floating_modifier $mod
+
+# Move window with Super + Left Mouse Drag
+bindsym --whole-window $mod+button2 move
+
+# Optionally: Resize window with Super + Right Mouse Drag
+bindsym --whole-window $mod+button3 resize
+
+# Move windows with Super + Arrow Keys
+bindsym $mod+Left move left 100px
+bindsym $mod+Right move right 100px
+bindsym $mod+Up move up 100px
+bindsym $mod+Down move down 100px   
 
 # --------------------
 # Floating / tiling mode toggle + resize mode
