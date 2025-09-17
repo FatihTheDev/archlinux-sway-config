@@ -404,15 +404,21 @@ EOF
 echo "[8/15] Configuring Wofi..."
 
 # Setting Papirus icon theme as default
+mkdir -p ~/.config/gtk-3.0
 if [[ ! -f ~/.config/gtk-3.0/settings.ini ]]; then
-cat > ~/.config/gtk-3.0/settings.ini <<'EOF'
+    # File does not exist → create it with header and key
+    cat > ~/.config/gtk-3.0/settings.ini <<'EOF'
 [Settings]
 gtk-icon-theme-name=Papirus-Dark
 EOF
 else
-cat > ~/.config/gtk-3.0/settings.ini <<'EOF'
-gtk-icon-theme-name=Papirus-Dark
-EOF
+    # File exists → ensure it has [Settings], then add key if missing
+    if ! grep -q "^\[Settings\]" ~/.config/gtk-3.0/settings.ini; then
+        sed -i '1i [Settings]' ~/.config/gtk-3.0/settings.ini
+    fi
+
+    grep -qxF "gtk-icon-theme-name=Papirus-Dark" ~/.config/gtk-3.0/settings.ini 2>/dev/null || \
+    echo "gtk-icon-theme-name=Papirus-Dark" >> ~/.config/gtk-3.0/settings.ini
 fi
 
 mkdir -p ~/.config/wofi
