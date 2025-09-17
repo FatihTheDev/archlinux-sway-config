@@ -313,8 +313,10 @@ bindsym Control+Shift+Escape exec lxtask
 # --------------------
 bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
-bindsym $mod+v split vertical  # To make the next window tile vertically
-bindsym $mod+h split horizontal  # To make the next window tile horizontally
+# Vertical split + app launcher
+bindsym $mod+v exec sh -c 'swaymsg splitv; wofi --show drun | xargs swaymsg exec --'
+# Horizontal split + app launcher
+bindsym $mod+h exec sh -c 'swaymsg splith; wofi --show drun | xargs swaymsg exec --'
 
 # To move windows with superkey + left-click
 floating_modifier $mod
