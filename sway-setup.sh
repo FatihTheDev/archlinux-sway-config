@@ -148,7 +148,8 @@ echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
 # -----------------------
 echo "[5/15] Installing Bluetooth stack and GUI..."
 sudo pacman -S --noconfirm bluez bluez-utils blueman
-sudo systemctl enable --now bluetooth
+sudo systemctl enable bluetooth
+sudo systemctl start bluetooth
 
 # -----------------------
 # Enable NetworkManager
@@ -216,6 +217,7 @@ cat > ~/.config/waybar/style.css <<'EOF'
   font-family: "Font Awesome 6 Free", "JetBrainsMono Nerd Font", "Noto Sans";
   font-size: 15px;
   color: #ffffff;
+  background-color: #000000;
 }
 
 #clock {
@@ -410,6 +412,7 @@ if [[ ! -f ~/.config/gtk-3.0/settings.ini ]]; then
     cat > ~/.config/gtk-3.0/settings.ini <<'EOF'
 [Settings]
 gtk-icon-theme-name=Papirus-Dark
+gtk-application-prefer-dark-theme=1
 EOF
 else
     # File exists → ensure it has [Settings], then add key if missing
