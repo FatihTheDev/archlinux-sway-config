@@ -298,7 +298,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # --------------------
 # Launchers
 # --------------------
-bindsym $mod+Shift+l exec swaylock -f -c 000000
+bindsym $mod+Ctrl+Shift+l exec swaylock -f -c 000000
 bindsym $mod+t exec pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY timeshift-gtk  
 bindsym $mod+b exec brave
 bindsym $mod+l exec librewolf
@@ -327,11 +327,17 @@ bindsym --whole-window $mod+button2 move
 # Optionally: Resize window with Super + Right Mouse Drag
 bindsym --whole-window $mod+button3 resize
 
-# Move windows with Super + Arrow Keys
-bindsym $mod+Left move left 100px
-bindsym $mod+Right move right 100px
-bindsym $mod+Up move up 100px
-bindsym $mod+Down move down 100px   
+# Move windows with Super + h, j, k, l (like in vim)
+bindsym $mod+h move left 100px
+bindsym $mod+l move right 100px
+bindsym $mod+k move up 100px
+bindsym $mod+j move down 100px  
+
+# Move window focus with Super + Shift + h, j, k, l (like in vim)
+bindsym $mod+Shift+h focus left 100px
+bindsym $mod+Shift+l focus right 100px
+bindsym $mod+Shift+k focus up 100px
+bindsym $mod+Shift+j focus down 100px   
 
 # --------------------
 # Floating / tiling mode toggle + resize mode
