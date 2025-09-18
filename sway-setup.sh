@@ -64,6 +64,36 @@ MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme
 EOF
 fi
 
+# AUR Package Search (through Brave browser)
+if [[ ! -f ~/.local/share/applications/brave-AUR_Package_Search.desktop ]]; then
+cat > ~/.local/share/applications/brave-AUR_Package_Search.desktop <<'EOF'
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AUR Package Search
+Exec=/opt/brave-bin/brave --profile-directory=Default --ignore-profile-directory-if-not-exists "https://aur.archlinux.org/packages?O=0&K="
+Icon=/home/fatihthedev/.config/BraveSoftware/Brave-Browser/Default/Web Shortcut Icons/shortcut-213742ec107d211ef56c945c6fec3608.png
+URL=https://aur.archlinux.org/packages?O=0&K=
+Comment=Open https://aur.archlinux.org/packages?O=0&K= in a new tab in Brave.
+EOF
+fi
+
+# Chaotic AUR Package Search (through Brave browser)
+if [[ ! -f ~/.local/share/applications/brave-Chaotic_AUR_Package_Search.desktop ]]; then
+cat > ~/.local/share/applications/brave-Chaotic_AUR_Package_Search.desktop <<'EOF'
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chaotic AUR Package Search
+Exec=/opt/brave-bin/brave --profile-directory=Default --ignore-profile-directory-if-not-exists https://aur.chaotic.cx/packages
+Icon=/home/fatihthedev/.config/BraveSoftware/Brave-Browser/Default/Web Shortcut Icons/shortcut-83a060dc0cabe27c43c8189da18a8654.png
+URL=https://aur.chaotic.cx/packages
+Comment=Open https://aur.chaotic.cx/packages in a new tab in Brave.
+EOF
+fi
+
 # Ghostty desktop
 if [[ ! -f ~/.local/share/applications/ghostty.desktop ]]; then
 cat > ~/.local/share/applications/ghostty.desktop <<'EOF'
