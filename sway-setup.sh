@@ -352,6 +352,7 @@ bindsym $mod+b exec brave
 bindsym $mod+Return exec ghostty
 bindsym $mod+e exec pcmanfm
 bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
+bindsym $mod+Shift+i exec ~/.local/bin/sway-input-config.sh
 bindsym $mod+w exec azote
 bindsym Control+Shift+Escape exec lxtask
 
@@ -436,6 +437,15 @@ input * {
 }
 
 # --------------------
+# Touchpad Settings
+# --------------------
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+    pointer_accel 0.5
+}
+
+# --------------------
 # App launcher
 # --------------------
 bindsym $mod+Space exec wofi --show drun --show-icons --keynav
@@ -453,17 +463,18 @@ exec_always gammastep -P -O 2400
 # Activate gnome-keyring (for remembering WiFi passwords)
 exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=secrets
 
+
 # --------------------
-# Volume control (single OSD)
+# Volume control (single OSD) - PipeWire, max display 153%
 # --------------------
-bindsym XF86AudioRaiseVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
-bindsym XF86AudioLowerVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
-bindsym XF86AudioMute exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "$M" "$V%" -h int:value:$V'
+bindsym XF86AudioRaiseVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym XF86AudioLowerVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym XF86AudioMute exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 
 # Optional fallback keys
-bindsym $mod+Shift+Right exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
-bindsym $mod+Shift+Left  exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "🔊 Volume" "$V%" -h int:value:$V'
-bindsym $mod+Shift+m     exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); dunstify -r 2593 -u normal "$M" "$V%" -h int:value:$V'
+bindsym $mod+Shift+Right exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym $mod+Shift+Left exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym $mod+Shift+m exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 
 # --------------------
 # Brightness control (single OSD)
