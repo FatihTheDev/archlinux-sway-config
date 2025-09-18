@@ -13,7 +13,7 @@ sudo pacman -S --noconfirm sway swaylock swaylock-effects swayidle waybar wofi g
     xorg-xhost ghostty librewolf brave \
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts papirus-icon-theme \
-    pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
+    feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     azote lxtask nwg-displays kanshi gammastep
 
