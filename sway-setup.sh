@@ -177,7 +177,7 @@ echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
 # Bluetooth installation
 # -----------------------
 echo "[5/15] Installing Bluetooth stack and GUI..."
-sudo pacman -S --noconfirm bluez bluez-utils blueman
+sudo pacman -S --noconfirm bluez bluez-utils blueberry
 sudo systemctl enable bluetooth
 sudo systemctl start bluetooth
 
@@ -221,7 +221,7 @@ cat > ~/.config/waybar/config <<'EOF'
     "format-connected": " {num_connections}",
     "format-disabled": " off",
     "tooltip-format": "{status}\n{device_alias} ({device_address})",
-    "on-click": "blueman-manager"
+    "on-click": "blueberry"
   },
   "sway/language": {
 	"format": "{short} {variant}",
