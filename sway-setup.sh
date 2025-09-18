@@ -15,7 +15,7 @@ sudo pacman -S --noconfirm sway swaylock swaylock-effects swayidle waybar wofi g
     ttf-font-awesome noto-fonts papirus-icon-theme \
     pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
-    azote lxtask
+    azote lxtask nwg-displays kanshi gammastep
 
 # -----------------------
 # Audio system selection
