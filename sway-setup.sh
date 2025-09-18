@@ -289,6 +289,54 @@ swayidle -w \
 EOF
 chmod +x ~/.local/bin/lock.sh
 
+# ------------------
+# Screenshots
+# ------------------
+cat > ~/.local/bin/screenshot.sh <<'EOF'
+#!/bin/bash
+
+# Directory for screenshots
+DIR="$HOME/Pictures/Screenshots"
+mkdir -p "$DIR"
+
+# Default filename with timestamp
+DEFAULT_FILE="screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
+
+# Ask user: full screen or select region
+MODE=$(printf "Full Screen\nSelect Area" | wofi --dmenu --prompt "Capture mode:")
+[ -z "$MODE" ] && exit 0
+
+# Determine geometry argument
+if [ "$MODE" = "Select Area" ]; then
+    GEOM=$(slurp)
+    [ -z "$GEOM" ] && exit 0
+    GEOM="-g \"$GEOM\""  # quote the geometry
+else
+    GEOM=""  # Full screen
+fi
+
+# Ask user for filename
+FILENAME=$(echo "$DEFAULT_FILE" | wofi --dmenu --prompt "Save screenshot as:")
+[ -z "$FILENAME" ] && exit 0
+
+# Append .png if missing
+case "$FILENAME" in
+    *.png) ;;
+    *) FILENAME="$FILENAME.png" ;;
+esac
+
+# Save screenshot
+if [ -n "$GEOM" ]; then
+    eval grim $GEOM "$DIR/$FILENAME"   # Use eval to expand the quoted geometry correctly
+else
+    grim "$DIR/$FILENAME"
+fi
+
+# Notify user
+notify-send "Screenshot saved" "$DIR/$FILENAME"
+EOF
+chmod +x ~/.local/bin/screenshots.sh
+
 cat > ~/.config/sway/config <<'EOF'
 set $mod Mod4
 
@@ -301,10 +349,9 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 bindsym $mod+Ctrl+Shift+l exec swaylock -f -c 000000
 bindsym $mod+t exec pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY timeshift-gtk  
 bindsym $mod+b exec brave
-bindsym $mod+l exec librewolf
 bindsym $mod+Return exec ghostty
 bindsym $mod+e exec pcmanfm
-bindsym $mod+Shift+s exec sh -c 'mkdir -p "$HOME/Pictures/Screenshots"; grim -g "$(slurp)" "$(zenity --file-selection --save --confirm-overwrite --filename=$HOME/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png")"'
+bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
 bindsym $mod+w exec azote
 bindsym Control+Shift+Escape exec lxtask
 
@@ -314,9 +361,9 @@ bindsym Control+Shift+Escape exec lxtask
 bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
 # Vertical split + app launcher
-bindsym $mod+v exec sh -c 'swaymsg splitv; wofi --show drun | xargs swaymsg exec --'
+bindsym $mod+Ctrl+v exec sh -c 'swaymsg splitv; wofi --show drun | xargs swaymsg exec --'
 # Horizontal split + app launcher
-bindsym $mod+h exec sh -c 'swaymsg splith; wofi --show drun | xargs swaymsg exec --'
+bindsym $mod+Ctrl+h exec sh -c 'swaymsg splith; wofi --show drun | xargs swaymsg exec --'
 
 # To move windows with superkey + left-click
 floating_modifier $mod
@@ -328,26 +375,26 @@ bindsym --whole-window $mod+button2 move
 bindsym --whole-window $mod+button3 resize
 
 # Move windows with Super + h, j, k, l (like in vim)
-bindsym $mod+h move left 100px
-bindsym $mod+l move right 100px
-bindsym $mod+k move up 100px
-bindsym $mod+j move down 100px  
+bindsym $mod+Shift+h move left 100px
+bindsym $mod+Shift+l move right 100px
+bindsym $mod+Shift+k move up 100px
+bindsym $mod+Shift+j move down 100px  
 
 # Move window focus with Super + Shift + h, j, k, l (like in vim)
-bindsym $mod+Shift+h focus left 100px
-bindsym $mod+Shift+l focus right 100px
-bindsym $mod+Shift+k focus up 100px
-bindsym $mod+Shift+j focus down 100px   
+bindsym $mod+h focus left 100px
+bindsym $mod+l focus right 100px
+bindsym $mod+k focus up 100px
+bindsym $mod+j focus down 100px   
 
 # --------------------
 # Floating / tiling mode toggle + resize mode
 # --------------------
 bindsym $mod+Shift+Space floating toggle
 mode "resize" {
-    bindsym Left resize shrink width 10 px or 10 ppt
-    bindsym Down resize grow height 10 px or 10 ppt
-    bindsym Up resize shrink height 10 px or 10 ppt
-    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Right resize shrink width 10 px or 10 ppt
+    bindsym Up resize grow height 10 px or 10 ppt
+    bindsym Down resize shrink height 10 px or 10 ppt
+    bindsym Left resize grow width 10 px or 10 ppt
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
@@ -391,7 +438,7 @@ input * {
 # --------------------
 # App launcher
 # --------------------
-bindsym $mod+d exec wofi --show drun --show-icons --keynav
+bindsym $mod+Space exec wofi --show drun --show-icons --keynav
 bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 
 # --------------------
@@ -399,6 +446,12 @@ bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 # --------------------
 exec waybar
 exec dunst
+# For display settings persistence
+exec kanshi
+# Night Light
+exec_always gammastep -P -O 2400
+# Activate gnome-keyring (for remembering WiFi passwords)
+exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=secrets
 
 # --------------------
 # Volume control (single OSD)
@@ -419,8 +472,8 @@ bindsym XF86MonBrightnessUp exec sh -c 'brightnessctl set +5% >/dev/null 2>&1; V
 bindsym XF86MonBrightnessDown exec sh -c 'brightnessctl set 5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
 
 # Fallback Brightness keys
-bindsym $mod+Shift+Up exec sh -c 'brightnessctl set +10% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
-bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 10%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
+bindsym $mod+Shift+Up exec sh -c 'brightnessctl set +5% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
+bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
 EOF
 
 # -----------------------
