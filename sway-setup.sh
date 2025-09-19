@@ -9,13 +9,13 @@ echo "[1/15] Updating system..."
 sudo pacman -Syu --noconfirm
 
 echo "[2/15] Installing essential packages..."
-sudo pacman -S --noconfirm sway swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
+sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost ghostty librewolf brave \
     network-manager-applet nm-connection-editor \
     ttf-font-awesome noto-fonts papirus-icon-theme \
     feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
-    azote lxtask nwg-displays kanshi gammastep
+    lxtask gammastep
 
 # -----------------------
 # Audio system selection
