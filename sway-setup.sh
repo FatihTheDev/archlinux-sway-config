@@ -320,6 +320,163 @@ EOF
 chmod +x ~/.local/bin/lock.sh
 
 # ------------------
+# Wallpaper Settings
+# ------------------
+cat > ~/.local/bin/set-wallpaper.sh <<'EOF'
+#!/bin/bash
+DIR="$HOME/Pictures/Wallpapers"
+LAST="$HOME/.cache/lastwallpaper"
+CACHE="$HOME/.cache/wallthumbs"
+SWAYCONF="$HOME/.config/sway/config"
+
+mkdir -p "$CACHE"
+
+# Generate thumbnails (128px wide, only once per image)
+for img in "$DIR"/*; do
+    name=$(basename "$img")
+    thumb="$CACHE/$name.png"
+    if [ ! -f "$thumb" ]; then
+        convert "$img" -thumbnail 128x128^ -gravity center -extent 128x128 "$thumb"
+    fi
+done
+
+# Build list for wofi: format "filename\0icon\x1fpath/to/thumb"
+CHOICE=$(for img in "$DIR"/*; do
+    name=$(basename "$img")
+    echo -en "$name\0icon\x1f$CACHE/$name.png\n"
+done | wofi --show dmenu --prompt "Wallpaper:")
+
+# If user picked something, set & save it
+if [ -n "$CHOICE" ]; then
+    FILE="$DIR/$CHOICE"
+    echo "$FILE" > "$LAST"
+
+    # Kill previous swaybg
+    pkill swaybg
+
+    # Set wallpaper immediately
+    swaybg -i "$FILE" -m fill &
+
+    # Update sway config (replace existing bg line or append if missing)
+    if grep -q "^output .* bg " "$SWAYCONF"; then
+        sed -i "s|^output .* bg .*|output * bg $FILE fill|" "$SWAYCONF"
+    else
+        echo "output * bg $FILE fill" >> "$SWAYCONF"
+    fi
+
+    # Reload sway to apply changes
+    swaymsg reload
+fi
+EOF
+chmod +x ~/.local/bin/set-wallpaper.sh
+
+# ------------------------------------------
+# Managing Peripherals (mouse and touchpad)
+# ------------------------------------------
+cat > ~/.local/bin/sway-input-config.sh <<'EOF'
+#!/bin/bash
+
+# Requires: swaymsg, jq, wofi, notify-send
+
+# Get input devices (touchpad + mouse)
+DEVICES=$(swaymsg -t get_inputs | jq -r '.[] | select(.type=="touchpad" or .type=="pointer") | .identifier')
+[ -z "$DEVICES" ] && { notify-send "No pointer or touchpad found"; exit 1; }
+
+# If multiple devices, pick one
+DEVICE=$(echo "$DEVICES" | wofi --dmenu --prompt "Select device:")
+[ -z "$DEVICE" ] && exit 0
+
+# Get current settings
+TAP=$(swaymsg -t get_inputs | jq -r ".[] | select(.identifier==\"$DEVICE\") | .tap")
+NATURAL=$(swaymsg -t get_inputs | jq -r ".[] | select(.identifier==\"$DEVICE\") | .natural_scroll")
+ACCEL=$(swaymsg -t get_inputs | jq -r ".[] | select(.identifier==\"$DEVICE\") | .pointer_accel")
+
+# Normalize states (enabled/disabled vs on/off)
+normalize_state() {
+    case "$1" in
+        enabled|on) echo "on" ;;
+        disabled|off) echo "off" ;;
+        *) echo "$1" ;;
+    esac
+}
+
+TAP=$(normalize_state "$TAP")
+NATURAL=$(normalize_state "$NATURAL")
+
+# Present options
+OPTION=$(printf "Toggle Tap-to-Click\nToggle Natural Scroll\nSet Pointer Speed" | wofi --dmenu --prompt "Option:")
+[ -z "$OPTION" ] && exit 0
+
+case "$OPTION" in
+    "Toggle Tap-to-Click")
+        if [ "$TAP" = "on" ]; then
+            swaymsg "input \"$DEVICE\" tap disabled"
+            notify-send "Tap-to-click disabled"
+        else
+            swaymsg "input \"$DEVICE\" tap enabled"
+            notify-send "Tap-to-click enabled"
+        fi
+        ;;
+    "Toggle Natural Scroll")
+        if [ "$NATURAL" = "on" ]; then
+            swaymsg "input \"$DEVICE\" natural_scroll disabled"
+            notify-send "Natural scrolling disabled"
+        else
+            swaymsg "input \"$DEVICE\" natural_scroll enabled"
+            notify-send "Natural scrolling enabled"
+        fi
+        ;;
+    "Set Pointer Speed")
+        SPEED=$(echo "$ACCEL" | wofi --dmenu --prompt "Set pointer speed (0.0-2.0):")
+        [ -n "$SPEED" ] && swaymsg "input \"$DEVICE\" pointer_accel $SPEED" && notify-send "Pointer speed set to $SPEED"
+        ;;
+esac
+EOF
+chmod +x ~/.local/bin/sway-input-config.sh
+
+# ------------------
+# Display Settings
+# ------------------
+cat > ~/.local/bin/display-settings.sh <<'EOF'
+#!/bin/bash
+
+# Path to your sway config
+SWAY_CONFIG="$HOME/.config/sway/config"
+
+# Get available outputs (monitors)
+outputs=$(swaymsg -t get_outputs | jq -r '.[].name')
+
+# Choose output via wofi
+chosen_output=$(echo "$outputs" | wofi --dmenu --prompt "Select monitor:")
+[ -z "$chosen_output" ] && exit 0
+
+# Get available modes (resolutions + refresh rates)
+modes=$(swaymsg -t get_outputs | jq -r ".[] | select(.name==\"$chosen_output\") | .modes[] | \"\(.width)x\(.height)@\(.refresh/1000)Hz\"")
+
+# Choose mode
+chosen_mode=$(echo "$modes" | wofi --dmenu --prompt "Select resolution:")
+[ -z "$chosen_mode" ] && exit 0
+
+# Extract width, height, refresh
+width=$(echo "$chosen_mode" | cut -d'x' -f1)
+height=$(echo "$chosen_mode" | cut -d'x' -f2 | cut -d'@' -f1)
+refresh=$(echo "$chosen_mode" | cut -d'@' -f2 | sed 's/Hz//')
+
+# Apply immediately
+swaymsg output "$chosen_output" mode ${width}x${height}@${refresh}Hz
+
+# Ask if user wants to make permanent
+confirm=$(echo -e "yes\nno" | wofi --dmenu --prompt "Save to sway config?")
+if [ "$confirm" == "yes" ]; then
+    # Remove existing lines for this output in config
+    sed -i "/^output $chosen_output/d" "$SWAY_CONFIG"
+    # Append new line at the end
+    echo "output $chosen_output mode ${width}x${height}@${refresh}Hz" >> "$SWAY_CONFIG"
+fi
+EOF
+chmod +x ~/.local/bin/display-settings.sh
+
+# ------------------
 # Screenshots
 # ------------------
 cat > ~/.local/bin/screenshot.sh <<'EOF'
@@ -365,7 +522,7 @@ fi
 # Notify user
 notify-send "Screenshot saved" "$DIR/$FILENAME"
 EOF
-chmod +x ~/.local/bin/screenshots.sh
+chmod +x ~/.local/bin/screenshot.sh
 
 cat > ~/.config/sway/config <<'EOF'
 set $mod Mod4
