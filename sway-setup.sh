@@ -381,9 +381,19 @@ bindsym $mod+t exec pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY timeshift
 bindsym $mod+b exec brave
 bindsym $mod+Return exec ghostty
 bindsym $mod+e exec pcmanfm
+# Screenshots
 bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
+# Managing peripherals (mouse and touchpad)
 bindsym $mod+Shift+i exec ~/.local/bin/sway-input-config.sh
-bindsym $mod+w exec azote
+# Display settings, like screen resolution, refresh rate, etc.
+bindsym $mod+Shift+d exec ~/.local/bin/display-settings.sh
+# Wallpaper picker
+bindsym $mod+Shift+w exec ~/.local/bin/set-wallpaper.sh
+# CLipboard history
+exec wl-paste -t text --watch clipman store --no-persist
+exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/share/clipman-primary.json"
+bindsym $mod+v exec clipman pick -t wofi --histpath="~/.local/share/clipman.json" --notify
+# Task manager
 bindsym Control+Shift+Escape exec lxtask
 
 # --------------------
@@ -392,9 +402,9 @@ bindsym Control+Shift+Escape exec lxtask
 bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
 # Vertical split + app launcher
-bindsym $mod+Ctrl+v exec sh -c 'swaymsg splitv; wofi --show drun | xargs swaymsg exec --'
+bindsym $mod+Ctrl+v exec sh -c 'swaymsg splitv; wofi --show drun --insensitive --allow-images | xargs swaymsg exec --'
 # Horizontal split + app launcher
-bindsym $mod+Ctrl+h exec sh -c 'swaymsg splith; wofi --show drun | xargs swaymsg exec --'
+bindsym $mod+Ctrl+h exec sh -c 'swaymsg splith; wofi --show drun --insensitive --allow-images | xargs swaymsg exec --'
 
 # To move windows with superkey + left-click
 floating_modifier $mod
@@ -472,13 +482,13 @@ input * {
 input type:touchpad {
     tap enabled
     natural_scroll enabled
-    pointer_accel 0.5
+    pointer_accel 0.2
 }
 
 # --------------------
 # App launcher
 # --------------------
-bindsym $mod+Space exec wofi --show drun --show-icons --keynav
+bindsym $mod+Space exec wofi --show drun --insensitive --allow-images --keynav
 bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 
 # --------------------
@@ -486,10 +496,10 @@ bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 # --------------------
 exec waybar
 exec dunst
-# For display settings persistence
-exec kanshi
 # Night Light
-exec_always gammastep -P -O 2400
+exec_always gammastep -P -O 2300
+exec_always ~/.local/bin/wallpaper.sh
+exec_always ~/.local/bin/lock.sh
 # Activate gnome-keyring (for remembering WiFi passwords)
 exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=secrets
 
