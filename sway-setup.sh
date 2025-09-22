@@ -206,14 +206,25 @@ cat > ~/.config/waybar/config <<'EOF'
     "tooltip": false
   },
   "battery": {
-    "format": "{capacity}%"
+    "format": "<span font='Font Awesome 6 Free 13'>{icon}</span>  {capacity}% - {time}",
+    "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"],
+    "format-charging": "<span font='Font Awesome 6 Free'>\uf0e7</span>  <span font='Font Awesome 6 Free 13'>{icon}</span>  {capacity}% - {time}",
+    "format-full": "<span font='Font Awesome 6 Free'>\uf0e7</span>  <span font='Font Awesome 6 Free 13'>{icon}</span>  Charged",
+    "interval": 12,
+    "states": {
+        "warning": 20,
+        "critical": 10
+    },
+    "tooltip": false,
+    "on-click": "2"
   },
   "pulseaudio": {
-    "format": "{volume}%",
-    "on-click": "pavucontrol"
+    "format": "<span font='Font Awesome 6 Free 13'>\uf026</span> {volume}%",
+    "on-click": "pavucontrol",
+    "capped-values": true
   },
   "network": {
-    "format": "{ifname} {essid} {signalStrength}%",
+    "format": "\uf1eb {ifname} {essid} {signalStrength}%",
     "on-click": "nm-connection-editor"
   },
   "bluetooth": {
@@ -255,7 +266,13 @@ cat > ~/.config/waybar/style.css <<'EOF'
   font-weight: bold;
 }
 
-#battery, #pulseaudio, #network, #bluetooth {
+#battery,
+#pulseaudio,
+#network,
+#bluetooth,
+#language,
+#tray,
+#workspaces {
   padding: 0 10px;
 }
 EOF
