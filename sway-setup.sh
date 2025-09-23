@@ -676,6 +676,9 @@ exec_always ~/.local/bin/wallpaper.sh
 exec_always ~/.local/bin/lock.sh
 # Activate gnome-keyring (for remembering WiFi passwords)
 exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=secrets
+# Set system-wide dark mode
+exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
+exec_always gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 
 # --------------------
