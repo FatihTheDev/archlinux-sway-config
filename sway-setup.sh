@@ -11,7 +11,7 @@ sudo pacman -Syu --noconfirm
 echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost ghostty librewolf brave \
-    network-manager-applet nm-connection-editor \
+    network-manager-applet nm-connection-editor xdg-desktop-portal \
     ttf-font-awesome noto-fonts papirus-icon-theme jq \
     feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
