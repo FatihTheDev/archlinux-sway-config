@@ -11,7 +11,7 @@ sudo pacman -Syu --noconfirm
 echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost ghostty librewolf brave \
-    network-manager-applet nm-connection-editor xdg-desktop-portal \
+    network-manager-applet nm-connection-editor xdg-desktop-portal xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq \
     feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
@@ -50,20 +50,6 @@ fi
 
 # Create fallback .desktop files (only if missing)
 
-# Brave desktop (brave-bin typical desktop name is brave-browser.desktop)
-if [[ ! -f ~/.local/share/applications/brave-browser.desktop ]]; then
-cat > ~/.local/share/applications/brave-browser.desktop <<'EOF'
-[Desktop Entry]
-Name=Brave Browser
-Exec=brave %U
-Terminal=false
-Icon=brave-browser
-Type=Application
-Categories=Network;WebBrowser;
-MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
-EOF
-fi
-
 # AUR Package Search (through Brave browser)
 if [[ ! -f ~/.local/share/applications/brave-AUR_Package_Search.desktop ]]; then
 cat > ~/.local/share/applications/brave-AUR_Package_Search.desktop <<'EOF'
@@ -91,20 +77,6 @@ Exec=/opt/brave-bin/brave --profile-directory=Default --ignore-profile-directory
 Icon=/home/fatihthedev/.config/BraveSoftware/Brave-Browser/Default/Web Shortcut Icons/shortcut-83a060dc0cabe27c43c8189da18a8654.png
 URL=https://aur.chaotic.cx/packages
 Comment=Open https://aur.chaotic.cx/packages in a new tab in Brave.
-EOF
-fi
-
-# Ghostty desktop
-if [[ ! -f ~/.local/share/applications/ghostty.desktop ]]; then
-cat > ~/.local/share/applications/ghostty.desktop <<'EOF'
-[Desktop Entry]
-Name=Ghostty
-Comment=Fast modern terminal
-Exec=ghostty
-Icon=utilities-terminal
-Terminal=false
-Type=Application
-Categories=System;TerminalEmulator;
 EOF
 fi
 
@@ -147,24 +119,54 @@ fi
 MIMEFILE="$HOME/.config/mimeapps.list"
 cat > "$MIMEFILE" <<'EOF'
 [Default Applications]
+text/plain=nvim.desktop
+text/x-markdown=nvim.desktop
+application/x-shellscript=nvim.desktop
 text/html=brave-browser.desktop
 x-scheme-handler/http=brave-browser.desktop
 x-scheme-handler/https=brave-browser.desktop
-application/pdf=qpdfview.desktop
+application/pdf=brave-browser.desktop
 image/png=feh.desktop
 image/jpeg=feh.desktop
 image/jpg=feh.desktop
 image/gif=feh.desktop
 image/bmp=feh.desktop
 image/webp=feh.desktop
-image/svg+xml=feh.desktop
+image/svg+xml=brave-browser.desktop
 x-scheme-handler/terminal=ghostty.desktop
+application/xhtml+xml=brave-browser.desktop
+text/xml=brave-browser.desktop
+application/rss+xml=brave-browser.desktop
+application/atom+xml=brave-browser.desktop
+text/x-c=nvim.desktop
+text/x-c++=nvim.desktop
+text/x-python=nvim.desktop
+text/x-java=nvim.desktop
+text/x-shellscript=nvim.desktop
+text/x-javascript=nvim.desktop
+text/css=nvim.desktop
+text/x-typescript=nvim.desktop
 EOF
 
-# Also set via xdg-mime as a fallback (safe — won't block)
-xdg-mime default qpdfview.desktop application/pdf || true
+# Also set via xdg-mime as a fallback (make browser open files for viewing and neovim for editing)
 xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif || true
+xdg-mime default brave-browser.desktop text/html || true
+xdg-mime default brave-browser.desktop application/xhtml+xml || true
+xdg-mime default brave-browser.desktop application/pdf || true
+xdg-mime default brave-browser.desktop image/svg+xml || true
+xdg-mime default brave-browser.desktop text/xml || true
+xdg-mime default brave-browser.desktop application/rss+xml || true
+xdg-mime default brave-browser.desktop application/atom+xml || true
 xdg-mime default ghostty.desktop x-scheme-handler/terminal || true
+
+xdg-mime default nvim.desktop text/x-c || true
+xdg-mime default nvim.desktop text/x-c++ || true
+xdg-mime default nvim.desktop text/x-python || true
+xdg-mime default nvim.desktop text/x-java || true
+xdg-mime default nvim.desktop text/x-shellscript || true
+xdg-mime default nvim.desktop text/x-javascript || true
+xdg-mime default nvim.desktop text/css || true
+xdg-mime default nvim.desktop text/x-typescript || true
 
 # Export env vars once (avoid duplicates)
 grep -qxF 'export BROWSER=brave' ~/.profile 2>/dev/null || echo 'export BROWSER=brave' >> ~/.profile
@@ -837,40 +839,6 @@ EOF
 echo "[11/15] Setting default brightness to 15%..."
 brightnessctl set 15%
 sudo usermod -aG video $USER
-
-echo "[12/15] Creating Timeshift GUI wrapper..."
-# 1. Create the wrapper script
-cat > ~/.local/bin/timeshift-gui.sh <<'EOF'
-#!/bin/bash
-# Wrapper for Timeshift GUI under Sway/Wayland
-
-# Preserve environment for GUI apps
-export DISPLAY=:0
-export XAUTHORITY=$HOME/.Xauthority
-export WAYLAND_DISPLAY=wayland-0
-export DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus
-
-sudo -E timeshift-gtk
-EOF
-chmod +x ~/.local/bin/timeshift-gui.sh
-
-# 2. Create the user-level .desktop file for Wofi and menus
-mkdir -p ~/.local/share/applications
-if [[ ! -f ~/.local/share/applications/timeshift-gui.desktop ]]; then
-cat > ~/.local/share/applications/timeshift-gui.desktop <<'EOF'
-[Desktop Entry]
-Name=Timeshift GUI
-Comment=Open Timeshift snapshot manager
-Exec=/home/$USER/.local/bin/timeshift-gui.sh
-Terminal=false
-Icon=timeshift
-Type=Application
-Categories=System;Utility;
-EOF
-fi
-
-echo "✅ Timeshift GUI ready: appears in Wofi, old Timeshift hidden."
-
 
 echo "[13/15] Final touches and reminders..."
 echo "✅ Setup complete!"
