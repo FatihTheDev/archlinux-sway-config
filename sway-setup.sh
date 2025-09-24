@@ -10,7 +10,7 @@ sudo pacman -Syu --noconfirm
 
 echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
-    xorg-xhost ghostty librewolf brave \
+    xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq \
     feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
@@ -133,7 +133,7 @@ image/gif=feh.desktop
 image/bmp=feh.desktop
 image/webp=feh.desktop
 image/svg+xml=brave-browser.desktop
-x-scheme-handler/terminal=ghostty.desktop
+x-scheme-handler/terminal=Alacritty.desktop
 application/xhtml+xml=brave-browser.desktop
 text/xml=brave-browser.desktop
 application/rss+xml=brave-browser.desktop
@@ -157,7 +157,7 @@ xdg-mime default brave-browser.desktop image/svg+xml || true
 xdg-mime default brave-browser.desktop text/xml || true
 xdg-mime default brave-browser.desktop application/rss+xml || true
 xdg-mime default brave-browser.desktop application/atom+xml || true
-xdg-mime default ghostty.desktop x-scheme-handler/terminal || true
+xdg-mime default Alacritty.desktop x-scheme-handler/terminal || true
 
 xdg-mime default nvim.desktop text/x-c || true
 xdg-mime default nvim.desktop text/x-c++ || true
@@ -170,7 +170,7 @@ xdg-mime default nvim.desktop text/x-typescript || true
 
 # Export env vars once (avoid duplicates)
 grep -qxF 'export BROWSER=brave' ~/.profile 2>/dev/null || echo 'export BROWSER=brave' >> ~/.profile
-grep -qxF 'export TERMINAL=ghostty' ~/.profile 2>/dev/null || echo 'export TERMINAL=ghostty' >> ~/.profile
+grep -qxF 'export TERMINAL=alacritty' ~/.profile 2>/dev/null || echo 'export TERMINAL=alacritty' >> ~/.profile
 grep -qxF 'export DOCUMENT_VIEWER=qpdfview' ~/.profile 2>/dev/null || echo 'export DOCUMENT_VIEWER=qpdfview' >> ~/.profile
 
 echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
@@ -555,7 +555,7 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 bindsym $mod+Ctrl+Shift+l exec swaylock -f -c 000000
 bindsym $mod+t exec pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY timeshift-gtk  
 bindsym $mod+b exec brave
-bindsym $mod+Return exec ghostty
+bindsym $mod+Return exec alacritty
 bindsym $mod+e exec pcmanfm
 # Screenshots
 bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
@@ -737,7 +737,7 @@ cat > ~/.config/wofi/config <<'EOF'
 show=drun
 allow-images=true
 icon-theme=Papirus-Dark
-term=ghostty
+term=alacritty
 EOF
 
 # Style (GTK CSS selectors)
