@@ -119,7 +119,7 @@ fi
 MIMEFILE="$HOME/.config/mimeapps.list"
 cat > "$MIMEFILE" <<'EOF'
 [Default Applications]
-text/plain=nvim.desktop
+text/plain=org.xfce.mousepad.desktop
 text/x-markdown=nvim.desktop
 application/x-shellscript=nvim.desktop
 text/html=brave-browser.desktop
@@ -146,6 +146,7 @@ text/x-shellscript=nvim.desktop
 text/x-javascript=nvim.desktop
 text/css=nvim.desktop
 text/x-typescript=nvim.desktop
+text/markdown=nvim.desktop
 EOF
 
 # Also set via xdg-mime as a fallback (make browser open files for viewing and neovim for editing)
@@ -177,7 +178,7 @@ xdg-mime default nvim.desktop text/x-typescript || true
 xdg-mime default nvim.desktop text/markdown || true
 
 # Plain text → Mousepad
-xdg-mime default mousepad.desktop text/plain || true
+xdg-mime default org.xfce.mousepad.desktop text/plain || true
 
 # Export env vars once (avoid duplicates)
 grep -qxF 'export BROWSER=brave' ~/.profile 2>/dev/null || echo 'export BROWSER=brave' >> ~/.profile
