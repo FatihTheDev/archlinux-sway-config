@@ -13,7 +13,7 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
-    feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
+    nwg-look feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep clipman wl-clipboard gnome-font-viewer
 
@@ -553,22 +553,31 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # Launchers
 # --------------------
 bindsym $mod+Ctrl+Shift+l exec swaylock -f -c 000000
-bindsym $mod+t exec pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY timeshift-gtk  
+bindsym $mod+t exec timeshift-launcher 
 bindsym $mod+b exec brave
 bindsym $mod+Return exec alacritty
 bindsym $mod+e exec pcmanfm
+
 # Screenshots
 bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
+
 # Managing peripherals (mouse and touchpad)
 bindsym $mod+Shift+i exec ~/.local/bin/sway-input-config.sh
+
 # Display settings, like screen resolution, refresh rate, etc.
 bindsym $mod+Shift+d exec ~/.local/bin/display-settings.sh
+
 # Wallpaper picker
 bindsym $mod+Shift+w exec ~/.local/bin/set-wallpaper.sh
+
+# GTK application theme settings
+bindsym $mod+Shift+l exec nwg-look
+
 # CLipboard history
 exec wl-paste -t text --watch clipman store --no-persist
 exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/share/clipman-primary.json"
 bindsym $mod+v exec clipman pick -t wofi --histpath="~/.local/share/clipman.json" --notify
+
 # Task manager
 bindsym Control+Shift+Escape exec lxtask
 
