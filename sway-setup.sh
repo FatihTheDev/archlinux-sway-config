@@ -154,6 +154,9 @@ EOF
 # Images → feh
 xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif || true
 
+# Default file manager -> Thunar
+xdg-mime default thunar.desktop inode/directory
+
 # Browser stuff → Brave
 xdg-mime default brave-browser.desktop text/html || true
 xdg-mime default brave-browser.desktop application/xhtml+xml || true
