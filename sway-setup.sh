@@ -1,7 +1,7 @@
 #!/bin/bash
 # archlinux-sway-setup.sh
 # Complete Sway environment setup for Arch Linux
-# Includes Waybar, Wofi, PipeWire/PulseAudio, Bluetooth, LXTASK, Azote, smart volume & brightness, XF86 keys, PCManFM with archive support
+# Includes Waybar, Wofi, PipeWire/PulseAudio, Bluetooth, LXTASK, Azote, smart volume & brightness, XF86 keys, Thunar with archive support
 
 set -e
 
@@ -13,7 +13,7 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
-    nwg-look feh pcmanfm-gtk3 xarchiver zip unzip p7zip unrar qpdfview \
+    nwg-look feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep clipman wl-clipboard gnome-font-viewer
 
@@ -571,7 +571,7 @@ bindsym $mod+Ctrl+Shift+l exec swaylock -f -c 000000
 bindsym $mod+t exec timeshift-launcher 
 bindsym $mod+b exec brave
 bindsym $mod+Return exec alacritty
-bindsym $mod+e exec pcmanfm
+bindsym $mod+e exec thunar
 
 # Screenshots
 bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
