@@ -571,7 +571,7 @@ bindsym $mod+Shift+d exec ~/.local/bin/display-settings.sh
 bindsym $mod+Shift+w exec ~/.local/bin/set-wallpaper.sh
 
 # GTK application theme settings
-bindsym $mod+Shift+l exec nwg-look
+bindsym $mod+Shift+t exec nwg-look
 
 # CLipboard history
 exec wl-paste -t text --watch clipman store --no-persist
