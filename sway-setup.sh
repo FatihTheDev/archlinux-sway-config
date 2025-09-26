@@ -149,7 +149,11 @@ text/x-typescript=nvim.desktop
 EOF
 
 # Also set via xdg-mime as a fallback (make browser open files for viewing and neovim for editing)
+
+# Images → feh
 xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif || true
+
+# Browser stuff → Brave
 xdg-mime default brave-browser.desktop text/html || true
 xdg-mime default brave-browser.desktop application/xhtml+xml || true
 xdg-mime default brave-browser.desktop application/pdf || true
@@ -157,8 +161,11 @@ xdg-mime default brave-browser.desktop image/svg+xml || true
 xdg-mime default brave-browser.desktop text/xml || true
 xdg-mime default brave-browser.desktop application/rss+xml || true
 xdg-mime default brave-browser.desktop application/atom+xml || true
+
+# Terminal handler
 xdg-mime default Alacritty.desktop x-scheme-handler/terminal || true
 
+# Code → Neovim
 xdg-mime default nvim.desktop text/x-c || true
 xdg-mime default nvim.desktop text/x-c++ || true
 xdg-mime default nvim.desktop text/x-python || true
@@ -167,6 +174,10 @@ xdg-mime default nvim.desktop text/x-shellscript || true
 xdg-mime default nvim.desktop text/x-javascript || true
 xdg-mime default nvim.desktop text/css || true
 xdg-mime default nvim.desktop text/x-typescript || true
+xdg-mime default nvim.desktop text/markdown || true
+
+# Plain text → Mousepad
+xdg-mime default mousepad.desktop text/plain || true
 
 # Export env vars once (avoid duplicates)
 grep -qxF 'export BROWSER=brave' ~/.profile 2>/dev/null || echo 'export BROWSER=brave' >> ~/.profile
