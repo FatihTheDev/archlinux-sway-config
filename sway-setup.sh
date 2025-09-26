@@ -15,7 +15,7 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
     nwg-look feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
-    lxtask gammastep clipman wl-clipboard gnome-font-viewer
+    lxtask gammastep clipman wl-clipboard gnome-font-viewer mousepad
 
 # -----------------------
 # Audio system selection
