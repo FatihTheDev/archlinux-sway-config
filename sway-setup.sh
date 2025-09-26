@@ -13,7 +13,7 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
-    nwg-look feh pcmanfm-gtk3 xarchiver unzip p7zip unrar qpdfview \
+    nwg-look feh pcmanfm-gtk3 xarchiver zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep clipman wl-clipboard gnome-font-viewer
 
