@@ -909,11 +909,11 @@ EOF
 echo "[9/15] Creating power menu script..."
 cat > ~/.local/bin/power-menu.sh <<'EOF'
 #!/bin/bash
-choice=$(printf " Poweroff\n Reboot\n Logout" | wofi --show dmenu --prompt "Power Menu")
+choice=$(printf " Power off\n Reboot\n Logout" | wofi --show dmenu --prompt "Power Menu")
 case "$choice" in
-    " Poweroff") systemctl poweroff ;;
-    " Reboot") systemctl reboot ;;
-    " Logout") swaymsg exit ;;
+    "Power off") systemctl poweroff ;;
+    "Reboot") systemctl reboot ;;
+    "Logout") swaymsg exit ;;
 esac
 EOF
 chmod +x ~/.local/bin/power-menu.sh
