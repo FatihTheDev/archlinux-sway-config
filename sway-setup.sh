@@ -920,9 +920,9 @@ Control + Shift + Escape .. Task Manager (lxtask)
                                         SYSTEM & UTILITIES
 ========================================================================================
 Super + Shift + q ......... Power Menu (Shutdown, Reboot, etc.)
-Super + Shift + l ......... Lock Screen (swaylock)
+Super + Shift + Ctrl + l ......... Lock Screen (swaylock)
 Super + Shift + s ......... Take Screenshot
-Super + / ................. Show this Cheatsheet (Toggle)
+Super + Shift + c ................. Show this Cheatsheet (Toggle)
 
                                           MEDIA CONTROLS
 Super + Shift + Up/Down ... Change Brightness
