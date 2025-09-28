@@ -463,6 +463,39 @@ EOF
 chmod +x ~/.local/bin/lock.sh
 
 # ------------------
+# Cheat sheet for keybindings
+# ------------------
+cat > ~/.local/bin/toggle-cheatsheet.sh <<'EOF'
+#!/bin/bash
+
+# Define the constants
+CHEATSHEET_TITLE="Sway Cheatsheet"
+CHEATSHEET_FILE="$HOME/.config/sway/cheatsheet.txt"
+TERMINAL="alacritty"
+
+# Search for the window based on the application ID or title
+# We use both 'app_id' (set by --class) and 'name' (set by --title) for reliability.
+CON_ID=$(swaymsg -t get_tree | jq -r '
+    .. | 
+    select(.type?) | 
+    select(.app_id == "cheatsheet" or .name == "'$CHEATSHEET_TITLE'") | 
+    .id
+')
+
+if [ -n "$CON_ID" ]; then
+    # The cheatsheet is open, so kill the window
+    swaymsg "[con_id=$CON_ID] kill"
+else
+    # The cheatsheet is not open, so launch it in a new terminal
+    # - The --class flag sets the app_id for detection/toggling.
+    # - The -e flag runs the 'less' utility, which allows scrolling and uses 'q' to quit.
+    "$TERMINAL" --class "cheatsheet" --title "$CHEATSHEET_TITLE" -e less "$CHEATSHEET_FILE" &
+fi
+EOF
+chmod +x ~/.local/bin/toggle-cheatsheet.sh
+
+
+# ------------------
 # Wallpaper Settings
 # ------------------
 cat > ~/.local/bin/set-wallpaper.sh <<'EOF'
@@ -677,7 +710,9 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # Launchers
 # --------------------
 bindsym $mod+Ctrl+Shift+l exec swaylock -f -c 000000
-bindsym $mod+t exec timeshift-launcher 
+# Toggable Cheatsheet in Terminal
+bindsym $mod+Shift+c exec ~/.local/bin/toggle-cheatsheet.sh
+bindsym $mod+t exec timeshift-launcher
 bindsym $mod+b exec brave
 bindsym $mod+Return exec alacritty
 bindsym $mod+e exec thunar
@@ -806,11 +841,16 @@ bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 exec waybar
 exec dunst
 # Night Light
-exec_always gammastep -P -O 2300
+exec_always gammastep -P -O 2000
 exec_always ~/.local/bin/wallpaper.sh
 exec_always ~/.local/bin/lock.sh
 # Activate gnome-keyring (for remembering WiFi passwords)
 exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=secrets
+# Set system-wide dark mode
+# For GTK apps
+# exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+# exec_always gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
+# exec_always gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 
 # --------------------
@@ -829,11 +869,75 @@ bindsym $mod+Shift+m exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK 
 # Brightness control (single OSD)
 # --------------------
 bindsym XF86MonBrightnessUp exec sh -c 'brightnessctl set +5% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
-bindsym XF86MonBrightnessDown exec sh -c 'brightnessctl set 5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
+bindsym XF86MonBrightnessDown exec sh -c 'brightnessctl set 5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☾ Brightness" "$V%" -h int:value:$V'
 
 # Fallback Brightness keys
 bindsym $mod+Shift+Up exec sh -c 'brightnessctl set +5% >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
-bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "🌙 Brightness" "$V%" -h int:value:$V'
+bindsym $mod+Shift+Down exec sh -c 'brightnessctl set 5%- >/dev/null 2>&1; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☾ Brightness" "$V%" -h int:value:$V'
+EOF
+
+cat > ~/.config/sway/cheatsheet.txt <<'EOF'
+                                   Sway WM Keybindings Cheatsheet
+                                 (Superkey is the Windows/Meta key)
+
+========================================================================================
+                                     WINDOW MANAGEMENT & MOVEMENT
+========================================================================================
+Super + Return ............ Launch Terminal (Alacritty)
+Super + q ................. Close/Kill Focused Window
+Super + f ................. Toggle Fullscreen Mode
+Super + Shift + Space ..... Toggle Floating/Tiling Mode
+Super + r ................. Enter Resize Mode (Use Arrow Keys to resize. Esc or Return to exit.)
+
+                                       FOCUS & MOVEMENT
+Super + h/j/k/l ........... Move Focus Left/Down/Up/Right
+Super + Shift + h/j/k/l ... Move Window Left/Down/Up/Right
+
+                                         SPLIT & LAUNCH
+Super + Ctrl + v .......... Vertical Split, then Launch App
+Super + Ctrl + h .......... Horizontal Split, then Launch App
+
+                                          MOUSE ACTIONS
+Super + Left Click Drag ... Move Window
+Super + Right Click Drag .. Resize Window
+
+========================================================================================
+                                           WORKSPACES
+========================================================================================
+Super + 1-0 ............... Switch to Workspace 1 through 10
+Super + Shift + 1-0 ....... Move Current Window to Workspace 1 through 10
+
+========================================================================================
+                                          LAUNCHERS & APPS
+========================================================================================
+Super + Space ............. App Launcher (Wofi drun)
+Super + e ................. File Manager (Thunar)
+Super + b ................. Browser (Brave)
+Super + v ................. Clipboard History Picker (Clipman)
+Control + Shift + Escape .. Task Manager (lxtask)
+
+========================================================================================
+                                        SYSTEM & UTILITIES
+========================================================================================
+Super + Shift + q ......... Power Menu (Shutdown, Reboot, etc.)
+Super + Shift + l ......... Lock Screen (swaylock)
+Super + Shift + s ......... Take Screenshot
+Super + / ................. Show this Cheatsheet (Toggle)
+
+                                          MEDIA CONTROLS
+Super + Shift + Up/Down ... Change Brightness
+Super + Shift + Left/Right. Change Volume
+Super + Shift + m ......... Toggle Mute
+
+                                          CONFIG LAUNCHERS
+Super + Shift + d ......... Display Settings/Monitor Config
+Super + Shift + i ......... Peripherals/Input Config
+Super + Shift + t ......... GTK Theme Settings (nwg-look)
+Super + Shift + w ......... Wallpaper Picker
+Super + t ................. Timeshift Launcher
+
+                                          MISCELLANEOUS
+Alt + Shift ............... Toggle Keyboard Layout (ba/us)
 EOF
 
 # -----------------------
