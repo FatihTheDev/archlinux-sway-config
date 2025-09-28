@@ -411,44 +411,45 @@ mkdir -p ~/.local/bin
 cat > ~/.local/bin/lock.sh <<'EOF'
 #!/bin/bash
 
-# Launch swayidle to handle auto-lock & screen off
+# -----------------------------
+# Configurable timers (in seconds)
+# -----------------------------
+LOCK_TIMEOUT=300      # 5 minutes (300 seconds) → lock screen
+DPMS_TIMEOUT=600      # 10 minutes (600 seconds) → turn off display
+
+# -----------------------------
+# Swaylock styling
+# -----------------------------
+LOCK_CMD='swaylock -f \
+  -c 000000 \
+  --indicator \
+  --indicator-radius 120 \
+  --indicator-thickness 15 \
+  --inside-color 1e1e2eff \
+  --ring-color 4c7899ff \
+  --key-hl-color 990000ff \
+  --bs-hl-color ff0000ff \
+  --text-color ffffffff \
+  --line-color 00000000 \
+  --separator-color 00000000 \
+  --inside-ver-color 285577ff \
+  --ring-ver-color 4c7899ff \
+  --inside-wrong-color ff0000ff \
+  --ring-wrong-color ff0000ff \
+  --fade-in 0.3'
+
+# -----------------------------
+# Launch swayidle with timers
+# -----------------------------
+
+# Kill any existing swayidle to avoid conflicts
+killall swayidle 2>/dev/null || true
+
 swayidle -w \
-    timeout 300 'swaylock-effects \
-      --indicator \
-      --indicator-radius 120 \
-      --indicator-thickness 15 \
-      --inside-color 1e1e2eff \
-      --ring-color 4c7899ff \
-      --key-hl-color 990000ff \
-      --bs-hl-color ff0000ff \
-      --text-color ffffffff \
-      --line-color 00000000 \
-      --separator-color 00000000 \
-      --inside-ver-color 285577ff \
-      --ring-ver-color 4c7899ff \
-      --inside-wrong-color ff0000ff \
-      --ring-wrong-color ff0000ff \
-      --grace 2 \
-      --fade-in 0.3' \
-    timeout 600 'swaymsg "output * dpms off"' \
+    timeout $LOCK_TIMEOUT "$LOCK_CMD" \
+    timeout $DPMS_TIMEOUT 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \
-    before-sleep 'swaylock-effects \
-      --indicator \
-      --indicator-radius 120 \
-      --indicator-thickness 15 \
-      --inside-color 1e1e2eff \
-      --ring-color 4c7899ff \
-      --key-hl-color 990000ff \
-      --bs-hl-color ff0000ff \
-      --text-color ffffffff \
-      --line-color 00000000 \
-      --separator-color 00000000 \
-      --inside-ver-color 285577ff \
-      --ring-ver-color 4c7899ff \
-      --inside-wrong-color ff0000ff \
-      --ring-wrong-color ff0000ff \
-      --grace 2 \
-      --fade-in 0.3'
+    before-sleep "$LOCK_CMD"
 EOF
 chmod +x ~/.local/bin/lock.sh
 
