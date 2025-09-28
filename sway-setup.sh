@@ -17,6 +17,15 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep clipman wl-clipboard gnome-font-viewer mousepad
 
+mkdir -p ~/Desktop
+mkdir -p ~/Code
+mkdir -p ~/Documents
+mkdir -p ~/Downloads
+mkdir -p ~/Pictures
+mkdir -p ~/Pictures/Screenshots
+mkdir -p ~/Pictures/Wallpapers
+mkdir -p ~/Videos
+
 # -----------------------
 # Audio system selection
 # -----------------------
