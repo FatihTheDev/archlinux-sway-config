@@ -15,7 +15,7 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
     nwg-look feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
-    lxtask gammastep clipman wl-clipboard gnome-font-viewer mousepad
+    lxtask gammastep cliphist wl-clipboard gnome-font-viewer mousepad autotiling
 
 mkdir -p ~/Desktop
 mkdir -p ~/Code
@@ -712,10 +712,10 @@ exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 bindsym $mod+Ctrl+Shift+l exec swaylock -f -c 000000
 # Toggable Cheatsheet in Terminal
 bindsym $mod+Shift+c exec ~/.local/bin/toggle-cheatsheet.sh
-bindsym $mod+t exec timeshift-launcher
 bindsym $mod+b exec brave
 bindsym $mod+Return exec alacritty
 bindsym $mod+e exec thunar
+bindsym $mod+period exec ~/.local/bin/emoji-picker.sh
 
 # Screenshots
 bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
@@ -732,10 +732,11 @@ bindsym $mod+Shift+w exec ~/.local/bin/set-wallpaper.sh
 # GTK application theme settings
 bindsym $mod+Shift+t exec nwg-look
 
-# CLipboard history
-exec wl-paste -t text --watch clipman store --no-persist
-exec wl-paste -p -t text --watch clipman store -P --histpath="~/.local/share/clipman-primary.json"
-bindsym $mod+v exec clipman pick -t wofi --histpath="~/.local/share/clipman.json" --notify
+# Clipboard history
+
+exec_always wl-paste --type text --watch cliphist store
+exec_always wl-paste --type image --watch cliphist store
+bindsym $mod+v exec nwg-clipman
 
 # Task manager
 bindsym Control+Shift+Escape exec lxtask
@@ -743,6 +744,8 @@ bindsym Control+Shift+Escape exec lxtask
 # --------------------
 # Window management
 # --------------------
+exec_always autotiling
+
 bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
 # Vertical split + app launcher
@@ -756,10 +759,7 @@ floating_modifier $mod
 # Move window with Super + Left Mouse Drag
 bindsym --whole-window $mod+button2 move
 
-# Optionally: Resize window with Super + Right Mouse Drag
-bindsym --whole-window $mod+button3 resize
-
-# Move windows with Super + h, j, k, l (like in vim)
+# Optionally: Resize window with Super + Right Mouse Drag bindsym --whole-window $mod+button3 resize Move windows with Super + h, j, k, l (like in vim)
 bindsym $mod+Shift+h move left 100px
 bindsym $mod+Shift+l move right 100px
 bindsym $mod+Shift+k move up 100px
@@ -771,15 +771,24 @@ bindsym $mod+l focus right 100px
 bindsym $mod+k focus up 100px
 bindsym $mod+j focus down 100px   
 
+bindsym $mod+Left focus left 100px
+bindsym $mod+Right focus right 100px
+bindsym $mod+Up focus up 100px
+bindsym $mod+Down focus down 100px   
+
+
 # --------------------
 # Floating / tiling mode toggle + resize mode
 # --------------------
 bindsym $mod+Shift+Space floating toggle
+bindsym $mod+t layout toggle tabbed split
+bindsym $mod+s layout toggle stacking split
+
 mode "resize" {
-    bindsym Right resize shrink width 10 px or 10 ppt
-    bindsym Up resize grow height 10 px or 10 ppt
-    bindsym Down resize shrink height 10 px or 10 ppt
-    bindsym Left resize grow width 10 px or 10 ppt
+    bindsym l resize shrink width 5 px or 5 ppt
+    bindsym k resize grow height 5 px or 5 ppt
+    bindsym j resize shrink height 5 px or 5 ppt
+    bindsym h resize grow width 5 px or 5 ppt
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
@@ -848,22 +857,22 @@ exec_always ~/.local/bin/lock.sh
 exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=secrets
 # Set system-wide dark mode
 # For GTK apps
-# exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-# exec_always gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
-# exec_always gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+exec_always gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
+exec_always gsettings set org.gnome.desktop.interface color-scheme 'default'
 
 
 # --------------------
-# Volume control (single OSD) - PipeWire, max display 153%
+# Volume control (single OSD) - PipeWire, max display 200%
 # --------------------
-bindsym XF86AudioRaiseVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bindsym XF86AudioLowerVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bindsym XF86AudioMute exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym XF86AudioRaiseVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym XF86AudioLowerVolume exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym XF86AudioMute exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 
 # Optional fallback keys
-bindsym $mod+Shift+Right exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bindsym $mod+Shift+Left exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bindsym $mod+Shift+m exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>153 ? 153 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym $mod+Shift+Right exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym $mod+Shift+Left exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bindsym $mod+Shift+m exec sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 
 # --------------------
 # Brightness control (single OSD)
