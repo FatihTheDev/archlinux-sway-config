@@ -13,7 +13,7 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
-    nwg-look feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
+    nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep cliphist wl-clipboard gnome-font-viewer mousepad autotiling
 
@@ -899,8 +899,8 @@ Super + Shift + Space ..... Toggle Floating/Tiling Mode
 Super + r ................. Enter Resize Mode (Use Arrow Keys to resize. Esc or Return to exit.)
 
                                        FOCUS & MOVEMENT
-Super + h/j/k/l ........... Move Focus Left/Down/Up/Right
-Super + Shift + h/j/k/l ... Move Window Left/Down/Up/Right
+Super + h/j/k/l or Super + Arrow Keys ........... Move Focus Left/Down/Up/Right
+Super + Shift + h/j/k/l ......................... Move Window Left/Down/Up/Right
 
                                          SPLIT & LAUNCH
 Super + Ctrl + v .......... Vertical Split, then Launch App
@@ -929,9 +929,9 @@ Control + Shift + Escape .. Task Manager (lxtask)
                                         SYSTEM & UTILITIES
 ========================================================================================
 Super + Shift + q ......... Power Menu (Shutdown, Reboot, etc.)
-Super + Shift + Ctrl + l ......... Lock Screen (swaylock)
+Super + Shift + Ctrl + l .. Lock Screen (swaylock)
 Super + Shift + s ......... Take Screenshot
-Super + Shift + c ................. Show this Cheatsheet (Toggle)
+Super + Shift + c ......... Display this CheatSheet
 
                                           MEDIA CONTROLS
 Super + Shift + Up/Down ... Change Brightness
@@ -942,8 +942,7 @@ Super + Shift + m ......... Toggle Mute
 Super + Shift + d ......... Display Settings/Monitor Config
 Super + Shift + i ......... Peripherals/Input Config
 Super + Shift + t ......... GTK Theme Settings (nwg-look)
-Super + Shift + w ......... Wallpaper Picker
-Super + t ................. Timeshift Launcher
+Super + Shift + w ......... Wallpaper Picker (make sure you put the wallpapers in ~/Pictures/Wallpapers)
 
                                           MISCELLANEOUS
 Alt + Shift ............... Toggle Keyboard Layout (ba/us)
