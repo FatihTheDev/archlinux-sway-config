@@ -20,7 +20,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 - **Power menu** with Poweroff, Reboot, Logout via `Super+Shift+Q`  
 - **Browsers**:
   - Brave → `Super+B`  
-  - LibreWolf → `Super+L`  
+  - LibreWolf 
 - **Terminal** → `Super+Enter` (Alacritty)  
 - **File manager** → `Super+E` (Thunar)
 - **GTK App Theme Settings** → `Super+Shift+T`
