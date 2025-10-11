@@ -16,8 +16,8 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
   - Bluetooth status and device management  
   - System tray  
 
-- **Wofi** as an app launcher on `Super + d` keys
-- **Power menu** with Poweroff, Reboot, Logout via `Super+Shift+Q`  
+- **Wofi** as an app launcher on `Super + Space` keys
+- **Power menu** with Poweroff, Reboot, Logout via `Super + Shift + Q`  
 - **Browsers**:
   - Brave → `Super+B`  
   - LibreWolf 
@@ -47,9 +47,8 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 
 | Action                      | Keybinding                  |
 |------------------------------|-----------------------------|
-| App launcher (Wofi)          | Super                        |
+| App launcher (Wofi)          | Super + Space                |
 | Brave browser                | Super+B                      |
-| LibreWolf browser            | Super+L                      |
 | Terminal (Alacritty)         | Super+Enter                  |
 | File manager (Thunar)        | Super+E                      |
 | Task Manager GUI (LXTASK)    | Ctrl+Shift+Esc               |
