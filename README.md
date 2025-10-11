@@ -21,9 +21,9 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 - **Browsers**:
   - Brave → `Super+B`  
   - LibreWolf → `Super+L`  
-- **Terminal** → `Super+Enter` (Ghostty)  
-- **File manager** → `Super+E` (PCManFM)
-- **Timeshift GUI** → `Super+T`
+- **Terminal** → `Super+Enter` (Alacritty)  
+- **File manager** → `Super+E` (Thunar)
+- **GTK App Theme Settings** → `Super+Shift+T`
 - **Task Manager GUI** → `Ctrl+Shift+Esc` (LXTASK)  
 - **Keyboard layouts**: Bosnian (`ba`) and English (`us`), switched with `Alt+Shift`  
 - **Screenshot tool** → `Super+Shift+S`  
@@ -34,7 +34,10 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
   - XF86 hardware keys supported  
   - Smart fallback keys if hardware keys fail: `Super+Shift+Up` (increase), `Super+Shift+Down` (decrease)  
   - Default brightness set to **15%**  
-- **Wallpaper GUI** → `Super+W` (Azote)  
+- **Wallpaper Changer (need to have an image in ~/Pictures/Wallpapers)** → `Super+Shift+W`
+- **Tabbed layout toggle** -> `Super+t`
+- **Floating/Tilind layouts toggle** -> `Super+Shift+Space`
+- **Lock screen** -> `Super+Ctrl+Shift+L`
 - **Media keys**: Play/Pause, Next, Previous (via Playerctl)  
 
 ---
@@ -46,11 +49,14 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 | App launcher (Wofi)          | Super                        |
 | Brave browser                | Super+B                      |
 | LibreWolf browser            | Super+L                      |
-| Terminal (Ghostty)           | Super+Enter                  |
-| File manager (PCManFM)       | Super+E                      |
+| Terminal (Alacritty)         | Super+Enter                  |
+| File manager (Thunar)        | Super+E                      |
 | Task Manager GUI (LXTASK)    | Ctrl+Shift+Esc               |
 | Power menu                   | Super+Shift+Q                |
-| Wallpaper GUI (Azote)        | Super+W                      |
+| Wallpaper Changer            | Super+Shift+W                |
+| Tiling layout toggle         | Super+T                      |
+| Floating/Tilind layout toggle| Super+Shift+Space            |
+| Lock screen                  | Super+Ctrl+Shift+L           |
 | Screenshot                   | Super+Shift+S                |
 | Volume Up                    | XF86AudioRaiseVolume / Super+Shift+Right |
 | Volume Down                  | XF86AudioLowerVolume / Super+Shift+Left |
