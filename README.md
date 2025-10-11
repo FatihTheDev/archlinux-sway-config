@@ -35,7 +35,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
   - Smart fallback keys if hardware keys fail: `Super+Shift+Up` (increase), `Super+Shift+Down` (decrease)  
   - Default brightness set to **15%**  
 - **Wallpaper Changer (need to have an image in ~/Pictures/Wallpapers)** → `Super+Shift+W`
-- **Tabbed layout toggle** -> `Super+t`
+- **Tabbed layout toggle** -> `Super+T`
 - **Floating/Tilind layouts toggle** -> `Super+Shift+Space`
 - **Lock screen** -> `Super+Ctrl+Shift+L`
 - **Media keys**: Play/Pause, Next, Previous (via Playerctl)
@@ -55,7 +55,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 | Task Manager GUI (LXTASK)    | Ctrl+Shift+Esc               |
 | Power menu                   | Super+Shift+Q                |
 | Wallpaper Changer            | Super+Shift+W                |
-| Tiling layout toggle         | Super+T                      |
+| Tabbed layout toggle         | Super+T                      |
 | Floating/Tilind layout toggle| Super+Shift+Space            |
 | Lock screen                  | Super+Ctrl+Shift+L           |
 | Screenshot                   | Super+Shift+S                |
