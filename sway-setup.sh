@@ -17,6 +17,8 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep cliphist wl-clipboard gnome-font-viewer mousepad autotiling
 
+yay -S sway-audio-idle-inhibit-git
+
 mkdir -p ~/Desktop
 mkdir -p ~/Code
 mkdir -p ~/Documents
@@ -733,7 +735,6 @@ bindsym $mod+Shift+w exec ~/.local/bin/set-wallpaper.sh
 bindsym $mod+Shift+t exec nwg-look
 
 # Clipboard history
-
 exec_always wl-paste --type text --watch cliphist store
 exec_always wl-paste --type image --watch cliphist store
 bindsym $mod+v exec nwg-clipman
@@ -745,6 +746,9 @@ bindsym Control+Shift+Escape exec lxtask
 # Window management
 # --------------------
 exec_always autotiling
+
+gaps inner 5
+gaps outer 2
 
 bindsym $mod+f fullscreen toggle
 bindsym $mod+q kill
@@ -759,23 +763,27 @@ floating_modifier $mod
 # Move window with Super + Left Mouse Drag
 bindsym --whole-window $mod+button2 move
 
-# Optionally: Resize window with Super + Right Mouse Drag bindsym --whole-window $mod+button3 resize Move windows with Super + h, j, k, l (like in vim)
+# Move windows around with Super + Shift + h, j, k, l
 bindsym $mod+Shift+h move left 100px
 bindsym $mod+Shift+l move right 100px
 bindsym $mod+Shift+k move up 100px
 bindsym $mod+Shift+j move down 100px  
 
-# Move window focus with Super + Shift + h, j, k, l (like in vim)
+# Move window focus with Super + h, j, k, l (like in vim)
 bindsym $mod+h focus left 100px
 bindsym $mod+l focus right 100px
 bindsym $mod+k focus up 100px
 bindsym $mod+j focus down 100px   
 
+# Also use arrow keys to move focus between windows
 bindsym $mod+Left focus left 100px
 bindsym $mod+Right focus right 100px
 bindsym $mod+Up focus up 100px
 bindsym $mod+Down focus down 100px   
 
+# Also use Alt + Tab to move focus between windows (useful for tabbed layout)
+bindsym Mod1+Tab focus right
+bindsym Mod1+Shift+Tab focus left
 
 # --------------------
 # Floating / tiling mode toggle + resize mode
@@ -849,6 +857,7 @@ bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 # --------------------
 exec waybar
 exec dunst
+exec sway-audio-idle-inhibit
 # Night Light
 exec_always gammastep -P -O 2000
 exec_always ~/.local/bin/wallpaper.sh
