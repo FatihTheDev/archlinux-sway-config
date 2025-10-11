@@ -38,7 +38,8 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 - **Tabbed layout toggle** -> `Super+t`
 - **Floating/Tilind layouts toggle** -> `Super+Shift+Space`
 - **Lock screen** -> `Super+Ctrl+Shift+L`
-- **Media keys**: Play/Pause, Next, Previous (via Playerctl)  
+- **Media keys**: Play/Pause, Next, Previous (via Playerctl)
+- **Display CheatSheet of all keybindings** -> `Super+Shift+C`
 
 ---
 
@@ -69,6 +70,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 | Media Play/Pause             | XF86AudioPlay                |
 | Media Next                   | XF86AudioNext                |
 | Media Previous               | XF86AudioPrev                |
+| Display CheatSheet           | Super+Shift+C                |
 
 ---
 
