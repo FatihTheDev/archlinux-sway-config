@@ -11,7 +11,7 @@ sudo pacman -Syu --noconfirm
 echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost alacritty librewolf brave \
-    network-manager-applet nm-connection-editor xdg-desktop-portal xdg-utils \
+    network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-wlr xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
     nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
@@ -28,6 +28,10 @@ mkdir -p ~/Pictures/Screenshots
 mkdir -p ~/Pictures/Wallpapers
 mkdir -p ~/Videos
 
+echo "[3/15] Starting xdg-desktop-portal and xdg-desktop-portal-wlr services (for screen sharing)"
+systemctl --user enable pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+systemctl --user daemon-reload
+
 # -----------------------
 # Audio system selection
 # -----------------------
@@ -38,16 +42,16 @@ read -p "Enter choice [1-2]: " audio_choice
 audio_choice=${audio_choice:-1}
 
 if [ "$audio_choice" -eq 2 ]; then
-    echo "[3/15] Installing PulseAudio..."
+    echo "[4/15] Installing PulseAudio..."
     sudo pacman -S --noconfirm pulseaudio pavucontrol
     echo "PulseAudio selected."
 else
-    echo "[3/15] Installing PipeWire (default)..."
+    echo "[4/15] Installing PipeWire (default)..."
     sudo pacman -S --noconfirm pipewire pipewire-pulse wireplumber pavucontrol
     echo "PipeWire selected."
 fi
 
-echo "[4/15] Setting default applications..."
+echo "[5/15] Setting default applications..."
 
 # ensure dirs exist
 mkdir -p ~/.local/share/applications
@@ -303,7 +307,7 @@ echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
 # -----------------------
 # Bluetooth installation
 # -----------------------
-echo "[5/15] Installing Bluetooth stack and GUI..."
+echo "[6/15] Installing Bluetooth stack and GUI..."
 sudo pacman -S --noconfirm bluez bluez-utils blueberry
 sudo systemctl enable bluetooth
 sudo systemctl start bluetooth
@@ -316,7 +320,7 @@ sudo systemctl enable --now NetworkManager
 # -----------------------
 # Waybar configuration
 # -----------------------
-echo "[6/15] Configuring Waybar..."
+echo "[7/15] Configuring Waybar..."
 
 mkdir -p ~/.config/waybar
 
@@ -408,7 +412,7 @@ fi
 # -----------------------
 # Configure Sway
 # -----------------------
-echo "[7/15] Configuring Sway..."
+echo "[8/15] Configuring Sway..."
 mkdir -p ~/.config/sway
 if [ ! -f ~/.config/sway/config ]; then
     cp /etc/sway/config ~/.config/sway/config
@@ -960,7 +964,7 @@ EOF
 # -----------------------
 # Wofi configuration
 # -----------------------
-echo "[8/15] Configuring Wofi..."
+echo "[9/15] Configuring Wofi..."
 
 # Setting Papirus icon theme as default
 mkdir -p ~/.config/gtk-3.0
@@ -1033,7 +1037,7 @@ EOF
 # -----------------------
 # Power menu script
 # -----------------------
-echo "[9/15] Creating power menu script..."
+echo "[10/15] Creating power menu script..."
 cat > ~/.local/bin/power-menu.sh <<'EOF'
 #!/bin/bash
 
@@ -1049,7 +1053,7 @@ chmod +x ~/.local/bin/power-menu.sh
 # -----------------------
 # Dunst configuration
 # -----------------------
-echo "[10/15] Configuring Dunst notifications..."
+echo "[11/15] Configuring Dunst notifications..."
 mkdir -p ~/.config/dunst
 cat > ~/.config/dunst/dunstrc <<'EOF'
 [global]
@@ -1088,7 +1092,7 @@ EOF
 # -----------------------
 # Default brightness
 # -----------------------
-echo "[11/15] Setting default brightness to 15%..."
+echo "[12/15] Setting default brightness to 15%..."
 brightnessctl set 15%
 sudo usermod -aG video $USER
 
