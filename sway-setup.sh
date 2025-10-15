@@ -873,7 +873,8 @@ exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=s
 exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 exec_always gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
 exec_always gsettings set org.gnome.desktop.interface color-scheme 'default'
-
+# Make systemd recognize user is using Wayland (for user services)
+exec_always systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
 # --------------------
 # Volume control (single OSD) - PipeWire, max display 200%
