@@ -418,6 +418,16 @@ if [ ! -f ~/.config/sway/config ]; then
     cp /etc/sway/config ~/.config/sway/config
 fi
 
+# -----------------------
+# Configure Alacritty (transparent background)
+# -----------------------
+echo "[9/15] Configuring Alacritty"
+mkdir -p ~/.config/alacritty
+cat > ~/.config/alacritty/alacritty.toml <<'EOF'
+[window]
+opacity = 0.5
+EOF
+
 # ------------------
 # Screen Locking
 # ------------------
