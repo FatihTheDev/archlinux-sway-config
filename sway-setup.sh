@@ -12,7 +12,7 @@ echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-wlr xdg-utils \
-    ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git \
+    ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
     nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep cliphist wl-clipboard gnome-font-viewer mousepad autotiling
@@ -414,9 +414,6 @@ fi
 # -----------------------
 echo "[8/15] Configuring Sway..."
 mkdir -p ~/.config/sway
-if [ ! -f ~/.config/sway/config ]; then
-    cp /etc/sway/config ~/.config/sway/config
-fi
 
 # -----------------------
 # Configure Alacritty (transparent background)
@@ -871,6 +868,7 @@ bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 # --------------------
 exec waybar
 exec dunst
+# When audio is playing, don't lock the screen
 exec sway-audio-idle-inhibit
 # Night Light
 exec_always gammastep -P -O 2000
@@ -883,6 +881,8 @@ exec_always --no-startup-id /usr/bin/gnome-keyring-daemon --start --components=s
 exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 exec_always gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
 exec_always gsettings set org.gnome.desktop.interface color-scheme 'default'
+# For QT apps
+exec_always swaymsg exec env QT_QPA_PLATFORMTHEME=qt5ct QT_STYLE_OVERRIDE=Adwaita-dark QT6_QPA_PLATFORMTHEME=qt6ct
 # Make systemd recognize user is using Wayland (for user services)
 exec_always systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
