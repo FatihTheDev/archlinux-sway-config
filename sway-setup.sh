@@ -714,6 +714,7 @@ EOF
 chmod +x ~/.local/bin/screenshot.sh
 
 cat > ~/.config/sway/config <<'EOF'
+# Mod4 - Superkey, Mod1 - Alt Key
 set $mod Mod4
 
 # For password prompts
@@ -845,7 +846,8 @@ bindsym $mod+Shift+0 move container to workspace 10
 # --------------------
 input * {
     xkb_layout "ba,us"
-    xkb_options "grp:alt_shift_toggle"
+    # for Alt+Shift use "grp:alt_shift_toggle", for Superkey+Space use "grp:win_space_toggle"
+    xkb_options "grp:alt_shift_toggle" 
 }
 
 # --------------------
