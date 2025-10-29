@@ -17,7 +17,7 @@ sudo pacman -S --noconfirm sway swaybg swaylock swaylock-effects swayidle waybar
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep cliphist wl-clipboard gnome-font-viewer mousepad autotiling
 
-yay -S sway-audio-idle-inhibit-git
+yay -S sway-audio-idle-inhibit-git masterpdfeditor-free
 
 mkdir -p ~/Desktop
 mkdir -p ~/Code
@@ -200,7 +200,7 @@ cat > ~/.local/share/applications/feh.desktop <<'EOF'
 [Desktop Entry]
 Name=Feh
 Comment=Lightweight image viewer
-Exec=feh %f
+Exec=feh --edit %f
 Icon=image-viewer
 Terminal=false
 Type=Application
@@ -274,11 +274,13 @@ xdg-mime default thunar.desktop inode/directory
 # Browser stuff → Brave
 xdg-mime default brave-browser.desktop text/html || true
 xdg-mime default brave-browser.desktop application/xhtml+xml || true
-xdg-mime default brave-browser.desktop application/pdf || true
 xdg-mime default brave-browser.desktop image/svg+xml || true
 xdg-mime default brave-browser.desktop text/xml || true
 xdg-mime default brave-browser.desktop application/rss+xml || true
 xdg-mime default brave-browser.desktop application/atom+xml || true
+
+# Pdf editor and viewer
+xdg-mime default masterpdfeditor4.desktop application/pdf || true
 
 # Terminal handler
 xdg-mime default Alacritty.desktop x-scheme-handler/terminal || true
