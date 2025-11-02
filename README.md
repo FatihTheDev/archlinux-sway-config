@@ -1,6 +1,6 @@
-# Arch Linux Sway Config
+# Arch Linux Sway/Hyprland Config
 
-A complete, minimal, and highly functional **Sway setup for Arch Linux**, including Waybar, Wofi, PipeWire, smart volume & brightness controls, lightweight GUI utilities, and default keybindings.
+A complete, minimal, and highly functional **Sway/Hyprland setup for Arch Linux**, including Waybar, Wofi, PipeWire, smart volume & brightness controls, lightweight GUI utilities, and default keybindings.
 
 This setup is designed for **minimal Arch installations** and provides a user-friendly yet lightweight desktop experience.
 
@@ -35,7 +35,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
   - Smart fallback keys if hardware keys fail: `Super+Shift+Up` (increase), `Super+Shift+Down` (decrease)  
   - Default brightness set to **15%**  
 - **Wallpaper Changer (need to have an image in ~/Pictures/Wallpapers)** → `Super+Shift+W`
-- **Tabbed layout toggle** -> `Super+T`
+- **Tabbed layout toggle (Hyprland doesn't support tabbed layout)** -> `Super+T`
 - **Floating/Tilind layouts toggle** -> `Super+Shift+Space`
 - **Lock screen** -> `Super+Ctrl+Shift+L`
 - **Media keys**: Play/Pause, Next, Previous (via Playerctl)
@@ -76,10 +76,12 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 ## Installation
 
 Method 1 - Install using wget (install wget with ```sudo pacman -S wget```):
+- For sway:
+  ```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/sway-setup.sh | bash```
+- For hyprland:
+  ```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/hyprland-setup.sh | bash```
 
-```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/sway-setup.sh | bash```
-
-Note: This is a capital o, not a zero.
+Note: This is a capital letter o, not a zero.
 
 Method 2 - Install by cloning the git repository:
 
@@ -89,10 +91,15 @@ git clone https://github.com/FatihTheDev/archlinux-sway-config.git
 cd archlinux-sway-config
 ```
 2. **Run the setup script:**
-```bash
-bash sway-setup.sh
-```
+- For sway:
+  ```bash
+  bash sway-setup.sh
+  ```
+- For hyprland:
+  ```bash
+  bash hyprland-setup.sh
+  ```
 
-The script will install all required packages, configure Sway, Waybar, Wofi, bluetooth, smart volume & brightness keys, and set up GUI utilities.
+The script will install all required packages, configure Sway/Hyprland, Waybar, Wofi, bluetooth, smart volume & brightness keys, and set up GUI utilities.
 
-3.**Restart Sway to apply all changes.**
+3.**Restart the machine to apply all changes.**
