@@ -509,6 +509,50 @@ fi
 EOF
 chmod +x ~/.local/bin/toggle-cheatsheet.sh
 
+# ------------------
+# Wofi toggle
+# ------------------
+cat > ~/.local/bin/toggle-wofi.sh <<'EOF'
+#!/bin/bash
+
+# Check if Wofi is already running
+if pgrep -x "wofi" > /dev/null; then
+    # If running, kill it
+    pkill wofi
+else
+    # If not running, launch it
+    wofi --show drun --insensitive --allow-images
+fi
+EOF
+chmod +x ~/.local/bin/toggle-wofi.sh
+
+# ------------------
+# Dynamic workspace functionality (if workspace doesn't exist, create it)
+# ------------------
+cat > ~/.local/bin/sway-dynamic-workspaces.sh <<'EOF'
+#!/bin/bash
+
+direction=$1
+current=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused) | .num')
+
+if [ "$direction" = "next" ]; then
+    target=$((current + 1))
+elif [ "$direction" = "prev" ]; then
+    target=$((current - 1))
+fi
+
+# Create and switch
+swaymsg workspace number $target
+
+# Optional: Remove empty workspaces (run after delay)
+(sleep 0.2; \
+  swaymsg -t get_workspaces | jq -r '.[] | select(.num > 9 or .num < 20) | .num' | \
+  while read ws; do
+    empty=$(swaymsg -t get_tree | jq ".. | select(.type? == \"workspace\" and .num == $ws) | (.nodes + .floating_nodes) | length == 0")
+    [ "$empty" = "true" ] && swaymsg workspace number $ws, kill
+  done) &   
+EOF
+chmod +x ~/.local/bin/sway-dynamic-workspaces.sh
 
 # ------------------
 # Wallpaper Settings
@@ -722,6 +766,12 @@ set $mod Mod4
 # For password prompts
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
+# Enable Xwayland support
+xwayland enable
+
+# Allow root to connect to it
+exec_always xhost +SI:localuser:root
+
 # --------------------
 # Launchers
 # --------------------
@@ -731,7 +781,6 @@ bindsym $mod+Shift+c exec ~/.local/bin/toggle-cheatsheet.sh
 bindsym $mod+b exec brave
 bindsym $mod+Return exec alacritty
 bindsym $mod+e exec thunar
-bindsym $mod+period exec ~/.local/bin/emoji-picker.sh
 
 # Screenshots
 bindsym $mod+Shift+s exec ~/.local/bin/screenshot.sh
@@ -819,7 +868,7 @@ bindsym $mod+r mode "resize"
 # --------------------
 # Workspace switching
 # --------------------
-# Switch workspace
+# Switch workspaces
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
 bindsym $mod+3 workspace 3
@@ -830,6 +879,17 @@ bindsym $mod+7 workspace 7
 bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
+
+# Also use mod + mouse scroll to switch workspaces dynamically (button5 = downward scroll, button4 = upward scroll)
+bindsym --whole-window $mod+button5 exec ~/.local/bin/sway-dynamic-workspaces.sh prev
+bindsym --whole-window $mod+button4 exec ~/.local/bin/sway-dynamic-workspaces.sh next
+
+bindsym --border $mod+button4 exec ~/.local/bin/sway-dynamic-workspaces.sh prev
+bindsym --border $mod+button5 exec ~/.local/bin/sway-dynamic-workspaces.sh next
+
+# Also add 4-finger touchpad swipe to change workspaces dynamically
+bindgesture swipe:4:left exec ~/.local/bin/sway-dynamic-workspaces.sh prev
+bindgesture swipe:4:right exec ~/.local/bin/sway-dynamic-workspaces.sh next
 
 # Move window to workspace
 bindsym $mod+Shift+1 move container to workspace 1
@@ -864,18 +924,18 @@ input type:touchpad {
 # --------------------
 # App launcher
 # --------------------
-bindsym $mod+Space exec wofi --show drun --insensitive --allow-images --keynav
+bindsym $mod+Space exec ~/.local/bin/toggle-wofi.sh
 bindsym $mod+Shift+q exec ~/.local/bin/power-menu.sh
 
 # --------------------
 # Autostart
 # --------------------
 exec waybar
-exec dunst
+exec_always dunst
 # When audio is playing, don't lock the screen
 exec sway-audio-idle-inhibit
-# Night Light
-exec_always gammastep -P -O 2000
+# Night Light (smaller number = less blue light)
+exec_always gammastep -O 1510
 exec_always ~/.local/bin/wallpaper.sh
 exec_always ~/.local/bin/lock.sh
 # Activate gnome-keyring (for remembering WiFi passwords)
