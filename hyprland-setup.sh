@@ -548,7 +548,7 @@ chmod +x ~/.local/bin/toggle-wofi.sh
 # ------------------
 # Dynamic workspace functionality (if workspace doesn't exist, create it)
 # ------------------
-cat > ~/.local/bin/sway-dynamic-workspaces.sh <<'EOF'
+cat > ~/.local/bin/dynamic-workspaces.sh <<'EOF'
 #!/bin/bash
 
 # Detect compositor
@@ -599,7 +599,7 @@ elif [ "$compositor" = "hyprland" ]; then
     fi
 fi
 EOF
-chmod +x ~/.local/bin/sway-dynamic-workspaces.sh
+chmod +x ~/.local/bin/dynamic-workspaces.sh
 
 # ------------------
 # Wallpaper Settings
@@ -681,7 +681,7 @@ chmod +x ~/.local/bin/set-wallpaper.sh
 # ------------------------------------------
 # Managing Peripherals (mouse and touchpad)
 # ------------------------------------------
-cat > ~/.local/bin/sway-input-config.sh <<'EOF'
+cat > ~/.local/bin/input-devices-config.sh <<'EOF'
 #!/bin/bash
 
 # --- Compositor Detection ---
@@ -815,7 +815,7 @@ case "$OPTION" in
         ;;
 esac
 EOF
-chmod +x ~/.local/bin/sway-input-config.sh
+chmod +x ~/.local/bin/input-devices-config.sh
 
 # ------------------
 # Display Settings
@@ -1023,7 +1023,7 @@ bind = $mod, B, exec, brave
 bind = $mod, E, exec, thunar
 bind = $mod SHIFT, C, exec, ~/.local/bin/toggle-cheatsheet.sh
 bind = $mod SHIFT, S, exec, ~/.local/bin/screenshot.sh
-bind = $mod SHIFT, I, exec, ~/.local/bin/sway-input-config.sh
+bind = $mod SHIFT, I, exec, ~/.local/bin/input-devices-config.sh
 bind = $mod SHIFT, D, exec, ~/.local/bin/display-settings.sh
 bind = $mod SHIFT, W, exec, ~/.local/bin/set-wallpaper.sh
 bind = $mod SHIFT, T, exec, nwg-look
@@ -1124,8 +1124,8 @@ bind = $mod SHIFT, 9, movetoworkspace, 9
 bind = $mod SHIFT, 0, movetoworkspace, 10
 
 # Super + Mouse scroll to switch workspaces dynamically
-bind = SUPER, mouse_up, exec, ~/.local/bin/sway-dynamic-workspaces.sh next
-bind = SUPER, mouse_down, exec, ~/.local/bin/sway-dynamic-workspaces.sh prev
+bind = SUPER, mouse_up, exec, ~/.local/bin/dynamic-workspaces.sh next
+bind = SUPER, mouse_down, exec, ~/.local/bin/dynamic-workspaces.sh prev
 
 # ================================
 # 🔊 VOLUME CONTROL
