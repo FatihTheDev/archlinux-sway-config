@@ -1126,6 +1126,8 @@ misc {
 input {
     kb_layout = ba,us
     kb_options = grp:alt_shift_toggle
+    accel_profile = adaptive
+    sensitivity = 0.4 # -1.0 - 1.0, 0 means no modification.
     touchpad {
         natural_scroll = true
         tap-to-click = true
@@ -1140,13 +1142,13 @@ bind = $mod, B, exec, brave
 bind = $mod, E, exec, thunar
 bind = $mod SHIFT, C, exec, ~/.local/bin/toggle-cheatsheet.sh
 bind = $mod SHIFT, S, exec, ~/.local/bin/screenshot.sh
-bind = $mod SHIFT, I, exec, ~/.local/bin/input-devices-config.sh
+bind = $mod SHIFT, I, exec, ~/.local/bin/sway-input-config.sh
 bind = $mod SHIFT, D, exec, ~/.local/bin/display-settings.sh
 bind = $mod SHIFT, W, exec, ~/.local/bin/set-wallpaper.sh
 bind = $mod SHIFT, T, exec, nwg-look
 bind = $mod, SPACE, exec, ~/.local/bin/toggle-wofi.sh
 bind = $mod SHIFT, Q, exec, ~/.local/bin/power-menu.sh
-bind = $mod CTRL SHIFT, L, exec, swaylock -f -c 000000
+bind = $mod CTRL SHIFT, L, exec, hyprlock
 bind = CTRL SHIFT, ESCAPE, exec, lxtask
 bind = $mod, V, exec, nwg-clipman
 
@@ -1182,14 +1184,8 @@ bind = $mod, RIGHT, movefocus, r
 bind = $mod, UP, movefocus, u
 bind = $mod, DOWN, movefocus, d
 
-
-# ALT+TAB window cycle
-bind = $alt, TAB, cyclenext
-bind = $alt SHIFT, TAB, cyclenext, prev
-
-
 # =======================================================
-# Touchpad gestures (3-finger swipe to switch workpaces)
+# Touchpad gestures (4-finger swipe to switch workpaces)
 # =======================================================
 gesture = 4, horizontal, workspace
 
@@ -1241,8 +1237,8 @@ bind = $mod SHIFT, 9, movetoworkspace, 9
 bind = $mod SHIFT, 0, movetoworkspace, 10
 
 # Super + Mouse scroll to switch workspaces dynamically
-bind = SUPER, mouse_up, exec, ~/.local/bin/dynamic-workspaces.sh next
-bind = SUPER, mouse_down, exec, ~/.local/bin/dynamic-workspaces.sh prev
+bind = SUPER, mouse_up, exec, ~/.local/bin/sway-dynamic-workspaces.sh next
+bind = SUPER, mouse_down, exec, ~/.local/bin/sway-dynamic-workspaces.sh prev
 
 # ================================
 # 🔊 VOLUME CONTROL
