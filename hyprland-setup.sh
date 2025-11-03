@@ -387,8 +387,8 @@ cat > ~/.config/waybar/config <<'EOF'
 
   "hyprland/workspaces": {
   "format": "{name} {icon}",
-  "on-scroll-up": "hyprctl dispatch workspace e+1",
-  "on-scroll-down": "hyprctl dispatch workspace e-1",
+  "on-scroll-up": "hyprctl dispatch workspace e-1",
+  "on-scroll-down": "hyprctl dispatch workspace e+1",
   "format-icons": {
     "active": "\u25cf",
     "default": "\u25CB"
