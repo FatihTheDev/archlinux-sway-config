@@ -1041,6 +1041,13 @@ else
     GEOM=""  # Full screen
 fi
 
+# Save screenshot to a temporary file
+if [ -n "$GEOM" ]; then
+    eval grim $GEOM /tmp/screenshot.png
+else
+    grim /tmp/screenshot.png
+fi
+
 # Ask user for filename
 FILENAME=$(echo "$DEFAULT_FILE" | wofi --dmenu --prompt "Save screenshot as:")
 [ -z "$FILENAME" ] && exit 0
@@ -1051,12 +1058,8 @@ case "$FILENAME" in
     *) FILENAME="$FILENAME.png" ;;
 esac
 
-# Save screenshot
-if [ -n "$GEOM" ]; then
-    eval grim $GEOM "$DIR/$FILENAME"   # Use eval to expand the quoted geometry correctly
-else
-    grim "$DIR/$FILENAME"
-fi
+# Move the screenshot to the final location
+mv /tmp/screenshot.png "$DIR/$FILENAME"
 
 # Notify user
 notify-send "Screenshot saved" "$DIR/$FILENAME"
