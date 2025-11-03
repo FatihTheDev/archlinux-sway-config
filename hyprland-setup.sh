@@ -517,7 +517,7 @@ listener {
 
 listener {
     on-timeout = hyprlock
-}   
+}
 EOF
 
 # -----------------------
