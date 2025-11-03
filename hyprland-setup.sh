@@ -415,6 +415,10 @@ cat > ~/.config/waybar/style.css <<'EOF'
   background-color: #000000;
 }
 
+#workspaces {
+padding: 0px 5px 0px 5px;
+}
+
 #clock {
   font-size: 17px;
   font-weight: bold;
