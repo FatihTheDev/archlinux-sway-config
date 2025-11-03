@@ -386,11 +386,13 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "hyprland/workspaces": {
-  "format": "{name}",
-  "format-occupied": "<span style='color: #888888'>{name}</span>",
-  "format-focused": "<span style='background-color: #ffffff; color: #ffffff; padding: 2px 6px; border-radius: 4px'>{name}</span>",
-  "format-urgent": "<span style='background-color: #ff5555; color: #ff5555; padding: 2px 6px; border-radius: 4px'>{name}</span>",
-  "format-empty": "<span style='color: #666666'>{name}</span>"
+  "format": "{name} {icon}",
+  "on-scroll-up": "hyprctl dispatch workspace e+1",
+  "on-scroll-down": "hyprctl dispatch workspace e-1",
+  "format-icons": {
+    "active": "\u25cf",
+    "default": "\u25CB"
+  }
   },
 
   "sway/workspaces": {
