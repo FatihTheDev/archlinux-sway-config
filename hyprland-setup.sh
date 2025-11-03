@@ -9,7 +9,7 @@ echo "[1/15] Updating system..."
 sudo pacman -Syu --noconfirm
 
 echo "[2/15] Installing essential packages..."
-sudo pacman -S --noconfirm hyprland swaybg swaylock swaylock-effects swayidle waybar wofi grim slurp wl-clipboard xorg-xwayland \
+sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-wlr xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
@@ -436,6 +436,84 @@ fi
 echo "[8/15] Configuring Hyprland..."
 mkdir -p ~/.config/hypr
 
+cat > ~/.config/hypr/hyprlock.conf <<'EOF'
+# Dark Mode / Eye-Friendly hyprlock.conf
+
+general {
+    disable_loading_bar = true
+    grace = 1000
+    hide_cursor = false
+}
+
+# The Background
+background {
+    monitor = 
+    path = $(cat $HOME/.cache/lastwallpaper)
+    blur_passes = 3    
+}
+
+# Centered, Dark Input Field
+input-field {
+    monitor = 
+    size = 300, 50 
+    position = 0, 0 
+    halign = center
+    valign = center
+    
+    outline_thickness = 2 # Thin border
+    
+    # Dark/Muted Colors for minimal intensity
+    inner_color = rgb(151515DD) # Very dark gray, slightly transparent
+    outer_color = rgb(333333FF) # Darker gray border
+    
+    font_color = rgb(AAAAAA) # Muted white text
+    placeholder_text = <span foreground="##555555">Enter Password...</span> # Very dark gray placeholder
+    
+    # Error/Success colors should still be visible but not neon
+    fail_color = rgb(A00000) # Muted red for failure
+    check_color = rgb(006000) # Dark green for success
+    
+    dots_size = 0
+}
+
+# Muted Time Label
+label {
+    monitor = 
+    text = cmd[update:1000] echo "<b>$(date +'%H:%M')</b>"
+    font_size = 20
+    
+    # Muted white text color
+    color = rgb(999999DD) 
+    
+    position = 0, -150 
+    halign = center
+    valign = center
+}
+EOF
+
+cat > ~/.config/hypr/hypridle.conf <<'EOF'
+general {
+    lock_cmd = hyprlock
+    before_sleep_cmd = loginctl lock-session
+    after_sleep_cmd = hyprctl dispatch dpms on
+}
+
+listener {
+    timeout = 300 # in 5 minutes (300 seconds) of idle time, lock screen
+    on-timeout = hyprlock
+}
+
+listener {
+    timeout = 600 # in 10 minutes (600 seconds) of idle time, turn screen off
+    on-timeout = hyprctl dispatch dpms off
+    on-resume = hyprctl dispatch dpms on
+}
+
+listener {
+    on-timeout = hyprlock
+}   
+EOF
+
 # -----------------------
 # Configure Alacritty (transparent background)
 # -----------------------
@@ -455,44 +533,74 @@ cat > ~/.local/bin/lock.sh <<'EOF'
 #!/bin/bash
 
 # -----------------------------
-# Configurable timers (in seconds)
+# Configuration
 # -----------------------------
-LOCK_TIMEOUT=300      # 5 minutes (300 seconds) → lock screen
-DPMS_TIMEOUT=600      # 10 minutes (600 seconds) → turn off display
+LOCK_TIMEOUT=300         # 5 minutes (300 seconds) → lock screen
+DPMS_TIMEOUT=600         # 10 minutes (600 seconds) → turn off display
+CONFIG_DIR="$HOME/.config/hypr"
+CONFIG_PATH="$CONFIG_DIR/hypridle.conf"
 
-# -----------------------------
-# Swaylock styling
-# -----------------------------
-LOCK_CMD='swaylock -f \
-  -c 000000 \
-  --indicator \
-  --indicator-radius 120 \
-  --indicator-thickness 15 \
-  --inside-color 1e1e2eff \
-  --ring-color 4c7899ff \
-  --key-hl-color 990000ff \
-  --bs-hl-color ff0000ff \
-  --text-color ffffffff \
-  --line-color 00000000 \
-  --separator-color 00000000 \
-  --inside-ver-color 285577ff \
-  --ring-ver-color 4c7899ff \
-  --inside-wrong-color ff0000ff \
-  --ring-wrong-color ff0000ff \
-  --fade-in 0.3'
+# --- Compositor Detection & Command Setup ---
+if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
+    COMPOSITOR="hyprland"
+    IDLE_MANAGER="hypridle"
+    
+    echo "Detected Compositor: Hyprland. Using hypridle and generating config."
 
-# -----------------------------
-# Launch swayidle with timers
+elif [ -n "$SWAYSOCK" ]; then
+    COMPOSITOR="sway"
+    IDLE_MANAGER="swayidle"
+    
+    LOCKER_CMD='swaylock -f \
+      -c 000000 \
+      --indicator \
+      --indicator-radius 120 \
+      --indicator-thickness 15 \
+      --inside-color 1e1e2eff \
+      --ring-color 4c7899ff \
+      --key-hl-color 990000ff \
+      --bs-hl-color ff0000ff \
+      --text-color ffffffff \
+      --line-color 00000000 \
+      --separator-color 00000000 \
+      --inside-ver-color 285577ff \
+      --ring-ver-color 4c7899ff \
+      --inside-wrong-color ff0000ff \
+      --ring-wrong-color ff0000ff \
+      --fade-in 0.3'
+      
+    DPMS_OFF_CMD='swaymsg "output * dpms off"'
+    DPMS_ON_CMD='swaymsg "output * dpms on"'
+    
+    # swayidle command line arguments
+    IDLE_ARGS="-w \
+        timeout $LOCK_TIMEOUT \"$LOCKER_CMD\" \
+        timeout $DPMS_TIMEOUT \"$DPMS_OFF_CMD\" \
+        resume \"$DPMS_ON_CMD\" \
+        before-sleep \"$LOCKER_CMD\""
+        
+    echo "Detected Compositor: Sway. Using swayidle."
+    
+else
+    echo "Error: Neither Sway nor Hyprland detected. Exiting."
+    exit 1
+fi
 # -----------------------------
 
-# Kill any existing swayidle to avoid conflicts
-killall swayidle 2>/dev/null || true
+# Kill any existing manager to avoid conflicts
+killall $IDLE_MANAGER 2>/dev/null || true
 
-swayidle -w \
-    timeout $LOCK_TIMEOUT "$LOCK_CMD" \
-    timeout $DPMS_TIMEOUT 'swaymsg "output * dpms off"' \
-    resume 'swaymsg "output * dpms on"' \
-    before-sleep "$LOCK_CMD"
+# --- Execute Idle Manager ---
+if [ "$COMPOSITOR" = "hyprland" ]; then
+    # 3. Execute hypridle, which will automatically find the config file
+    $IDLE_MANAGER &
+
+elif [ "$COMPOSITOR" = "sway" ]; then
+    # swayidle uses command line arguments, using 'eval' for safe execution of the string
+    eval $IDLE_MANAGER $IDLE_ARGS &
+fi
+
+echo "$IDLE_MANAGER started in the background."
 EOF
 chmod +x ~/.local/bin/lock.sh
 
