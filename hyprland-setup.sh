@@ -1072,6 +1072,76 @@ notify-send "Screenshot saved" "$DIR/$FILENAME"
 EOF
 chmod +x ~/.local/bin/screenshot.sh
 
+cat > ~/.config/input-config.sh <<'EOF'
+#!/bin/bash
+
+# --- Config File Path ---
+HYPR_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
+# ------------------------
+
+# --- Compositor Detection ---
+if [ -z "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
+    notify-send "Error: Hyprland not detected."
+    exit 1
+fi
+# ----------------------------
+
+
+# --- Get Current Settings from Config ---
+if [ ! -f "$HYPR_CONFIG" ]; then
+    notify-send "Error: Config not found at $HYPR_CONFIG"
+    exit 1
+fi
+
+# Get Sensitivity from config
+SENSITIVITY=$(grep -E "^\s*sensitivity\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/^\s*sensitivity\s*=\s*([-0-9\.]+).*/\1/')
+[ -z "$SENSITIVITY" ] && SENSITIVITY="0.0" # Default if not found
+
+# Get Mouse Acceleration (flat / adaptive) from config
+PROFILE=$(grep -E "^\s*accel_profile\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/^\s*accel_profile\s*=\s*([a-zA-Z]+).*/\1/')
+[ -z "$PROFILE" ] && PROFILE="adaptive" # Default if not found
+# ----------------------------
+
+
+# --- Present Options and Execute ---
+OPTION=$(printf "Set Mouse Sensitivity\nToggle Mouse Acceleration (flat / adaptive)" | wofi --dmenu --prompt "Option:")
+[ -z "$OPTION" ] && exit 0
+
+case "$OPTION" in
+    "Set Mouse Sensitivity")
+        SENS_VAL=$(echo "$SENSITIVITY" | wofi --dmenu --prompt "Set sensitivity (-1.0 to 1.0):")
+        
+        if [ -n "$SENS_VAL" ]; then
+            # 1. Apply runtime setting GLOBALLY
+            hyprctl keyword input:sensitivity "$SENS_VAL"
+            notify-send "Runtime (Global): Sensitivity set to $SENS_VAL"
+
+            # 2. Apply permanent setting to config file
+            sed -i -E "s/^(\s*sensitivity\s*=\s*)[-0-9\.]+(\s*#.*)?$/\1$SENS_VAL\2/" "$HYPR_CONFIG"
+            notify-send "Permanent: Config sensitivity set to $SENS_VAL"
+        fi
+        ;;
+        
+    "Toggle Mouse Acceleration (flat / adaptive)")
+        NEW_PROFILE=""
+        if [ "$PROFILE" = "flat" ]; then
+            NEW_PROFILE="adaptive"
+        else
+            NEW_PROFILE="flat"
+        fi
+
+        # 1. Apply runtime setting GLOBALLY
+        hyprctl keyword input:accel_profile "$NEW_PROFILE"
+        notify-send "Runtime (Global): Profile set to $NEW_PROFILE"
+        
+        # 2. Apply permanent setting
+        sed -i -E "s/^(\s*accel_profile\s*=\s*)[a-zA-Z]+(\s*#.*)?$/\1$NEW_PROFILE\2/" "$HYPR_CONFIG"
+        notify-send "Permanent: Config profile set to $NEW_PROFILE"
+        ;;
+esac
+EOF
+chmod +x ~/.local/bin/input-config.sh
+
 cat > ~/.config/hypr/hyprland.conf <<'EOF'
 # ================================
 # MOD KEYS
@@ -1142,7 +1212,7 @@ bind = $mod, B, exec, brave
 bind = $mod, E, exec, thunar
 bind = $mod SHIFT, C, exec, ~/.local/bin/toggle-cheatsheet.sh
 bind = $mod SHIFT, S, exec, ~/.local/bin/screenshot.sh
-bind = $mod SHIFT, I, exec, ~/.local/bin/sway-input-config.sh
+bind = $mod SHIFT, I, exec, ~/.local/bin/input-config.sh
 bind = $mod SHIFT, D, exec, ~/.local/bin/display-settings.sh
 bind = $mod SHIFT, W, exec, ~/.local/bin/set-wallpaper.sh
 bind = $mod SHIFT, T, exec, nwg-look
