@@ -29,7 +29,7 @@ mkdir -p ~/Pictures/Wallpapers
 mkdir -p ~/Videos
 
 echo "[3/15] Starting xdg-desktop-portal and xdg-desktop-portal-wlr services (for screen sharing)"
-systemctl --user enable pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+systemctl --user enable pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
 systemctl --user daemon-reload
 
 # -----------------------
