@@ -17,7 +17,7 @@ sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim sl
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep cliphist wl-clipboard gnome-font-viewer mousepad autotiling
 
-yay -S sway-audio-idle-inhibit-git masterpdfeditor-free wayscriber-bin
+yay -S --noconfirm sway-audio-idle-inhibit-git masterpdfeditor-free wayscriber-bin
 
 mkdir -p ~/Desktop
 mkdir -p ~/Code
