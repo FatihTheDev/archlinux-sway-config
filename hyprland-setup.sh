@@ -28,19 +28,16 @@ mkdir -p ~/Pictures/Screenshots
 mkdir -p ~/Pictures/Wallpapers
 mkdir -p ~/Videos
 
-echo "[3/15] Starting xdg-desktop-portal and xdg-desktop-portal-wlr services (for screen sharing)"
-systemctl --user enable pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
-systemctl --user daemon-reload
-
 # -----------------------
 # Audio system selection
 # -----------------------
+echo "[3/15] Selecting audio system..."
 echo "Select audio system (default PipeWire):"
 echo "1) PipeWire"
 echo "2) PulseAudio"
 read -p "Enter choice [1-2]: " audio_choice
 audio_choice=${audio_choice:-1}
-
+ 
 if [ "$audio_choice" -eq 2 ]; then
     echo "[4/15] Installing PulseAudio..."
     sudo pacman -S --noconfirm pulseaudio pavucontrol
@@ -51,7 +48,15 @@ else
     echo "PipeWire selected."
 fi
 
-echo "[5/15] Setting default applications..."
+echo "[5/15] Enabling audio and desktop portal services..."
+if [ "$audio_choice" -eq 2 ]; then
+    systemctl --user enable pulseaudio xdg-desktop-portal xdg-desktop-portal-wlr
+else
+    systemctl --user enable pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+fi
+systemctl --user daemon-reload
+
+echo "[6/15] Setting default applications..."
 
 # ensure dirs exist
 mkdir -p ~/.local/share/applications
@@ -309,7 +314,7 @@ echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
 # -----------------------
 # Bluetooth installation
 # -----------------------
-echo "[6/15] Installing Bluetooth stack and GUI..."
+echo "[7/15] Installing Bluetooth stack and GUI..."
 sudo pacman -S --noconfirm bluez bluez-utils blueberry
 sudo systemctl enable bluetooth
 sudo systemctl start bluetooth
@@ -322,7 +327,7 @@ sudo systemctl enable --now NetworkManager
 # -----------------------
 # Waybar configuration
 # -----------------------
-echo "[7/15] Configuring Waybar..."
+echo "[8/15] Configuring Waybar..."
 
 mkdir -p ~/.config/waybar
 
@@ -439,7 +444,7 @@ fi
 # -----------------------
 # Configure Sway
 # -----------------------
-echo "[8/15] Configuring Hyprland..."
+echo "[9/15] Configuring Hyprland..."
 mkdir -p ~/.config/hypr
 
 cat > ~/.config/hypr/hyprlock.conf <<'EOF'
@@ -523,7 +528,7 @@ EOF
 # -----------------------
 # Configure Alacritty (transparent background)
 # -----------------------
-echo "[9/15] Configuring Alacritty"
+echo "[10/15] Configuring Alacritty"
 mkdir -p ~/.config/alacritty
 cat > ~/.config/alacritty/alacritty.toml <<'EOF'
 [window]
@@ -1072,7 +1077,7 @@ notify-send "Screenshot saved" "$DIR/$FILENAME"
 EOF
 chmod +x ~/.local/bin/screenshot.sh
 
-cat > ~/.config/input-config.sh <<'EOF'
+cat > ~/.local/bin/input-config.sh <<'EOF'
 #!/bin/bash
 
 # --- Config File Path ---
@@ -1307,8 +1312,8 @@ bind = $mod SHIFT, 9, movetoworkspace, 9
 bind = $mod SHIFT, 0, movetoworkspace, 10
 
 # Super + Mouse scroll to switch workspaces dynamically
-bind = $mod, mouse_up, exec, ~/.local/bin/sway-dynamic-workspaces.sh next
-bind = $mod, mouse_down, exec, ~/.local/bin/sway-dynamic-workspaces.sh prev
+bind = $mod, mouse_up, exec, ~/.local/bin/dynamic-workspaces.sh next
+bind = $mod, mouse_down, exec, ~/.local/bin/dynamic-workspaces.sh prev
 
 # ================================
 # 🔊 VOLUME CONTROL
@@ -1395,7 +1400,7 @@ EOF
 # -----------------------
 # Wofi configuration
 # -----------------------
-echo "[9/15] Configuring Wofi..."
+echo "[11/15] Configuring Wofi..."
 
 # Setting Papirus icon theme as default
 mkdir -p ~/.config/gtk-3.0
@@ -1468,7 +1473,7 @@ EOF
 # -----------------------
 # Power menu script
 # -----------------------
-echo "[10/15] Creating power menu script..."
+echo "[12/15] Creating power menu script..."
 cat > ~/.local/bin/power-menu.sh <<'EOF'
 #!/bin/bash
 
@@ -1508,7 +1513,7 @@ chmod +x ~/.local/bin/power-menu.sh
 # -----------------------
 # Dunst configuration
 # -----------------------
-echo "[11/15] Configuring Dunst notifications..."
+echo "[13/15] Configuring Dunst notifications..."
 mkdir -p ~/.config/dunst
 cat > ~/.config/dunst/dunstrc <<'EOF'
 [global]
@@ -1547,11 +1552,11 @@ EOF
 # -----------------------
 # Default brightness
 # -----------------------
-echo "[12/15] Setting default brightness to 15%..."
+echo "[14/15] Setting default brightness to 15%..."
 brightnessctl set 15%
 sudo usermod -aG video $USER
 
-echo "[13/15] Final touches and reminders..."
+echo "[15/15] Final touches and reminders..."
 echo "✅ Setup complete!"
 echo " - Task Manager: Ctrl+Shift+Esc (LXTASK)"
 echo " - Network Manager: Waybar click → nm-connection-editor"
@@ -1562,5 +1567,5 @@ echo " - Brightness Keys: XF86MonBrightness keys + smart fallback Super+Shift+Up
 echo " - Media Keys: Play/Pause/Next/Prev supported"
 echo " - Keyboard layout switching: Alt+Shift"
 
-echo "[14/15] Restart Sway to apply all changes."
-echo "[15/15] Done!"
+echo "Restart Hyprland to apply all changes."
+echo "Done!"
