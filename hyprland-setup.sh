@@ -1154,7 +1154,7 @@ $mod = SUPER
 # STARTUP
 # ================================
 # Draw on-screen (press ESC to close drawing mode)
-bind = SUPER, D, exec, wayscriber --active
+bind = $mod, D, exec, wayscriber --active
 
 exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 exec-once = xhost +SI:localuser:root
@@ -1271,12 +1271,12 @@ binde = $mod, KP_Add, exec, hyprctl keyword cursor:zoom_factor $(hyprctl getopti
 # RESIZE MODE
 # ================================
 submap = resize
-bind = , L, resizeactive, 5 0
-bind = , H, resizeactive, -5 0
-bind = , K, resizeactive, 0 -5
-bind = , J, resizeactive, 0 5
-bind = , RETURN, submap, reset
-bind = , ESCAPE, submap, reset
+binde = , L, resizeactive, 10 0
+binde = , H, resizeactive, -10 0
+binde = , K, resizeactive, 0 -10
+binde = , J, resizeactive, 0 10
+binde = , RETURN, submap, reset
+binde = , ESCAPE, submap, reset
 submap = reset
 
 # ================================
@@ -1307,18 +1307,18 @@ bind = $mod SHIFT, 9, movetoworkspace, 9
 bind = $mod SHIFT, 0, movetoworkspace, 10
 
 # Super + Mouse scroll to switch workspaces dynamically
-bind = SUPER, mouse_up, exec, ~/.local/bin/sway-dynamic-workspaces.sh next
-bind = SUPER, mouse_down, exec, ~/.local/bin/sway-dynamic-workspaces.sh prev
+bind = $mod, mouse_up, exec, ~/.local/bin/sway-dynamic-workspaces.sh next
+bind = $mod, mouse_down, exec, ~/.local/bin/sway-dynamic-workspaces.sh prev
 
 # ================================
 # 🔊 VOLUME CONTROL
 # ================================
-bind = , XF86AudioRaiseVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bind = , XF86AudioLowerVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bind = , XF86AudioMute, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bind = $mod SHIFT, RIGHT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bind = $mod SHIFT, LEFT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bind = $mod SHIFT, M, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+binde = , XF86AudioRaiseVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+binde = , XF86AudioLowerVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+binde = , XF86AudioMute, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+binde = $mod SHIFT, RIGHT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+binde = $mod SHIFT, LEFT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+binde = $mod SHIFT, M, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 
 # ================================
 # 💡 BRIGHTNESS CONTROL
