@@ -1178,6 +1178,11 @@ exec-once = env QT_QPA_PLATFORMTHEME=qt5ct QT_STYLE_OVERRIDE=Adwaita-dark QT6_QP
 exec-once = systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
 # ================================
+# ENVIRONMENT VARIABLES
+# ================================
+env = QT_STYLE_OVERRIDE, Adwaita-Dark
+
+# ================================
 # APPEARANCE
 # ================================
 general {
