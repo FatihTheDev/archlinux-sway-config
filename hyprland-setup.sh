@@ -1102,6 +1102,10 @@ fi
 SENSITIVITY=$(grep -E "^\s*sensitivity\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/^\s*sensitivity\s*=\s*([-0-9\.]+).*/\1/')
 [ -z "$SENSITIVITY" ] && SENSITIVITY="0.0" # Default if not found
 
+# Get Scroll Factor from config
+SCROLL_FACTOR=$(grep -E "^\s*scroll_factor\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/^\s*scroll_factor\s*=\s*([0-9\.]+).*/\1/')
+[ -z "$SCROLL_FACTOR" ] && SCROLL_FACTOR="1.0" # Default if not found
+
 # Get Mouse Acceleration (flat / adaptive) from config
 PROFILE=$(grep -E "^\s*accel_profile\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/^\s*accel_profile\s*=\s*([a-zA-Z]+).*/\1/')
 [ -z "$PROFILE" ] && PROFILE="adaptive" # Default if not found
@@ -1109,7 +1113,7 @@ PROFILE=$(grep -E "^\s*accel_profile\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's
 
 
 # --- Present Options and Execute ---
-OPTION=$(printf "Set Mouse Sensitivity\nToggle Mouse Acceleration (flat / adaptive)" | wofi --dmenu --prompt "Option:")
+OPTION=$(printf "Set Mouse Sensitivity\nSet Scroll Speed\nToggle Mouse Acceleration (flat / adaptive)" | wofi --dmenu --prompt "Option:")
 [ -z "$OPTION" ] && exit 0
 
 case "$OPTION" in
@@ -1124,6 +1128,20 @@ case "$OPTION" in
             # 2. Apply permanent setting to config file
             sed -i -E "s/^(\s*sensitivity\s*=\s*)[-0-9\.]+(\s*#.*)?$/\1$SENS_VAL\2/" "$HYPR_CONFIG"
             notify-send "Permanent: Config sensitivity set to $SENS_VAL"
+        fi
+        ;;
+        
+    "Set Scroll Speed")
+        SCROLL_VAL=$(echo "$SCROLL_FACTOR" | wofi --dmenu --prompt "Set scroll speed (0.1 to 3.0):")
+        
+        if [ -n "$SCROLL_VAL" ]; then
+            # 1. Apply runtime setting GLOBALLY
+            hyprctl keyword input:scroll_factor "$SCROLL_VAL"
+            notify-send "Runtime (Global): Scroll speed set to $SCROLL_VAL"
+
+            # 2. Apply permanent setting to config file
+            sed -i -E "s/^(\s*scroll_factor\s*=\s*)[0-9\.]+(\s*#.*)?$/\1$SCROLL_VAL\2/" "$HYPR_CONFIG"
+            notify-send "Permanent: Config scroll speed set to $SCROLL_VAL"
         fi
         ;;
         
