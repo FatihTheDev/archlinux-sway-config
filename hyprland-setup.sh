@@ -1162,6 +1162,7 @@ $mod = SUPER
 bind = $mod, D, exec, wayscriber --active
 
 exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+exec-once = xhost +SI:localuser:root
 exec-once = wl-paste --type text --watch cliphist store
 exec-once = wl-paste --type image --watch cliphist store
 exec-once = waybar
