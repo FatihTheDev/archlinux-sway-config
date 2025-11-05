@@ -442,7 +442,7 @@ EOF
 fi
 
 # -----------------------
-# Configure Sway
+# Configure Hyprland
 # -----------------------
 echo "[9/15] Configuring Hyprland..."
 mkdir -p ~/.config/hypr
@@ -622,8 +622,8 @@ cat > ~/.local/bin/toggle-cheatsheet.sh <<'EOF'
 #!/bin/bash
 
 # Define the constants
-CHEATSHEET_TITLE="Sway Cheatsheet"
-CHEATSHEET_FILE="$HOME/.config/sway/cheatsheet.txt"
+CHEATSHEET_TITLE="Hyprland Cheatsheet"
+CHEATSHEET_FILE="$HOME/.config/hypr/cheatsheet.txt"
 TERMINAL="alacritty"
 
 # Search for the window based on the application ID or title
@@ -1174,7 +1174,7 @@ exec-once = /usr/bin/gnome-keyring-daemon --start --components=secrets
 exec-once = gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 exec-once = gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
 exec-once = gsettings set org.gnome.desktop.interface color-scheme 'default'
-exec-once = env QT_QPA_PLATFORMTHEME=qt5ct QT_STYLE_OVERRIDE=Adwaita-dark QT6_QPA_PLATFORMTHEME=qt6ct swaymsg exec true
+exec-once = env QT_QPA_PLATFORMTHEME=qt5ct QT_STYLE_OVERRIDE=Adwaita-dark QT6_QPA_PLATFORMTHEME=qt6ct
 exec-once = systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
 # ================================
@@ -1334,8 +1334,8 @@ bind = $mod SHIFT, UP, exec, sh -c 'brightnessctl set +5%; V=$(brightnessctl -m 
 bind = $mod SHIFT, DOWN, exec, sh -c 'brightnessctl set 5%-; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☾ Brightness" "$V%" -h int:value:$V'
 EOF
 
-cat > ~/.config/sway/cheatsheet.txt <<'EOF'
-                                   Sway WM Keybindings Cheatsheet
+cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
+                                  Hyprland WM Keybindings Cheatsheet
                                  (Superkey is the Windows/Meta key)
 
 ========================================================================================
@@ -1378,7 +1378,7 @@ Control + Shift + Escape .. Task Manager (lxtask)
                                         SYSTEM & UTILITIES
 ========================================================================================
 Super + Shift + q ......... Power Menu (Shutdown, Reboot, etc.)
-Super + Shift + Ctrl + l .. Lock Screen (swaylock)
+Super + Shift + Ctrl + l .. Lock Screen (Hyprlock)
 Super + Shift + s ......... Take Screenshot
 Super + Shift + c ......... Display this CheatSheet
 
@@ -1561,7 +1561,7 @@ echo "✅ Setup complete!"
 echo " - Task Manager: Ctrl+Shift+Esc (LXTASK)"
 echo " - Network Manager: Waybar click → nm-connection-editor"
 echo " - Bluetooth Manager: Waybar click → blueman-manager"
-echo " - Wallpaper GUI: Super+W (Azote)"
+echo " - Wallpaper Selection: Super+Shift+W"
 echo " - Volume Keys: XF86Audio keys + smart fallback Super+Shift+Right/Left/M (with OSD)"
 echo " - Brightness Keys: XF86MonBrightness keys + smart fallback Super+Shift+Up/Down (with OSD)"
 echo " - Media Keys: Play/Pause/Next/Prev supported"
