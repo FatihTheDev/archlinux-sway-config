@@ -1174,7 +1174,6 @@ exec-once = /usr/bin/gnome-keyring-daemon --start --components=secrets
 exec-once = gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 exec-once = gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
 exec-once = gsettings set org.gnome.desktop.interface color-scheme 'default'
-exec-once = env QT_QPA_PLATFORMTHEME=qt5ct QT_STYLE_OVERRIDE=Adwaita-dark QT6_QPA_PLATFORMTHEME=qt6ct
 exec-once = systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
 # ================================
