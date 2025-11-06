@@ -43,7 +43,7 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 
 ---
 
-## Keybindings
+## Keybindings Overview
 
 | Action                      | Keybinding                  |
 |------------------------------|-----------------------------|
@@ -76,10 +76,10 @@ This setup is designed for **minimal Arch installations** and provides a user-fr
 ## Installation
 
 Method 1 - Install using wget (install wget with ```sudo pacman -S wget```):
-- For sway:
-  ```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/sway-setup.sh | bash```
 - For hyprland:
   ```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/hyprland-setup.sh | bash```
+- For sway:
+  ```sudo wget -qO - https://raw.githubusercontent.com/FatihTheDev/archlinux-sway-config/main/sway-setup.sh | bash```
 
 Note: This is a capital letter o, not a zero.
 
@@ -91,13 +91,13 @@ git clone https://github.com/FatihTheDev/archlinux-sway-config.git
 cd archlinux-sway-config
 ```
 2. **Run the setup script:**
-- For sway:
-  ```bash
-  bash sway-setup.sh
-  ```
 - For hyprland:
   ```bash
   bash hyprland-setup.sh
+  ```
+- For sway:
+  ```bash
+  bash sway-setup.sh
   ```
 
 The script will install all required packages, configure Sway/Hyprland, Waybar, Wofi, bluetooth, smart volume & brightness keys, and set up GUI utilities.
