@@ -584,6 +584,34 @@ EOF
 chmod +x ~/.local/bin/toggle-wofi.sh
 
 # ------------------
+# Wofi toggle
+# ------------------
+cat > ~/.local/bin/toggle-animations.sh <<'EOF'
+#!/bin/bash
+
+STATE_FILE="$HOME/.cache/hypr_animations_state"
+
+# Initialize if missing (default: animations on)
+if [[ ! -f "$STATE_FILE" ]]; then
+    echo "1" > "$STATE_FILE"
+fi
+
+state=$(cat "$STATE_FILE")
+
+# Toggle animations
+if [[ $state -eq 1 ]]; then
+    hyprctl keyword animations:enabled 0
+    echo "0" > "$STATE_FILE"
+    hyprctl notify -1 1000 "rgb(e06c75)" "Animations off"
+else
+    hyprctl keyword animations:enabled 1
+    echo "1" > "$STATE_FILE"
+    hyprctl notify -1 1000 "rgb(98c379)" "Animations on"
+fi
+EOF
+chmod +x ~/.local/bin/toggle-animations.sh
+
+# ------------------
 # Dynamic workspace functionality (if workspace doesn't exist, create it)
 # ------------------
 cat > ~/.local/bin/dynamic-workspaces.sh <<'EOF'
@@ -1182,6 +1210,12 @@ bind = $mod CTRL SHIFT, L, exec, hyprlock
 bind = CTRL SHIFT, ESCAPE, exec, lxtask
 bind = $mod, V, exec, nwg-clipman
 
+
+# ================================
+# Toggle Animations
+# ================================
+bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
+
 # ================================
 # WINDOW MANAGEMENT
 # ================================
@@ -1283,6 +1317,12 @@ bind = , XF86AudioMute, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $S
 binde = $mod SHIFT, RIGHT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 binde = $mod SHIFT, LEFT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 bind = $mod SHIFT, M, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+
+# ==================================
+# Check if animations are on or off
+# ==================================
+exec-once = bash -c '[ -f ~/.cache/hypr_animations_state ] || echo 1 > ~/.cache/hypr_animations_state; hyprctl keyword animations:enabled $(cat ~/.cache/hypr_animations_state)'
+bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 
 # ================================
 # BRIGHTNESS CONTROL
