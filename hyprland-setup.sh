@@ -106,92 +106,11 @@ cat > ~/.local/share/applications/nvim.desktop <<'EOF'
 [Desktop Entry]
 Name=Neovim
 GenericName=Text Editor
-GenericName[ckb]=دەستکاریکەری دەق
-GenericName[de]=Texteditor
-GenericName[fr]=Éditeur de texte
-GenericName[pl]=Edytor tekstu
-GenericName[ru]=Текстовый редактор
-GenericName[sr]=Едитор текст
-GenericName[tr]=Metin Düzenleyici
-Comment=Edit text files
-Comment[af]=Redigeer tekslêers
-Comment[am]=የጽሑፍ ፋይሎች ያስተካክሉ
-Comment[ar]=حرّر ملفات نصية
-Comment[az]=Mətn fayllarını redaktə edin
-Comment[be]=Рэдагаваньне тэкставых файлаў
-Comment[bg]=Редактиране на текстови файлове
-Comment[bn]=টেক্স্ট ফাইল এডিট করুন
-Comment[bs]=Izmijeni tekstualne datoteke
-Comment[ca]=Edita fitxers de text
-Comment[ckb]=دەستکاریی فایلی دەق بکە
-Comment[cs]=Úprava textových souborů
-Comment[cy]=Golygu ffeiliau testun
-Comment[da]=Redigér tekstfiler
-Comment[de]=Textdateien bearbeiten
-Comment[el]=Επεξεργασία αρχείων κειμένου
-Comment[en_CA]=Edit text files
-Comment[en_GB]=Edit text files
-Comment[es]=Edita archivos de texto
-Comment[et]=Redigeeri tekstifaile
-Comment[eu]=Editatu testu-fitxategiak
-Comment[fa]=ویرایش پرونده‌های متنی
-Comment[fi]=Muokkaa tekstitiedostoja
-Comment[fr]=Éditer des fichiers texte
-Comment[ga]=Eagar comhad Téacs
-Comment[gu]=લખાણ ફાઇલોમાં ફેરફાર કરો
-Comment[he]=ערוך קבצי טקסט
-Comment[hi]=पाठ फ़ाइलें संपादित करें
-Comment[hr]=Uređivanje tekstualne datoteke
-Comment[hu]=Szövegfájlok szerkesztése
-Comment[id]=Edit file teks
-Comment[it]=Modifica file di testo
-Comment[ja]=テキストファイルを編集します
-Comment[kn]=ಪಠ್ಯ ಕಡತಗಳನ್ನು ಸಂಪಾದಿಸು
-Comment[ko]=텍스트 파일을 편집합니다
-Comment[lt]=Redaguoti tekstines bylas
-Comment[lv]=Rediģēt teksta failus
-Comment[mk]=Уреди текстуални фајлови
-Comment[ml]=വാചക രചനകള് തിരുത്തുക
-Comment[mn]=Текст файл боловсруулах
-Comment[mr]=गद्य फाइल संपादित करा
-Comment[ms]=Edit fail teks
-Comment[nb]=Rediger tekstfiler
-Comment[ne]=पाठ फाइललाई संशोधन गर्नुहोस्
-Comment[nl]=Tekstbestanden bewerken
-Comment[nn]=Rediger tekstfiler
-Comment[no]=Rediger tekstfiler
-Comment[or]=ପାଠ୍ଯ ଫାଇଲଗୁଡ଼ିକୁ ସମ୍ପାଦନ କରନ୍ତୁ
-Comment[pa]=ਪਾਠ ਫਾਇਲਾਂ ਸੰਪਾਦਨ
-Comment[pl]=Edytor plików tekstowych
-Comment[pt]=Editar ficheiros de texto
-Comment[pt_BR]=Edite arquivos de texto
-Comment[ro]=Editare fişiere text
-Comment[ru]=Редактирование текстовых файлов
-Comment[sk]=Úprava textových súborov
-Comment[sl]=Urejanje datotek z besedili
-Comment[sq]=Përpuno files teksti
-Comment[sr]=Уређујте текст фајлове
-Comment[sr@Latn]=Izmeni tekstualne datoteke
-Comment[sv]=Redigera textfiler
-Comment[ta]=உரை கோப்புகளை தொகுக்கவும்
-Comment[th]=แก้ไขแฟ้มข้อความ
-Comment[tk]=Metin faýllary editle
-Comment[tr]=Metin dosyaları düzenleyin
-Comment[uk]=Редактор текстових файлів
-Comment[vi]=Soạn thảo tập tin văn bản
-Comment[wa]=Asspougnî des fitchîs tecses
-Comment[zh_CN]=编辑文本文件
-Comment[zh_TW]=編輯文字檔
 TryExec=nvim
 Exec=alacritty -e nvim %F
 Terminal=false
 Type=Application
 Keywords=Text;editor;
-Keywords[ckb]=دەق;دەستکاریکەر;
-Keywords[fr]=Texte;éditeur;
-Keywords[ru]=текст;текстовый редактор;
-Keywords[sr]=Текст;едитор;
-Keywords[tr]=Metin;düzenleyici;
 Icon=nvim
 Categories=Utility;TextEditor;
 StartupNotify=false
@@ -1170,22 +1089,19 @@ cat > ~/.config/hypr/hyprland.conf <<'EOF'
 # MOD KEYS
 # ================================
 
-# SUPER = SuperKey, ALT = Alt Key
+# SUPER = SuperKey (Windows Key / Meta Key), ALT = Alt Key
 $mod = SUPER
 
 # ================================
 # STARTUP
 # ================================
-# Draw on-screen (press ESC to close drawing mode)
-bind = $mod, D, exec, wayscriber --active
-
 exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 exec-once = xhost +SI:localuser:root
 exec-once = wl-paste --type text --watch cliphist store
 exec-once = wl-paste --type image --watch cliphist store
 exec-once = waybar
 exec-once = dunst
-exec-once = sway-audio-idle-inhibit
+# exec-once = sway-audio-idle-inhibit
 exec-once = gammastep -O 1510
 exec-once = ~/.local/bin/lock.sh
 exec-once = /usr/bin/gnome-keyring-daemon --start --components=secrets
@@ -1203,13 +1119,16 @@ env = QT_STYLE_OVERRIDE, Adwaita-Dark
 # APPEARANCE
 # ================================
 general {
-    gaps_in = 5
+    gaps_in = 4
     gaps_out = 2
     border_size = 2
     layout = dwindle
+    # Active window border color
+    col.active_border = rgba(80b8f0ee) rgba(6090d0ee) 45deg
 }
 
 decoration {
+    # Rounded corners
     rounding = 5
 }
 
@@ -1221,19 +1140,29 @@ misc {
 # INPUTS
 # ================================
 input {
+    # ba - bosnian layout, en - english layout
     kb_layout = ba,us
+    # Alt + Shift - alt_shift_toggle, Superkey + Space - win_space_toggle
     kb_options = grp:alt_shift_toggle
+    # Mouse Acceleration
     accel_profile = adaptive
+    # Mouse Sensitivity
     sensitivity = 0.4 # -1.0 - 1.0, 0 means no modification.
+    # Scroll Speed
+    scroll_factor = 0.8
     touchpad {
         natural_scroll = true
         tap-to-click = true
-    }
+    } 
 }
 
 # ================================
 # APP LAUNCHERS
 # ================================
+
+# Draw on-screen (press ESC to close drawing mode)
+bind = $mod, D, exec, wayscriber --active
+
 bind = $mod, RETURN, exec, alacritty
 bind = $mod, B, exec, brave
 bind = $mod, E, exec, thunar
@@ -1252,26 +1181,26 @@ bind = $mod, V, exec, nwg-clipman
 # ================================
 # WINDOW MANAGEMENT
 # ================================
+# Close Window
 bind = $mod, Q, killactive
+# Make window full-screen
 bind = $mod, F, fullscreen
-bind = $mod, T, layoutmsg, toggletab
-bind = $mod, S, layoutmsg, togglefloating
+# Toggle window between floating and tiling mode
 bind = $mod SHIFT, SPACE, togglefloating
-bind = $mod, R, submap, resize
 
-# Move tiling windows around
+# Move tiling windows around (with ModKey + Shift + H,J,K,L)
 bind = $mod SHIFT, H, movewindow, l
 bind = $mod SHIFT, J, movewindow, d
 bind = $mod SHIFT, K, movewindow, u
 bind = $mod SHIFT, L, movewindow, r   
 
-# Move floating windows around
+# Move floating windows around (with ModKey + Shift + H,J,K,L)
 bind = $mod SHIFT, H, moveactive, -100 0
 bind = $mod SHIFT, L, moveactive, 100 0
 bind = $mod SHIFT, K, moveactive, 0 -100
 bind = $mod SHIFT, J, moveactive, 0 100
 
-# Focus windows
+# Move focus between windows (with ModKey + H,J,K,L or ModKey + Arrow Keys)
 bind = $mod, H, movefocus, l
 bind = $mod, L, movefocus, r
 bind = $mod, K, movefocus, u
@@ -1281,13 +1210,13 @@ bind = $mod, RIGHT, movefocus, r
 bind = $mod, UP, movefocus, u
 bind = $mod, DOWN, movefocus, d
 
-# =======================================================
-# Touchpad gestures (4-finger swipe to switch workpaces)
-# =======================================================
+# ====================================================================
+# Touchpad gestures (4-finger swipe horizontally to switch workpaces)
+# ====================================================================
 gesture = 4, horizontal, workspace
 
 
-# Zoom in and out with mod + plus / mod + minus
+# Zoom in and out with ModKey + Plus / ModKey + Minus
 binde = $mod, minus, exec, hyprctl keyword cursor:zoom_factor $(hyprctl getoption cursor:zoom_factor | grep float | awk '{print $2 - 0.1}')
 binde = $mod, plus, exec, hyprctl keyword cursor:zoom_factor $(hyprctl getoption cursor:zoom_factor | grep float | awk '{print $2 + 0.1}')   
 
@@ -1297,19 +1226,22 @@ binde = $mod, KP_Add, exec, hyprctl keyword cursor:zoom_factor $(hyprctl getopti
 # ================================
 # RESIZE MODE
 # ================================
+# Enter resize mode (close by pressing ESC or ENTER)
+bind = $mod, R, submap, resize
+
 submap = resize
 binde = , L, resizeactive, 10 0
 binde = , H, resizeactive, -10 0
 binde = , K, resizeactive, 0 -10
 binde = , J, resizeactive, 0 10
-binde = , RETURN, submap, reset
-binde = , ESCAPE, submap, reset
+bind = , RETURN, submap, reset
+bind = , ESCAPE, submap, reset
 submap = reset
 
 # ================================
 # WORKSPACES
 # ================================
-# Switch
+# Switch Workspaces
 bind = $mod, 1, workspace, 1
 bind = $mod, 2, workspace, 2
 bind = $mod, 3, workspace, 3
@@ -1338,20 +1270,22 @@ bind = $mod, mouse_up, exec, ~/.local/bin/dynamic-workspaces.sh next
 bind = $mod, mouse_down, exec, ~/.local/bin/dynamic-workspaces.sh prev
 
 # ================================
-# 🔊 VOLUME CONTROL
+# VOLUME CONTROL
 # ================================
 binde = , XF86AudioRaiseVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 binde = , XF86AudioLowerVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-binde = , XF86AudioMute, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bind = , XF86AudioMute, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+# ModKey + Shift + Right/Left - fallback volume control keys
 binde = $mod SHIFT, RIGHT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 binde = $mod SHIFT, LEFT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-binde = $mod SHIFT, M, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+bind = $mod SHIFT, M, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
 
 # ================================
-# 💡 BRIGHTNESS CONTROL
+# BRIGHTNESS CONTROL
 # ================================
 bind = , XF86MonBrightnessUp, exec, sh -c 'brightnessctl set +5%; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
 bind = , XF86MonBrightnessDown, exec, sh -c 'brightnessctl set 5%-; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☾ Brightness" "$V%" -h int:value:$V'
+# ModKey + Shift + Up/Down - fallback brightness control keys
 bind = $mod SHIFT, UP, exec, sh -c 'brightnessctl set +5%; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
 bind = $mod SHIFT, DOWN, exec, sh -c 'brightnessctl set 5%-; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☾ Brightness" "$V%" -h int:value:$V'
 EOF
