@@ -15,7 +15,7 @@ sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim sl
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
     nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
     playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
-    lxtask gammastep cliphist wl-clipboard gnome-font-viewer mousepad autotiling
+    lxtask gammastep cliphist gnome-font-viewer mousepad autotiling
 
 yay -S --noconfirm sway-audio-idle-inhibit-git masterpdfeditor-free wayscriber-bin
 
