@@ -372,7 +372,7 @@ cat > ~/.config/hypr/hyprlock.conf <<'EOF'
 
 general {
     disable_loading_bar = true
-    grace = 1000
+    grace = 700
     hide_cursor = false
 }
 
@@ -424,7 +424,7 @@ EOF
 
 cat > ~/.config/hypr/hypridle.conf <<'EOF'
 general {
-    lock_cmd = hyprlock
+    lock_cmd = pidof hyprlock || hyprlock
     before_sleep_cmd = loginctl lock-session
     after_sleep_cmd = hyprctl dispatch dpms on
 }
@@ -435,13 +435,14 @@ listener {
 }
 
 listener {
-    timeout = 600 # in 10 minutes (600 seconds) of idle time, turn screen off
+    timeout = 420 # in 7 minutes (420 seconds) of idle time, turn screen off
     on-timeout = hyprctl dispatch dpms off
     on-resume = hyprctl dispatch dpms on
 }
 
 listener {
-    on-timeout = hyprlock
+    timeout = 600 # in 10 minutes (600 seconds) of idle time, suspend to save power
+    on-timeout = systemctl suspend
 }
 EOF
 
