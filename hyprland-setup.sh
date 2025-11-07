@@ -257,7 +257,7 @@ cat > ~/.config/waybar/config <<'EOF'
 
   "modules-left": ["sway/workspaces", "hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["network", "battery", "bluetooth", "pulseaudio", "sway/language", "hyprland/language", "tray", "custom/notifications"],
+  "modules-right": ["network", "battery", "bluetooth", "backlight", "pulseaudio", "sway/language", "hyprland/language", "tray", "custom/notifications"],
 
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
@@ -282,6 +282,12 @@ cat > ~/.config/waybar/config <<'EOF'
     "format": "<span font='Font Awesome 6 Free 11'>\uf027</span> {volume}%",
     "on-click": "pavucontrol",
     "capped-values": true
+  },
+
+  "backlight": {
+  "format": "<span font='Font Awesome 6 Free'>\uf185</span> {percent}%",
+  "on-scroll-up": "brightnessctl set +5%",
+  "on-scroll-down": "brightnessctl set 5%-"
   },
 
   "network": {
@@ -369,6 +375,7 @@ window#waybar {
 #pulseaudio,
 #network,
 #bluetooth,
+#backlight,
 #language,
 #tray,
 #custom-notifications,
