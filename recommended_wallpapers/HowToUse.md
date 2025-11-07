@@ -5,4 +5,8 @@ How to use wallpapers
 
 Credit for wallpapers:
 ---
+Mountain Wallpaper: [Mountain Wallpaper](https://www.wallpaperalchemy.com/arch-linux/wallpapers)
 Windowsy Wallpaper: [WIndowsy Wallpaper](https://wallpapers.com/arch-linux)
+Spiral Wallpaper: [Spiral Wallpaper](https://hdqwalls.com/arch-linux-wallpapers/sort/views)
+Dragon Wallpaper: [Dragon Wallpaper](https://getwallpapers.com/collection/arch-linux-wallpaper)
+Green-Arch Wallpaper: [Green-Arch Wallpaper](https://wallpapercave.com/arch-linux-wallpaper-1920x1080)
