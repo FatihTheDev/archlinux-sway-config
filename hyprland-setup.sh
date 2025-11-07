@@ -371,6 +371,7 @@ window#waybar {
 #bluetooth,
 #language,
 #tray,
+#custom-notifications,
 #workspaces {
   padding: 0 10px;
 }
