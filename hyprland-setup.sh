@@ -14,7 +14,7 @@ sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim sl
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-wlr xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
     nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
-    playerctl dunst libnotify inotify-tools brightnessctl polkit-gnome \
+    playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask gammastep cliphist gnome-font-viewer mousepad autotiling
 
 yay -S --noconfirm sway-audio-idle-inhibit-git masterpdfeditor-free wayscriber-bin
@@ -1128,8 +1128,8 @@ exec-once = xhost +SI:localuser:root
 exec-once = wl-paste --type text --watch cliphist store
 exec-once = wl-paste --type image --watch cliphist store
 exec-once = waybar
-exec-once = dunst
-# exec-once = sway-audio-idle-inhibit
+exec-once = swaync
+exec-once = swayosd-server
 exec-once = gammastep -O 1510
 exec-once = ~/.local/bin/lock.sh
 exec-once = /usr/bin/gnome-keyring-daemon --start --components=secrets
@@ -1209,12 +1209,6 @@ bind = $mod SHIFT, Q, exec, ~/.local/bin/power-menu.sh
 bind = $mod CTRL SHIFT, L, exec, hyprlock
 bind = CTRL SHIFT, ESCAPE, exec, lxtask
 bind = $mod, V, exec, nwg-clipman
-
-
-# ================================
-# Toggle Animations
-# ================================
-bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 
 # ================================
 # WINDOW MANAGEMENT
@@ -1308,15 +1302,39 @@ bind = $mod, mouse_up, exec, ~/.local/bin/dynamic-workspaces.sh next
 bind = $mod, mouse_down, exec, ~/.local/bin/dynamic-workspaces.sh prev
 
 # ================================
+# SWAYNC (Notification Center)
+# ================================
+# Mod + N to toggle the notification/control center
+bind = $mod, N, exec, swaync-client -t
+# Mod + Shift + N to close all notifications
+bind = $mod SHIFT, N, exec, swaync-client -C
+
+# ================================
 # VOLUME CONTROL
 # ================================
-binde = , XF86AudioRaiseVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-binde = , XF86AudioLowerVolume, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bind = , XF86AudioMute, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-# ModKey + Shift + Right/Left - fallback volume control keys
-binde = $mod SHIFT, RIGHT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK +5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-binde = $mod SHIFT, LEFT, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-volume $SINK -5%; V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "🔊 Volume" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
-bind = $mod SHIFT, M, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SINK toggle; M=$(pactl get-sink-mute $SINK | grep -q yes && echo "🔇 Muted" || echo "🔊 Unmuted"); V=$(pactl get-sink-volume $SINK | grep -oP "\\d{1,3}(?=%)" | head -1); V_DISPLAY=$(( V>200 ? 200 : V )); dunstify -r 2593 -u normal "$M" "$V_DISPLAY%" -h int:value:$V_DISPLAY'
+# These keys call the swaync-client, which runs the commands defined in config.json
+binde = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && swayosd-client --output-volume 5
+binde = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && swayosd-client --output-volume -5
+bind = , XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
+# # ModKey + Shift + Right/Left - fallback volume control keys
+binde = $mod SHIFT, RIGHT, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && swayosd-client --output-volume 5
+binde = $mod SHIFT, LEFT, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && swayosd-client --output-volume -5
+bind = $mod SHIFT, M, exec, swayosd-client --output-volume mute-toggle
+
+# ================================
+# BRIGHTNESS CONTROL
+# ================================
+binde = , XF86MonBrightnessUp, exec, brightnessctl set 5%+ && swayosd-client --brightness +2
+binde = , XF86MonBrightnessDown, exec, brightnessctl set 5%- && swayosd-client --brightness -2
+# ModKey + Shift + Up/Down - fallback brightness control keys
+bind = $mod SHIFT, UP, exec, brightnessctl set 5%+ && swayosd-client --brightness +2
+bind = $mod SHIFT, DOWN, exec, brightnessctl set 5%- && swayosd-client --brightness -2
+
+# ================================
+# Show Caps Lock
+# ================================
+# Capslock (If you don't want to use the backend)
+bind = , Caps_Lock, exec, swayosd-client --caps-lock
 
 # ==================================
 # Check if animations are on or off
@@ -1324,14 +1342,9 @@ bind = $mod SHIFT, M, exec, sh -c 'SINK=@DEFAULT_SINK@; pactl set-sink-mute $SIN
 exec-once = bash -c '[ -f ~/.cache/hypr_animations_state ] || echo 1 > ~/.cache/hypr_animations_state; hyprctl keyword animations:enabled $(cat ~/.cache/hypr_animations_state)'
 bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 
-# ================================
-# BRIGHTNESS CONTROL
-# ================================
-bind = , XF86MonBrightnessUp, exec, sh -c 'brightnessctl set +5%; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
-bind = , XF86MonBrightnessDown, exec, sh -c 'brightnessctl set 5%-; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☾ Brightness" "$V%" -h int:value:$V'
-# ModKey + Shift + Up/Down - fallback brightness control keys
-bind = $mod SHIFT, UP, exec, sh -c 'brightnessctl set +5%; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☀️ Brightness" "$V%" -h int:value:$V'
-bind = $mod SHIFT, DOWN, exec, sh -c 'brightnessctl set 5%-; V=$(brightnessctl -m | awk -F, "{print \$4}" | tr -d "%"); dunstify -r 2594 -u normal "☾ Brightness" "$V%" -h int:value:$V'
+# ==================================
+# Wallpaper and Display settings
+# ==================================
 EOF
 
 cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
