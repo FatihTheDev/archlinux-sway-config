@@ -257,7 +257,7 @@ cat > ~/.config/waybar/config <<'EOF'
 
   "modules-left": ["sway/workspaces", "hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["network", "battery", "bluetooth", "pulseaudio", "sway/language", "hyprland/language", "tray"],
+  "modules-right": ["network", "battery", "bluetooth", "pulseaudio", "sway/language", "hyprland/language", "tray", "custom/notifications"],
 
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
@@ -279,7 +279,7 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "pulseaudio": {
-    "format": "\uf028 {volume}%",
+    "format": "<span font='Font Awesome 6 Free 11'>\uf027</span> {volume}%",
     "on-click": "pavucontrol",
     "capped-values": true
   },
@@ -302,6 +302,11 @@ cat > ~/.config/waybar/config <<'EOF'
   },
   "sway/language": {
     "format": "{short} {variant}"
+  },
+
+  "custom/notifications": {
+    "format": "<span font='Font Awesome 6 Free'>\uf0f3</span>",
+    "on-click": "swaync-client -t"
   },
 
   "tray": {
@@ -1340,19 +1345,33 @@ input {
 # Draw on-screen (press ESC to close drawing mode)
 bind = $mod, D, exec, wayscriber --active
 
+# Terminal (mod + enter)
 bind = $mod, RETURN, exec, alacritty
+# Brave Browser (mod + b)
 bind = $mod, B, exec, brave
+# File Manager (mod + e)
 bind = $mod, E, exec, thunar
+# Toggle Cheat Sheet (mod + shift + c)
 bind = $mod SHIFT, C, exec, ~/.local/bin/toggle-cheatsheet.sh
+# Take a screenshot (mod + shift + c)
 bind = $mod SHIFT, S, exec, ~/.local/bin/screenshot.sh
+# Settings for input devices like mouse and touchpad (mod + shift + i)
 bind = $mod SHIFT, I, exec, ~/.local/bin/input-config.sh
+# Settings for displays (mod + shift + d)
 bind = $mod SHIFT, D, exec, ~/.local/bin/display-settings.sh
+# Wallpaper picker (mod + shift + w) (Must have some images in /home/username/Pictures/Wallpapers to select them)
 bind = $mod SHIFT, W, exec, ~/.local/bin/set-wallpaper.sh
+# GTK GUI settings (mod + shift + t)
 bind = $mod SHIFT, T, exec, nwg-look
+# Toggle application Launcher (mod + space)
 bind = $mod, SPACE, exec, ~/.local/bin/toggle-wofi.sh
+# Open power menu (mod + shift + q)
 bind = $mod SHIFT, Q, exec, ~/.local/bin/power-menu.sh
+# Lock he screen (mod + ctrl + shift + l)
 bind = $mod CTRL SHIFT, L, exec, hyprlock
+# Open task manager (mod + shift + esc)
 bind = CTRL SHIFT, ESCAPE, exec, lxtask
+# Open clipboard manager (mod + v)
 bind = $mod, V, exec, nwg-clipman
 
 # ================================
