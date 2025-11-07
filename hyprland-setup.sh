@@ -365,6 +365,7 @@ fi
 # -----------------------
 echo "[9/15] Configuring Hyprland..."
 mkdir -p ~/.config/hypr
+mkdir -p ~/.config/swaync
 
 cat > ~/.config/hypr/hyprlock.conf <<'EOF'
 # Dark Mode / Eye-Friendly hyprlock.conf
@@ -441,6 +442,149 @@ listener {
 
 listener {
     on-timeout = hyprlock
+}
+EOF
+
+# -----------------------
+# Configuring SwayNC
+# -----------------------
+cat > ~/.config/swaync/config.json <<'EOF'
+{
+  "positionX": "right",
+  "positionY": "top",
+  "layer": "overlay",
+  
+  "osd-positionX": "center",
+  "osd-positionY": "center",
+  "osd-window-width": 300,
+  "osd-timeout": 1500,
+  "osd-output": "auto",
+  
+  "control-center-layer": "overlay",
+  "control-center-positionX": "right",
+  "control-center-positionY": "top",
+  "notification-window-width": 400,
+  "control-center-width": 500,
+  "notification-visibility": {
+    "low": {
+      "timeout": 5
+    },
+    "normal": {
+      "timeout": 5
+    },
+    "critical": {
+      "timeout": 7
+    }
+  },
+  "widgets": [
+    "title",
+    "dnd",
+    "notifications",
+    "mpris",
+    "volume",
+    "brightness"
+  ],
+  "widget-config": {
+    "title": {
+      "text": "Control Center",
+      "clear-all-button": true
+    },
+    "dnd": {
+      "text": "Do Not Disturb"
+    },
+    "volume": {
+      "label": " Volume",
+      "max-volume": 140, 
+      "min-volume": 0,
+      "volume-command-up": "sh -c 'wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+'",
+      "volume-command-down": "sh -c 'wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-'",
+      "volume-command-mute": "sh -c 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle'"
+    },
+    "brightness": {
+      "label": "󰃟 Brightness",
+      "min-brightness": 5,
+      "brightness-command-up": "sh -c 'brightnessctl set +5%'",
+      "brightness-command-down": "sh -c 'brightnessctl set 5%-' "
+    },
+    "mpris": {
+      "image-size": 96,
+      "image-radius": 12
+    }
+  }
+}
+EOF
+
+cat > ~/.config/swaync/style.css <<'EOF'
+/* Note: Removed Gtk theme import. If you want it, use a valid path on your system,
+   like: @import '/usr/share/themes/Adwaita-dark/gtk-3.0/gtk.css'; 
+   But the error suggests this path is invalid, so let's use the defaults. */
+
+/* ======================================= */
+/* OSD Window (Volume/Brightness Indicator) */
+/* ======================================= */
+.osd-window {
+    background-color: rgba(30, 30, 45, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(100, 100, 120, 0.5);
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* The OSD label (e.g., "🔊 Volume") */
+.osd-window .label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #cdd6f4;
+    margin-bottom: 10px;
+}
+
+/* The OSD progress bar */
+.osd-window progress {
+    background-color: #444;
+    border: none;
+    border-radius: 8px;
+}
+
+.osd-window progress trough {
+    background-color: #333;
+    border-radius: 8px;
+    /* Use min-height to set the size of the bar */
+    min-height: 20px;
+}
+
+.osd-window progress progress {
+    background-color: #89b4fa;
+    /* Accent Color (Blue) */
+    border-radius: 8px;
+}
+
+
+/* ======================================= */
+/* Standard Notification Styling (Optional) */
+/* ======================================= */
+
+.notification-row {
+    outline: none;
+    margin: 12px;
+}
+
+.notification {
+    background-color: rgba(30, 30, 45, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(100, 100, 120, 0.5);
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #cdd6f4;
+}
+
+.body {
+    font-size: 1rem;
+    color: #cdd6f4;
 }
 EOF
 
