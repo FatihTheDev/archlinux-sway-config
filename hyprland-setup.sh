@@ -261,7 +261,8 @@ cat > ~/.config/waybar/config <<'EOF'
 
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
-    "tooltip": false
+    "tooltip": false,
+    "on-click": "gsimplecal --toggle"
   },
 
   "battery": {
@@ -316,7 +317,7 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "tray": {
-    "icon-size": 12,
+    "icon-size": 21,
     "spacing": 10
   },
 
@@ -350,7 +351,8 @@ cat > ~/.config/waybar/style.css <<'EOF'
 }
 
 window#waybar {
-  background-color: rgba(0, 0, 0, 0.5);
+  /* Fully transparent top bar */
+  background-color: rgba(0, 0, 0, 0.0);
 }
 
 #workspaces {
@@ -362,6 +364,7 @@ window#waybar {
   font-weight: bold;
 }
 
+/* Modules of top bar are slightly transparent */
 .modules-left,
 .modules-center,
 .modules-right {
