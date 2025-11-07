@@ -341,16 +341,28 @@ cat > ~/.config/waybar/style.css <<'EOF'
   font-family: "Font Awesome 6 Free", "Noto Sans";
   font-size: 15px;
   color: #ffffff;
-  background-color: #000000;
+}
+
+window#waybar {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 #workspaces {
-padding: 0px 5px 0px 5px;
+  padding: 0px 5px 0px 5px;
 }
 
 #clock {
   font-size: 17px;
   font-weight: bold;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 0 5px;
+  margin: 0 5px;
 }
 
 #battery,
