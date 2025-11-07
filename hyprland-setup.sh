@@ -1344,7 +1344,7 @@ input {
     # Mouse Sensitivity
     sensitivity = 0.4 # -1.0 - 1.0, 0 means no modification.
     # Scroll Speed
-    scroll_factor = 0.8
+    scroll_factor = 1.2
     touchpad {
         natural_scroll = true
         tap-to-click = true
@@ -1435,7 +1435,7 @@ binde = $mod, KP_Add, exec, hyprctl keyword cursor:zoom_factor $(hyprctl getopti
 # ================================
 # RESIZE MODE
 # ================================
-# Enter resize mode (close by pressing ESC or ENTER)
+# Enter resize mode with mod + r (close by pressing ESC or ENTER)
 bind = $mod, R, submap, resize
 
 submap = resize
@@ -1450,7 +1450,7 @@ submap = reset
 # ================================
 # WORKSPACES
 # ================================
-# Switch Workspaces
+# Switch Workspaces (mod + 1-9)
 bind = $mod, 1, workspace, 1
 bind = $mod, 2, workspace, 2
 bind = $mod, 3, workspace, 3
@@ -1462,7 +1462,7 @@ bind = $mod, 8, workspace, 8
 bind = $mod, 9, workspace, 9
 bind = $mod, 0, workspace, 10
 
-# Move window to workspace
+# Move window to workspace (mod + shift + 1-9)
 bind = $mod SHIFT, 1, movetoworkspace, 1
 bind = $mod SHIFT, 2, movetoworkspace, 2
 bind = $mod SHIFT, 3, movetoworkspace, 3
@@ -1474,7 +1474,7 @@ bind = $mod SHIFT, 8, movetoworkspace, 8
 bind = $mod SHIFT, 9, movetoworkspace, 9
 bind = $mod SHIFT, 0, movetoworkspace, 10
 
-# Super + Mouse scroll to switch workspaces dynamically
+# mod + Mouse scroll to switch workspaces dynamically
 bind = $mod, mouse_up, exec, ~/.local/bin/dynamic-workspaces.sh next
 bind = $mod, mouse_down, exec, ~/.local/bin/dynamic-workspaces.sh prev
 
@@ -1489,23 +1489,22 @@ bind = $mod SHIFT, N, exec, swaync-client -C
 # ================================
 # VOLUME CONTROL
 # ================================
-# These keys call the swaync-client, which runs the commands defined in config.json
-binde = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && swayosd-client --output-volume 5
-binde = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && swayosd-client --output-volume -5
+binde = , XF86AudioRaiseVolume, exec, swayosd-client --output-volume 5
+binde = , XF86AudioLowerVolume, exec, swayosd-client --output-volume -5
 bind = , XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
-# # ModKey + Shift + Right/Left - fallback volume control keys
-binde = $mod SHIFT, RIGHT, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && swayosd-client --output-volume 5
-binde = $mod SHIFT, LEFT, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && swayosd-client --output-volume -5
+# ModKey + Shift + Right/Left - fallback volume control keys
+binde = $mod SHIFT, RIGHT, exec, swayosd-client --output-volume 5
+binde = $mod SHIFT, LEFT, exec, swayosd-client --output-volume -5
 bind = $mod SHIFT, M, exec, swayosd-client --output-volume mute-toggle
 
 # ================================
 # BRIGHTNESS CONTROL
 # ================================
-binde = , XF86MonBrightnessUp, exec, brightnessctl set 5%+ && swayosd-client --brightness +2
-binde = , XF86MonBrightnessDown, exec, brightnessctl set 5%- && swayosd-client --brightness -2
+binde = , XF86MonBrightnessUp, exec, swayosd-client --brightness +5
+binde = , XF86MonBrightnessDown, exec, swayosd-client --brightness -5
 # ModKey + Shift + Up/Down - fallback brightness control keys
-bind = $mod SHIFT, UP, exec, brightnessctl set 5%+ && swayosd-client --brightness +2
-bind = $mod SHIFT, DOWN, exec, brightnessctl set 5%- && swayosd-client --brightness -2
+bind = $mod SHIFT, UP, exec, swayosd-client --brightness +5
+bind = $mod SHIFT, DOWN, exec, swayosd-client --brightness -5
 
 # ================================
 # Show Caps Lock
