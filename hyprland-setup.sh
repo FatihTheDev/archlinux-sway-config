@@ -1353,7 +1353,7 @@ bind = $mod, B, exec, brave
 bind = $mod, E, exec, thunar
 # Toggle Cheat Sheet (mod + shift + c)
 bind = $mod SHIFT, C, exec, ~/.local/bin/toggle-cheatsheet.sh
-# Take a screenshot (mod + shift + c)
+# Take a screenshot (mod + shift + s)
 bind = $mod SHIFT, S, exec, ~/.local/bin/screenshot.sh
 # Settings for input devices like mouse and touchpad (mod + shift + i)
 bind = $mod SHIFT, I, exec, ~/.local/bin/input-config.sh
