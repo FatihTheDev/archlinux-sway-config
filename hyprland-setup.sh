@@ -1492,28 +1492,43 @@ bind = $mod SHIFT, N, exec, swaync-client -C
 # ================================
 # VOLUME CONTROL
 # ================================
-# These keys call the swaync-client, which runs the commands defined in config.json
-binde = , XF86AudioRaiseVolume, exec, swayosd-client --output-volume 5
-binde = , XF86AudioLowerVolume, exec, swayosd-client --output-volume -5
+# Raise volume by 5%, maximum volume is 155% (set to any value you want)
+binde = , XF86AudioRaiseVolume, exec, swayosd-client --output-volume 5 --max-volume 155
+# Lower volume by 5%, maximum volume is 155% (set to any value you want)
+binde = , XF86AudioLowerVolume, exec, swayosd-client --output-volume -5 --max-volume 155
+# Mute volume
 bind = , XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
+
+# ===================
 # ModKey + Shift + Right/Left - fallback volume control keys
-binde = $mod SHIFT, RIGHT, exec, swayosd-client --output-volume 5
-binde = $mod SHIFT, LEFT, exec, swayosd-client --output-volume -5
+# ===================
+# Raise volume by 5%, maximum volume is 155% (set to any value you want)
+binde = $mod SHIFT, RIGHT, exec, swayosd-client --output-volume 5 --max-volume 155
+# Lower volume by 5%, maximum volume is 155% (set to any value you want)
+binde = $mod SHIFT, LEFT, exec, swayosd-client --output-volume -5 --max-volume 155
+# Mute volume
 bind = $mod SHIFT, M, exec, swayosd-client --output-volume mute-toggle
 
 # ================================
 # BRIGHTNESS CONTROL
 # ================================
+# Raise brightness by 5%
 binde = , XF86MonBrightnessUp, exec, swayosd-client --brightness +5
+# Lower brightness by 5%
 binde = , XF86MonBrightnessDown, exec, swayosd-client --brightness -5
+
+# ===================
 # ModKey + Shift + Up/Down - fallback brightness control keys
+# ===================
+# Raise brightness by 5%
 bind = $mod SHIFT, UP, exec, swayosd-client --brightness +5
+# Lower brightness by 5%
 bind = $mod SHIFT, DOWN, exec, swayosd-client --brightness -5
 
 # ================================
 # Show Caps Lock
 # ================================
-# Caps Lock indicator
+# CapsLock Indicator
 bind = , Caps_Lock, exec, swayosd-client --caps-lock
 
 # ==================================
@@ -1522,9 +1537,9 @@ bind = , Caps_Lock, exec, swayosd-client --caps-lock
 exec-once = bash -c '[ -f ~/.cache/hypr_animations_state ] || echo 1 > ~/.cache/hypr_animations_state; hyprctl keyword animations:enabled $(cat ~/.cache/hypr_animations_state)'
 bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 
-# =======================================================
-# Wallpaper and Display settings (Dynamically Generated)
-# =======================================================
+# ==================================
+# Wallpaper and Display settings
+# ==================================
 EOF
 
 cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
