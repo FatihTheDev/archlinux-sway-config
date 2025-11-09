@@ -13,7 +13,7 @@ sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim sl
     xorg-xhost alacritty librewolf brave \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-wlr xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
-    nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar qpdfview \
+    nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar \
     playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask mate-calc gsimplecal gammastep cliphist gnome-font-viewer mousepad autotiling
 
@@ -133,21 +133,6 @@ MimeType=image/jpeg;image/png;image/gif;image/bmp;image/webp;image/svg+xml;
 EOF
 fi
 
-# qpdfview desktop
-if [[ ! -f ~/.local/share/applications/qpdfview.desktop ]]; then
-cat > ~/.local/share/applications/qpdfview.desktop <<'EOF'
-[Desktop Entry]
-Name=qpdfview
-Comment=Tabbed PDF viewer
-Exec=qpdfview %f
-Icon=qpdfview
-Terminal=false
-Type=Application
-Categories=Office;Viewer;
-MimeType=application/pdf;application/x-pdf;image/pdf;
-EOF
-fi
-
 # Update desktop database (user-level) if tool exists; don't fail script on error
 if command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database ~/.local/share/applications || true
@@ -226,7 +211,7 @@ xdg-mime default org.xfce.mousepad.desktop text/plain || true
 # Export env vars once (avoid duplicates)
 grep -qxF 'export BROWSER=brave' ~/.profile 2>/dev/null || echo 'export BROWSER=brave' >> ~/.profile
 grep -qxF 'export TERMINAL=alacritty' ~/.profile 2>/dev/null || echo 'export TERMINAL=alacritty' >> ~/.profile
-grep -qxF 'export DOCUMENT_VIEWER=qpdfview' ~/.profile 2>/dev/null || echo 'export DOCUMENT_VIEWER=qpdfview' >> ~/.profile
+grep -qxF 'export DOCUMENT_VIEWER=masterpdfeditor4' ~/.profile 2>/dev/null || echo 'export DOCUMENT_VIEWER=masterpdfeditor4' >> ~/.profile
 
 echo "Default applications set (user mimeapps.list written to $MIMEFILE)."
 
@@ -266,10 +251,10 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "battery": {
-    "format": "<span font='Font Awesome 6 Free 11'>{icon}</span>  {capacity}% - {time}",
+    "format": "<span font='Font Awesome 6 Free'>{icon}</span> {capacity}%",
     "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"],
-    "format-charging": "<span font='Font Awesome 6 Free'>\uf0e7</span>  <span font='Font Awesome 6 Free 11'>{icon}</span>  {capacity}% - {time}",
-    "format-full": "<span font='Font Awesome 6 Free'>\uf0e7</span>  <span font='Font Awesome 6 Free 11'>{icon}</span>  Charged",
+    "format-charging": "<span font='Font Awesome 6 Free'>\uf0e7</span> <span font='Font Awesome 6 Free 11'>{icon}</span> {capacity}% - {time}",
+    "format-full": "<span font='Font Awesome 6 Free'>\uf0e7</span> <span font='Font Awesome 6 Free 11'>{icon}</span> Charged",
     "interval": 12,
     "states": {
       "warning": 20,
@@ -280,7 +265,7 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "pulseaudio": {
-    "format": "<span font='Font Awesome 6 Free 11'>\uf027</span> {volume}%",
+    "format": "<span font='Font Awesome 6 Free 11'>\uf026</span> {volume}%",
     "on-click": "pavucontrol",
     "capped-values": true
   },
@@ -292,7 +277,7 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "network": {
-    "format": "\uf1eb {ifname} {essid} {signalStrength}%",
+    "format": "<span font='Font Awesome 6 Free'>\uf1eb</span> {essid} {signalStrength}%",
     "on-click": "nmtui"
   },
 
@@ -317,7 +302,7 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "tray": {
-    "icon-size": 21,
+    "icon-size": 15,
     "spacing": 10
   },
 
@@ -345,8 +330,8 @@ EOF
 if [[ ! -f ~/.config/waybar/style.css ]]; then
 cat > ~/.config/waybar/style.css <<'EOF'
 * {
-  font-family: "Font Awesome 6 Free", "Noto Sans";
-  font-size: 15px;
+  font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", "Noto Sans";
+  font-size: 14px;
   color: #ffffff;
 }
 
@@ -360,11 +345,10 @@ window#waybar {
 }
 
 #clock {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: bold;
 }
 
-/* Modules of top bar are slightly transparent */
 .modules-left,
 .modules-center,
 .modules-right {
@@ -373,6 +357,7 @@ window#waybar {
   padding: 0 5px;
   margin: 0 5px;
 }
+
 
 #battery,
 #pulseaudio,
@@ -383,7 +368,7 @@ window#waybar {
 #tray,
 #custom-notifications,
 #workspaces {
-  padding: 0 10px;
+  padding: 0 7px;
 }
 EOF
 fi
