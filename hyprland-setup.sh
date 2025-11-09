@@ -1278,7 +1278,7 @@ cat > ~/.config/hypr/hyprland.conf <<'EOF'
 # ================================
 
 # SUPER = SuperKey (Windows Key / Meta Key), ALT = Alt Key
-$mod = SUPER
+$mod = ALT
 
 # ================================
 # STARTUP
@@ -1335,7 +1335,7 @@ input {
     # ba - bosnian layout, en - english layout
     kb_layout = ba,us
     # Alt + Shift - alt_shift_toggle, Superkey + Space - win_space_toggle
-    kb_options = grp:alt_shift_toggle
+    kb_options = grp:win_space_toggle
     # Mouse Acceleration
     accel_profile = adaptive
     # Mouse Sensitivity
@@ -1411,10 +1411,16 @@ bind = $mod, H, movefocus, l
 bind = $mod, L, movefocus, r
 bind = $mod, K, movefocus, u
 bind = $mod, J, movefocus, d
+
 bind = $mod, LEFT, movefocus, l
 bind = $mod, RIGHT, movefocus, r
 bind = $mod, UP, movefocus, u
 bind = $mod, DOWN, movefocus, d
+
+# mod + left mouse button drag to move windows around
+bindm = $mod, mouse:272, movewindow
+# mod + right mouse button drag to resize windows
+bindm = $mod, mouse:273, resizewindow
 
 # ====================================================================
 # Touchpad gestures (4-finger swipe horizontally to switch workpaces)
@@ -1432,7 +1438,7 @@ binde = $mod, KP_Add, exec, hyprctl keyword cursor:zoom_factor $(hyprctl getopti
 # ================================
 # RESIZE MODE
 # ================================
-# Enter resize mode with mod + r (close by pressing ESC or ENTER)
+# Enter resize mode (close by pressing ESC or ENTER)
 bind = $mod, R, submap, resize
 
 submap = resize
@@ -1447,7 +1453,7 @@ submap = reset
 # ================================
 # WORKSPACES
 # ================================
-# Switch Workspaces (mod + 1-9)
+# Switch Workspaces
 bind = $mod, 1, workspace, 1
 bind = $mod, 2, workspace, 2
 bind = $mod, 3, workspace, 3
@@ -1459,7 +1465,7 @@ bind = $mod, 8, workspace, 8
 bind = $mod, 9, workspace, 9
 bind = $mod, 0, workspace, 10
 
-# Move window to workspace (mod + shift + 1-9)
+# Move window to workspace
 bind = $mod SHIFT, 1, movetoworkspace, 1
 bind = $mod SHIFT, 2, movetoworkspace, 2
 bind = $mod SHIFT, 3, movetoworkspace, 3
@@ -1471,7 +1477,7 @@ bind = $mod SHIFT, 8, movetoworkspace, 8
 bind = $mod SHIFT, 9, movetoworkspace, 9
 bind = $mod SHIFT, 0, movetoworkspace, 10
 
-# mod + Mouse scroll to switch workspaces dynamically
+# Super + Mouse scroll to switch workspaces dynamically
 bind = $mod, mouse_up, exec, ~/.local/bin/dynamic-workspaces.sh next
 bind = $mod, mouse_down, exec, ~/.local/bin/dynamic-workspaces.sh prev
 
@@ -1486,6 +1492,7 @@ bind = $mod SHIFT, N, exec, swaync-client -C
 # ================================
 # VOLUME CONTROL
 # ================================
+# These keys call the swaync-client, which runs the commands defined in config.json
 binde = , XF86AudioRaiseVolume, exec, swayosd-client --output-volume 5
 binde = , XF86AudioLowerVolume, exec, swayosd-client --output-volume -5
 bind = , XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
@@ -1506,7 +1513,7 @@ bind = $mod SHIFT, DOWN, exec, swayosd-client --brightness -5
 # ================================
 # Show Caps Lock
 # ================================
-# Capslock (If you don't want to use the backend)
+# Caps Lock indicator
 bind = , Caps_Lock, exec, swayosd-client --caps-lock
 
 # ==================================
@@ -1515,9 +1522,9 @@ bind = , Caps_Lock, exec, swayosd-client --caps-lock
 exec-once = bash -c '[ -f ~/.cache/hypr_animations_state ] || echo 1 > ~/.cache/hypr_animations_state; hyprctl keyword animations:enabled $(cat ~/.cache/hypr_animations_state)'
 bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 
-# ==================================
-# Wallpaper and Display settings
-# ==================================
+# =======================================================
+# Wallpaper and Display settings (Dynamically Generated)
+# =======================================================
 EOF
 
 cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
