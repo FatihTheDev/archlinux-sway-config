@@ -1528,6 +1528,7 @@ bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 EOF
 
 cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
+
                                    HYPRLAND WINDOW MANAGER KEYBINDINGS CHEATSHEET  
      (Quick reference for essential Hyprland controls — you can modify all bindings in ~/.config/hypr/hyprland.conf.)  
        (Mod = your main modifier key — usually Alt or Super/Windows key, as set in your config.)
@@ -1569,7 +1570,7 @@ cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
                         Mod + Shift + Q ............... Power menu (Shutdown, Reboot, etc.)
                         Mod + Ctrl + Shift + L ........ Lock screen (Hyprlock)
                         Mod + Shift + S ............... Take screenshot
-                        Mod + Shift + C ............... Toggle this cheatsheet
+                        Mod + Shift + C ............... Open this cheatsheet
                         Mod + N ....................... Toggle notifications/control center
                         Mod + Shift + N ............... Dismiss all notifications
 
