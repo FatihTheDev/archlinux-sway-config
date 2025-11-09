@@ -1528,66 +1528,73 @@ bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 EOF
 
 cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
-                                  Hyprland WM Keybindings Cheatsheet
-                                 (Superkey is the Windows/Meta key)
+                                   HYPRLAND WINDOW MANAGER KEYBINDINGS CHEATSHEET  
+     (Quick reference for essential Hyprland controls — you can modify all bindings in ~/.config/hypr/hyprland.conf.)  
+       (Mod = your main modifier key — usually Alt or Super/Windows key, as set in your config.)
 
-========================================================================================
-                                     WINDOW MANAGEMENT & MOVEMENT
-========================================================================================
-Super + Return ............ Launch Terminal (Alacritty)
-Super + q ................. Close/Kill Focused Window
-Super + f ................. Toggle Fullscreen Mode
-Super + Shift + Space ..... Toggle Floating/Tiling Mode
-Super + r ................. Enter Resize Mode (Use Arrow Keys to resize. Esc or Return to exit.)
+                    ================================================================================
+                                              WINDOW MANAGEMENT & FOCUS
+                    ================================================================================
+                        Mod + Q ....................... Close focused window
+                        Mod + F ....................... Toggle fullscreen
+                        Mod + Shift + Space ........... Toggle floating / tiling mode
+                        Mod + R ....................... Enter resize mode (Esc / Enter to exit)
+                        Mod + H / J / K / L ........... Move focus left / down / up / right
+                        Mod + Arrow Keys .............. Move focus left / right / up / down
+                        Mod + Shift + H / J / K / L ... Move window left / down / up / right
+                        Mod + Left Click Drag ......... Move window
+                        Mod + Right Click Drag ........ Resize window
 
-                                       FOCUS & MOVEMENT
-Super + h/j/k/l or Super + Arrow Keys ........... Move Focus Left/Down/Up/Right
-Super + Shift + h/j/k/l ......................... Move Window Left/Down/Up/Right
+                    ================================================================================
+                                                    WORKSPACES
+                    ================================================================================
+                        Mod + 1–0 ..................... Switch to workspace 1–10
+                        Mod + Shift + 1–0 ............. Move window to workspace 1–10
+                        Mod + Scroll Up/Down .......... Switch workspaces dynamically
+                        4-finger swipe (touchpad) ..... Switch workspaces horizontally
 
-                                         SPLIT & LAUNCH
-Super + Ctrl + v .......... Vertical Split, then Launch App
-Super + Ctrl + h .......... Horizontal Split, then Launch App
+                    ================================================================================
+                                                  APP LAUNCHERS
+                    ================================================================================
+                        Mod + Return .................. Terminal (Alacritty)
+                        Mod + Space ................... App launcher (Wofi)
+                        Mod + E ....................... File manager (Thunar)
+                        Mod + B ....................... Web browser (Brave)
+                        Mod + V ....................... Clipboard manager (Clipman)
+                        Ctrl + Shift + Escape ......... Task manager (Lxtask)
 
-                                          MOUSE ACTIONS
-Super + Left Click Drag ... Move Window
-Super + Right Click Drag .. Resize Window
+                    ================================================================================
+                                                SYSTEM & UTILITIES
+                    ================================================================================
+                        Mod + Shift + Q ............... Power menu (Shutdown, Reboot, etc.)
+                        Mod + Ctrl + Shift + L ........ Lock screen (Hyprlock)
+                        Mod + Shift + S ............... Take screenshot
+                        Mod + Shift + C ............... Toggle this cheatsheet
+                        Mod + N ....................... Toggle notifications/control center
+                        Mod + Shift + N ............... Dismiss all notifications
 
-========================================================================================
-                                           WORKSPACES
-========================================================================================
-Super + 1-0 ............... Switch to Workspace 1 through 10
-Super + Shift + 1-0 ....... Move Current Window to Workspace 1 through 10
+                    ================================================================================
+                                              MEDIA & BRIGHTNESS
+                    ================================================================================
+                        Mod + Shift + Left / Right .... Adjust volume down / up
+                        Mod + Shift + M ............... Toggle mute
+                        Mod + Shift + Up / Down ....... Adjust brightness up / down
+                        Caps Lock ..................... Show Caps Lock indicator
 
-========================================================================================
-                                          LAUNCHERS & APPS
-========================================================================================
-Super + Space ............. App Launcher (Wofi drun)
-Super + e ................. File Manager (Thunar)
-Super + b ................. Browser (Brave)
-Super + v ................. Clipboard History Picker (Clipman)
-Control + Shift + Escape .. Task Manager (lxtask)
+                    ================================================================================
+                                            CONFIGURATION & APPEARANCE
+                    ================================================================================
+                        Mod + Shift + D ............... Display settings / monitor config
+                        Mod + Shift + I ............... Input / peripherals config
+                        Mod + Shift + T ............... GTK theme settings (nwg-look)
+                        Mod + Shift + W ............... Wallpaper picker (from ~/Pictures/Wallpapers)
+                        Mod + Shift + X ............... Toggle window animations
 
-========================================================================================
-                                        SYSTEM & UTILITIES
-========================================================================================
-Super + Shift + q ......... Power Menu (Shutdown, Reboot, etc.)
-Super + Shift + Ctrl + l .. Lock Screen (Hyprlock)
-Super + Shift + s ......... Take Screenshot
-Super + Shift + c ......... Display this CheatSheet
-
-                                          MEDIA CONTROLS
-Super + Shift + Up/Down ... Change Brightness
-Super + Shift + Left/Right. Change Volume
-Super + Shift + m ......... Toggle Mute
-
-                                          CONFIG LAUNCHERS
-Super + Shift + d ......... Display Settings/Monitor Config
-Super + Shift + i ......... Peripherals/Input Config
-Super + Shift + t ......... GTK Theme Settings (nwg-look)
-Super + Shift + w ......... Wallpaper Picker (make sure you put the wallpapers in ~/Pictures/Wallpapers)
-
-                                          MISCELLANEOUS
-Alt + Shift ............... Toggle Keyboard Layout (ba/us)
+                    ================================================================================
+                                                  MISCELLANEOUS
+                    ================================================================================
+                        Mod + D ....................... Draw on screen (wayscriber) — press Esc to exit
+                        Super/Windows key + Space ................... Toggle keyboard layout (ba/us)
 EOF
 
 # -----------------------
