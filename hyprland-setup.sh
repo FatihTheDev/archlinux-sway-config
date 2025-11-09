@@ -251,10 +251,11 @@ cat > ~/.config/waybar/config <<'EOF'
   },
 
   "battery": {
-    "format": "<span font='Font Awesome 6 Free'>{icon}</span> {capacity}%",
+    "format": "<span font='Font Awesome 6 Free'>{icon}</span> {capacity}% - {time}",
     "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"],
     "format-charging": "<span font='Font Awesome 6 Free'>\uf0e7</span> <span font='Font Awesome 6 Free 11'>{icon}</span> {capacity}% - {time}",
     "format-full": "<span font='Font Awesome 6 Free'>\uf0e7</span> <span font='Font Awesome 6 Free 11'>{icon}</span> Charged",
+    "format-unknown": "<span font='Font Awesome 6 Free'>\uf390</span>",
     "interval": 12,
     "states": {
       "warning": 20,
@@ -273,7 +274,8 @@ cat > ~/.config/waybar/config <<'EOF'
   "backlight": {
   "format": "<span font='Font Awesome 6 Free'>\uf185</span> {percent}%",
   "on-scroll-up": "brightnessctl set +5%",
-  "on-scroll-down": "brightnessctl set 5%-"
+  "on-scroll-down": "brightnessctl set 5%-",
+  "tooltip": false
   },
 
   "network": {
