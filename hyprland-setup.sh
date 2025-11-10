@@ -1761,45 +1761,6 @@ EOF
 chmod +x ~/.local/bin/power-menu.sh
 
 # -----------------------
-# Dunst configuration
-# -----------------------
-echo "[13/15] Configuring Dunst notifications..."
-mkdir -p ~/.config/dunst
-cat > ~/.config/dunst/dunstrc <<'EOF'
-[global]
-    font = Noto Sans 10
-    frame_color = "#4C7899"
-    separator_color = "#4C7899"
-    padding = 8
-    horizontal_padding = 8
-    frame_width = 2
-    transparency = 10
-    corner_radius = 8
-    follow = mouse
-    format = "%s\n%b"
-    indicate_hidden = yes
-    sort = yes
-    show_age_threshold = 60
-
-[urgency_low]
-    frame_color = "#4C7899"
-    background = "#1e1e2e"
-    foreground = "#ffffff"
-    highlight = "#4C7899"
-
-[urgency_normal]
-    frame_color = "#4C7899"
-    background = "#1e1e2e"
-    foreground = "#ffffff"
-    highlight = "#4C7899"
-
-[urgency_critical]
-    frame_color = "#ff0000"
-    background = "#1e1e2e"
-    foreground = "#ffffff"
-    highlight = "#ff0000"
-EOF
-# -----------------------
 # Default brightness
 # -----------------------
 echo "[14/15] Setting default brightness to 15%..."
