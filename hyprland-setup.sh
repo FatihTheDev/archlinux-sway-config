@@ -636,7 +636,7 @@ Target = *
 [Action]
 Description = Releasing sleep inhibit lock...
 When = PostTransaction
-Exec = /usr/bin/pkill -f "systemd-inhibit.*Pacman"
+Exec = /bin/bash -c "/usr/bin/pkill -f 'systemd-inhibit.*Pacman'" || true
 EOF
 
 # -----------------------
