@@ -610,7 +610,7 @@ EOF
 echo "Adding pacman hooks to prevent sleep on updates"
 sudo mkdir -p /etc/pacman.d/hooks
 
-cat > /etc/pacman.d/hooks/00-inhibit-sleep.hook <<'EOF'
+sudo tee /etc/pacman.d/hooks/00-inhibit-sleep.hook > /dev/null <<'EOF'
 [Trigger]
 Operation = Install
 Operation = Upgrade
@@ -624,7 +624,8 @@ When = PreTransaction
 Exec = /usr/bin/systemd-inhibit --what=sleep:idle --who=pacman --why="Pacman is running" --mode=block /usr/bin/sleep infinity &
 EOF
 
-cat > /etc/pacman.d/hooks/99-release-inhibit.hook <<'EOF'
+# Write 99-release-inhibit.hook
+sudo tee /etc/pacman.d/hooks/99-release-inhibit.hook > /dev/null <<'EOF'
 [Trigger]
 Operation = Install
 Operation = Upgrade
