@@ -1,7 +1,7 @@
 #!/bin/bash
 # hyprland-setup.sh
 # Complete Hyprland environment setup for Arch Linux
-# Includes Waybar, Wofi, PipeWire/PulseAudio, Bluetooth, LXTASK, Azote, smart volume & brightness, XF86 keys, Thunar with archive support
+# Includes Waybar, Wofi, PipeWire/PulseAudio, Bluetooth, LXTASK, smart volume & brightness, XF86 keys, Thunar with archive support...
 
 set -e
 
@@ -939,145 +939,6 @@ fi
 EOF
 chmod +x ~/.local/bin/set-wallpaper.sh
 
-# ------------------------------------------
-# Managing Peripherals (mouse and touchpad)
-# ------------------------------------------
-cat > ~/.local/bin/input-devices-config.sh <<'EOF'
-#!/bin/bash
-
-# --- Compositor Detection ---
-if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
-    COMPOSITOR="hyprland"
-    MSG_CMD="hyprctl keyword"
-    QUERY_CMD="hyprctl devices -j"
-elif [ -n "$SWAYSOCK" ]; then
-    COMPOSITOR="sway"
-    MSG_CMD="swaymsg"
-    QUERY_CMD="swaymsg -t get_inputs"
-else
-    notify-send "Error: Neither Sway nor Hyprland detected."
-    exit 1
-fi
-# ----------------------------
-
-# --- Device Listing ---
-# Note: Hyprland separates touchpads and mice, so we'll merge them for simplicity.
-if [ "$COMPOSITOR" == "hyprland" ]; then
-    DEVICES=$(
-        $QUERY_CMD | jq -r '.touchpads[] | .name'
-        $QUERY_CMD | jq -r '.mice[] | .name'
-    )
-    # The Hyprland command structure requires the device name (e.g., 'elan0801:00-04f3:3161-touchpad')
-    DEVICE_IDENTIFIER="name"
-else # Sway
-    DEVICES=$($QUERY_CMD | jq -r '.[] | select(.type=="touchpad" or .type=="pointer") | .identifier')
-    # The Sway command structure requires the device identifier (e.g., '1:1:AT_Translated_Set_2_keyboard')
-    DEVICE_IDENTIFIER="identifier"
-fi
-
-[ -z "$DEVICES" ] && { notify-send "No pointer or touchpad found"; exit 1; }
-
-# If multiple devices, pick one
-DEVICE=$(echo "$DEVICES" | wofi --dmenu --prompt "Select device:")
-[ -z "$DEVICE" ] && exit 0
-# ----------------------------
-
-
-# --- Get Current Settings ---
-if [ "$COMPOSITOR" == "hyprland" ]; then
-    # Function to get Hyprland settings by device type
-    get_setting_hyprland() {
-        local type="$1" # touchpads or mice
-        local prop="$2" # tap-to-click or natural_scroll
-        $QUERY_CMD | jq -r ".$type[] | select(.name==\"$DEVICE\") | .input_config.$prop // \"not_found\""
-    }
-
-    # Tap and Natural Scroll settings are under 'touchpads' only
-    TAP=$(get_setting_hyprland "touchpads" "tap-to-click")
-    NATURAL=$(get_setting_hyprland "touchpads" "natural_scroll")
-
-    # Pointer speed (acceleration) is under both touchpads and mice
-    ACCEL=$(get_setting_hyprland "touchpads" "sensitivity")
-    if [ "$ACCEL" == "not_found" ]; then
-        ACCEL=$(get_setting_hyprland "mice" "sensitivity")
-    fi
-    # Hyprland sensitivity is a float, e.g., 0.5. We use 1.0 as the default.
-    ACCEL=${ACCEL//not_found/1.0}
-
-    # Normalize states (true/false in Hyprland JSON)
-    normalize_state() {
-        case "$1" in
-            true) echo "on" ;;
-            false) echo "off" ;;
-            *) echo "off" ;; # Default to off if property not found
-        esac
-    }
-
-    # Hyprland uses 'input:device_name:property'
-    # Tap and Natural Scroll apply to the device itself.
-    TAP_CMD_PREFIX="input:$DEVICE:tap-to-click"
-    NAT_CMD_PREFIX="input:$DEVICE:natural_scroll"
-    ACCEL_CMD_PREFIX="input:$DEVICE:sensitivity"
-
-else # Sway
-    # Original Sway logic
-    TAP=$($QUERY_CMD | jq -r ".[] | select(.identifier==\"$DEVICE\") | .tap")
-    NATURAL=$($QUERY_CMD | jq -r ".[] | select(.identifier==\"$DEVICE\") | .natural_scroll")
-    ACCEL=$($QUERY_CMD | jq -r ".[] | select(.identifier==\"$DEVICE\") | .pointer_accel")
-
-    # Normalize states (enabled/disabled in Sway JSON)
-    normalize_state() {
-        case "$1" in
-            enabled|on) echo "on" ;;
-            disabled|off) echo "off" ;;
-            *) echo "$1" ;;
-        esac
-    }
-
-    # Sway uses 'input "identifier" property'
-    TAP_CMD_PREFIX="input \"$DEVICE\" tap"
-    NAT_CMD_PREFIX="input \"$DEVICE\" natural_scroll"
-    ACCEL_CMD_PREFIX="input \"$DEVICE\" pointer_accel"
-fi
-
-TAP=$(normalize_state "$TAP")
-NATURAL=$(normalize_state "$NATURAL")
-# ----------------------------
-
-
-# --- Present Options and Execute ---
-OPTION=$(printf "Toggle Tap-to-Click\nToggle Natural Scroll\nSet Pointer Speed" | wofi --dmenu --prompt "Option:")
-[ -z "$OPTION" ] && exit 0
-
-case "$OPTION" in
-    "Toggle Tap-to-Click")
-        if [ "$TAP" = "on" ]; then
-            $MSG_CMD "$TAP_CMD_PREFIX" $([ "$COMPOSITOR" == "hyprland" ] && echo "false" || echo "disabled")
-            notify-send "Tap-to-click disabled"
-        else
-            $MSG_CMD "$TAP_CMD_PREFIX" $([ "$COMPOSITOR" == "hyprland" ] && echo "true" || echo "enabled")
-            notify-send "Tap-to-click enabled"
-        fi
-        ;;
-    "Toggle Natural Scroll")
-        if [ "$NATURAL" = "on" ]; then
-            $MSG_CMD "$NAT_CMD_PREFIX" $([ "$COMPOSITOR" == "hyprland" ] && echo "false" || echo "disabled")
-            notify-send "Natural scrolling disabled"
-        else
-            $MSG_CMD "$NAT_CMD_PREFIX" $([ "$COMPOSITOR" == "hyprland" ] && echo "true" || echo "enabled")
-            notify-send "Natural scrolling enabled"
-        fi
-        ;;
-    "Set Pointer Speed")
-        # Hyprland uses -1.0 to 1.0 (default 0.0). Sway uses -1.0 to 1.0 (default 0.0), but the prompt says 0.0-2.0.
-        # We'll stick to a common range for the prompt, but the underlying command works.
-        ACCEL_VAL=$(echo "$ACCEL" | wofi --dmenu --prompt "Set pointer speed (-1.0 to 1.0):")
-        [ -n "$ACCEL_VAL" ] && $MSG_CMD "$ACCEL_CMD_PREFIX" "$ACCEL_VAL" && notify-send "Pointer speed set to $ACCEL_VAL"
-        ;;
-esac
-EOF
-chmod +x ~/.local/bin/input-devices-config.sh
-
 # ------------------
 # Display Settings
 # ------------------
@@ -1219,6 +1080,9 @@ notify-send "Screenshot saved" "$DIR/$FILENAME"
 EOF
 chmod +x ~/.local/bin/screenshot.sh
 
+# ------------------------------------------
+# Managing Peripherals (mouse and touchpad)
+# ------------------------------------------
 cat > ~/.local/bin/input-config.sh <<'EOF'
 #!/bin/bash
 
