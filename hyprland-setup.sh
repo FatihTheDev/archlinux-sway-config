@@ -621,7 +621,7 @@ Target = *
 [Action]
 Description = Inhibiting sleep during package operations...
 When = PreTransaction
-Exec = /usr/bin/systemd-inhibit --what=sleep:idle --who=pacman --why="Pacman is running" --mode=block /usr/bin/sleep infinity &
+Exec = /bin/bash -c "systemd-inhibit --list | grep -q 'Pacman is running' || /usr/bin/systemd-inhibit --what=sleep:idle --who=pacman --why='Pacman is running' --mode=block /usr/bin/sleep infinity >/dev/null 2>&1 &"
 EOF
 
 # Write 99-release-inhibit.hook
@@ -636,7 +636,7 @@ Target = *
 [Action]
 Description = Releasing sleep inhibit lock...
 When = PostTransaction
-Exec = /bin/bash -c "/usr/bin/pkill -f 'systemd-inhibit.*Pacman'" || true
+Exec = /bin/bash -c "/usr/bin/pkill -f 'systemd-inhibit.*Pacman' || true"
 EOF
 
 # -----------------------
