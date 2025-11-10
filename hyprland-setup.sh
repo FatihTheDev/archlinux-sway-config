@@ -604,6 +604,40 @@ cat > ~/.config/swaync/style.css <<'EOF'
 }
 EOF
 
+# ---------------------
+# Adding pacman hooks
+# ---------------------
+echo "Adding pacman hooks to prevent sleep on updates"
+sudo mkdir -p /etc/pacman.d/hooks
+
+cat > /etc/pacman.d/hooks/00-inhibit-sleep.hook <<'EOF'
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Inhibiting sleep during package operations...
+When = PreTransaction
+Exec = /usr/bin/systemd-inhibit --what=sleep:idle --who=pacman --why="Pacman is running" --mode=block /usr/bin/sleep infinity &
+EOF
+
+cat > /etc/pacman.d/hooks/99-release-inhibit.hook <<'EOF'
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Releasing sleep inhibit lock...
+When = PostTransaction
+Exec = /usr/bin/pkill -f "systemd-inhibit.*Pacman"
+EOF
+
 # -----------------------
 # Configure Alacritty (transparent background)
 # -----------------------
