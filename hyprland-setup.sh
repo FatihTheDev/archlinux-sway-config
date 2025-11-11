@@ -621,7 +621,7 @@ Target = *
 [Action]
 Description = Inhibiting sleep during package operations...
 When = PreTransaction
-Exec = /bin/bash -c "systemd-inhibit --list | grep -q 'Pacman is running' || /usr/bin/systemd-inhibit --what=sleep:idle --who=pacman --why='Pacman is running' --mode=block /usr/bin/sleep infinity >/dev/null 2>&1 &"
+Exec = /bin/bash -c "/usr/bin/systemd-inhibit --what=sleep:idle --who=pacman --why='Pacman is running' --mode=block /usr/bin/sleep infinity >/dev/null 2>&1 &"
 EOF
 
 # Write 99-release-inhibit.hook
