@@ -1433,7 +1433,7 @@ bind = , Caps_Lock, exec, swayosd-client --caps-lock
 # ==================================
 # Check if animations are on or off
 # ==================================
-exec-once = bash -c '[ -f ~/.cache/hypr_animations_state ] || echo 1 > ~/.cache/hypr_animations_state; hyprctl keyword animations:enabled $(cat ~/.cache/hypr_animations_state)'
+exec = bash -c '[ -f ~/.cache/hypr_animations_state ] || echo 1 > ~/.cache/hypr_animations_state; hyprctl keyword animations:enabled $(cat ~/.cache/hypr_animations_state)'
 bind = $mod SHIFT, X, exec, ~/.local/bin/toggle-animations.sh
 
 # ==================================
