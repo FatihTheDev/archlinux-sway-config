@@ -242,11 +242,11 @@ cat > ~/.config/waybar/config <<'EOF'
 
   "modules-left": ["sway/workspaces", "hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["network", "battery", "bluetooth", "backlight", "pulseaudio", "sway/language", "hyprland/language", "tray", "custom/notifications"],
+  "modules-right": ["battery", "bluetooth", "backlight", "pulseaudio", "sway/language", "hyprland/language", "tray", "custom/notifications"],
 
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
-    "tooltip": false,
+    "tooltip-format": "Click to toggle calendar",
     "on-click": "gsimplecal --toggle"
   },
 
@@ -261,8 +261,7 @@ cat > ~/.config/waybar/config <<'EOF'
       "warning": 20,
       "critical": 10
     },
-    "tooltip": false,
-    "on-click": "2"
+    "tooltip-format": "Battery"
   },
 
   "pulseaudio": {
@@ -275,19 +274,13 @@ cat > ~/.config/waybar/config <<'EOF'
   "format": "<span font='Font Awesome 6 Free'>\uf185</span> {percent}%",
   "on-scroll-up": "brightnessctl set +5%",
   "on-scroll-down": "brightnessctl set 5%-",
-  "tooltip": false
-  },
-
-  "network": {
-    "format": "<span font='Font Awesome 6 Free'>\uf1eb</span> {essid} {signalStrength}%",
-    "on-click": "nmtui"
-  },
+  "tooltip-format": "Brightness"
+  }, 
 
   "bluetooth": {
-    "format": "{status}",
-    "format-connected": " {num_connections}",
-    "format-disabled": " off",
-    "tooltip-format": "{status}\n{device_alias} ({device_address})",
+    "format-on": " {num_connections}",
+    "format-off": " off",
+    "tooltip-format": "Bluetooth: {status}\n{device_alias} ({device_address})",
     "on-click": "blueberry"
   },
 
@@ -300,7 +293,8 @@ cat > ~/.config/waybar/config <<'EOF'
 
   "custom/notifications": {
     "format": "<span font='Font Awesome 6 Free'>\uf0f3</span>",
-    "on-click": "swaync-client -t"
+    "on-click": "swaync-client -t",
+    "tooltip-format": "Notifications"
   },
 
   "tray": {
@@ -1186,6 +1180,7 @@ exec-once = /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 exec-once = xhost +SI:localuser:root
 exec-once = wl-paste --type text --watch cliphist store
 exec-once = wl-paste --type image --watch cliphist store
+exec-once = nm-applet --indicator
 exec-once = waybar
 exec-once = swaync
 exec-once = swayosd-server
@@ -1427,7 +1422,7 @@ bind = $mod SHIFT, DOWN, exec, swayosd-client --brightness -5
 # ================================
 # Show Caps Lock
 # ================================
-# CapsLock Indicator
+# Capslock Indicator
 bind = , Caps_Lock, exec, swayosd-client --caps-lock
 
 # ==================================
