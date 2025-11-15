@@ -1542,21 +1542,29 @@ term=alacritty
 EOF
 
 # Style (GTK CSS selectors)
-#touch ~/.config/wofi/style.css
 cat > ~/.config/wofi/style.css <<'EOF'
-window {
+#window {
   border: 1px solid #1e1e2e;
   background-color: #1e1e2e;
   border-radius: 8px;
+  font-family: "Noto Sans";
+}
+
+label {
+  padding: 6px;
+}
+
+#icon {
+  min-width: 25px;
+  opacity: 0;
 }
 
 #input {
   border: none;
-  padding: 6px;
   margin: 6px;
+  padding: 6px;
   background-color: #1e1e2e;
   color: #ffffff;
-  font-family: "Noto Sans";
   font-size: 15px;
 }
 
@@ -1569,10 +1577,6 @@ window {
 #entry:selected {
   background-color: #3a5f9e;
   color: #ffffff;
-}
-
-#img {
-  padding-right: 8px;
 }
 
 #text {
