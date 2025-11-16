@@ -11,7 +11,7 @@ sudo pacman -Syu --noconfirm
 echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost alacritty librewolf brave \
-    network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-wlr xdg-utils \
+    network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
     nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar \
     playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome \
@@ -50,9 +50,9 @@ fi
 
 echo "[5/15] Enabling audio and desktop portal services..."
 if [ "$audio_choice" -eq 2 ]; then
-    systemctl --user enable pulseaudio xdg-desktop-portal xdg-desktop-portal-wlr
+    systemctl --user enable pulseaudio xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
 else
-    systemctl --user enable pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+    systemctl --user enable pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
 fi
 systemctl --user daemon-reload
 
@@ -240,9 +240,9 @@ cat > ~/.config/waybar/config <<'EOF'
   "layer": "top",
   "position": "top",
 
-  "modules-left": ["sway/workspaces", "hyprland/workspaces"],
+  "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["battery", "bluetooth", "backlight", "pulseaudio", "sway/language", "hyprland/language", "tray", "custom/notifications"],
+  "modules-right": ["battery", "bluetooth", "backlight", "pulseaudio", "hyprland/language", "tray", "custom/notifications"],
 
   "clock": {
     "format": "{:%a %b %d  %H:%M}",
@@ -287,9 +287,6 @@ cat > ~/.config/waybar/config <<'EOF'
   "hyprland/language": {
     "format": "{short} {variant}"
   },
-  "sway/language": {
-    "format": "{short} {variant}"
-  },
 
   "custom/notifications": {
     "format": "<span font='Font Awesome 6 Free'>\uf0f3</span>",
@@ -311,15 +308,6 @@ cat > ~/.config/waybar/config <<'EOF'
     "default": "\u25CB"
   }
   },
-
-  "sway/workspaces": {
-    "format": "{name}: {icon}",
-    "format-icons": {
-      "urgent": "\uf06a",
-      "focused": "\u25cf",
-      "default": "\u25CB"
-    },
-  }
 }
 EOF
 
@@ -375,6 +363,7 @@ fi
 echo "[9/15] Configuring Hyprland..."
 mkdir -p ~/.config/hypr
 mkdir -p ~/.config/swaync
+mkdir -p ~/.config/xdg-desktop-portal
 
 cat > ~/.config/hypr/hyprlock.conf <<'EOF'
 # Dark Mode / Eye-Friendly hyprlock.conf
@@ -453,6 +442,14 @@ listener {
     timeout = 600 # in 10 minutes (600 seconds) of idle time, suspend to save power
     on-timeout = systemctl suspend
 }
+EOF
+
+# --------------------------------------------------
+# Configuring desktop portals (for proper dark mode)
+# --------------------------------------------------
+cat > ~/.config/xdg-desktop-portal/hyprland-portals.conf <<'EOF'
+[preferred]
+default=hyprland;gtk
 EOF
 
 # -----------------------
@@ -1201,7 +1198,7 @@ exec-once = ~/.local/bin/lock.sh
 exec-once = /usr/bin/gnome-keyring-daemon --start --components=secrets
 exec-once = gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 exec-once = gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
-exec-once = gsettings set org.gnome.desktop.interface color-scheme 'default'
+exec-once = gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 exec-once = systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
 
 # ================================
