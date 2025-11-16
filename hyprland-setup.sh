@@ -992,11 +992,10 @@ case "$OPTION" in
         if [ -n "$SENS_VAL" ]; then
             # 1. Apply runtime setting GLOBALLY
             hyprctl keyword input:sensitivity "$SENS_VAL"
-            notify-send "Runtime (Global): Sensitivity set to $SENS_VAL"
 
             # 2. Apply permanent setting to config file
             sed -i -E "s/^(\s*sensitivity\s*=\s*)[-0-9\.]+(\s*#.*)?$/\1$SENS_VAL\2/" "$HYPR_CONFIG"
-            notify-send "Permanent: Config sensitivity set to $SENS_VAL"
+            notify-send "Mouse sensitivity set to $SENS_VAL"
         fi
         ;;
         
@@ -1006,11 +1005,10 @@ case "$OPTION" in
         if [ -n "$SCROLL_VAL" ]; then
             # 1. Apply runtime setting GLOBALLY
             hyprctl keyword input:scroll_factor "$SCROLL_VAL"
-            notify-send "Runtime (Global): Scroll speed set to $SCROLL_VAL"
 
             # 2. Apply permanent setting to config file
             sed -i -E "s/^(\s*scroll_factor\s*=\s*)[0-9\.]+(\s*#.*)?$/\1$SCROLL_VAL\2/" "$HYPR_CONFIG"
-            notify-send "Permanent: Config scroll speed set to $SCROLL_VAL"
+            notify-send "Scroll speed set to $SCROLL_VAL"
         fi
         ;;
         
@@ -1024,11 +1022,10 @@ case "$OPTION" in
 
         # 1. Apply runtime setting GLOBALLY
         hyprctl keyword input:accel_profile "$NEW_PROFILE"
-        notify-send "Runtime (Global): Profile set to $NEW_PROFILE"
         
         # 2. Apply permanent setting
         sed -i -E "s/^(\s*accel_profile\s*=\s*)[a-zA-Z]+(\s*#.*)?$/\1$NEW_PROFILE\2/" "$HYPR_CONFIG"
-        notify-send "Permanent: Config profile set to $NEW_PROFILE"
+        notify-send "Mouse acceleration set to $NEW_PROFILE"
         ;;
 esac
 EOF
