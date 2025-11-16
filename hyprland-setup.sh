@@ -726,27 +726,16 @@ chmod +x ~/.local/bin/lock.sh
 cat > ~/.local/bin/toggle-cheatsheet.sh <<'EOF'
 #!/bin/bash
 
-# Define the constants
 CHEATSHEET_TITLE="Hyprland Cheatsheet"
 CHEATSHEET_FILE="$HOME/.config/hypr/cheatsheet.txt"
 TERMINAL="alacritty"
 
-# Search for the window based on the application ID or title
-# We use both 'app_id' (set by --class) and 'name' (set by --title) for reliability.
-CON_ID=$(swaymsg -t get_tree | jq -r '
-    .. | 
-    select(.type?) | 
-    select(.app_id == "cheatsheet" or .name == "'$CHEATSHEET_TITLE'") | 
-    .id
-')
+# Search by title (more reliable)
+CON_ID=$(hyprctl -j clients | jq -r '.[] | select(.title == "'"$CHEATSHEET_TITLE"'") | .address')
 
 if [ -n "$CON_ID" ]; then
-    # The cheatsheet is open, so kill the window
-    swaymsg "[con_id=$CON_ID] kill"
+    hyprctl dispatch closewindow address:$CON_ID
 else
-    # The cheatsheet is not open, so launch it in a new terminal
-    # - The --class flag sets the app_id for detection/toggling.
-    # - The -e flag runs the 'less' utility, which allows scrolling and uses 'q' to quit.
     "$TERMINAL" --class "cheatsheet" --title "$CHEATSHEET_TITLE" -e less "$CHEATSHEET_FILE" &
 fi
 EOF
@@ -1395,8 +1384,8 @@ EOF
 cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
 
                                    HYPRLAND WINDOW MANAGER KEYBINDINGS CHEATSHEET  
-     (Quick reference for essential Hyprland controls — you can modify all bindings in ~/.config/hypr/hyprland.conf.)  
-       (Mod = your main modifier key — usually Alt or Super/Windows key, as set in your config.)
+     (Quick reference for essential Hyprland controls — you can modify all bindings in ~/.config/hypr/hyprland.conf file.)  
+             (Mod = your main modifier key — it is Alt by default, but you can change it in the config file.)
 
                     ================================================================================
                                               WINDOW MANAGEMENT & FOCUS
@@ -1435,7 +1424,7 @@ cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
                         Mod + Shift + Q ............... Power menu (Shutdown, Reboot, etc.)
                         Mod + Ctrl + Shift + L ........ Lock screen (Hyprlock)
                         Mod + Shift + S ............... Take screenshot
-                        Mod + Shift + C ............... Open this cheatsheet
+                        Mod + Shift + C ............... Toggle this cheatsheet
                         Mod + N ....................... Toggle notifications/control center
                         Mod + Shift + N ............... Dismiss all notifications
 
