@@ -936,86 +936,33 @@ chmod +x ~/.local/bin/set-wallpaper.sh
 cat > ~/.local/bin/display-settings.sh <<'EOF'
 #!/bin/bash
 
-# Detect compositor
-COMPOSITOR=""
-# Use specific environment variables for reliable detection
-if [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
-    COMPOSITOR="hyprland"
-    CONFIG="$HOME/.config/hypr/hyprland.conf"
-elif [ -n "$SWAYSOCK" ] || [ -n "$I3SOCK" ]; then
-    COMPOSITOR="sway"
-    CONFIG="$HOME/.config/sway/config"
-# Fallback to checking commands and session type (less reliable, but kept for compatibility)
-elif command -v hyprctl &>/dev/null && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-    COMPOSITOR="hyprland"
-    CONFIG="$HOME/.config/hypr/hyprland.conf"
-elif command -v swaymsg &>/dev/null && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-    COMPOSITOR="sway"
-    CONFIG="$HOME/.config/sway/config"
-else
-    echo "Unsupported compositor or not running Wayland."
-    exit 1
-fi
+COMPOSITOR="hyprland"
+CONFIG="$HOME/.config/hypr/hyprland.conf"
 
-# Function to select monitor and mode for Sway (Verified Working)
-function sway_mode() {
-    local outputs=$(swaymsg -t get_outputs | jq -r '.[].name')
-    local chosen_output=$(echo "$outputs" | wofi --dmenu --prompt "Select monitor:")
-    [ -z "$chosen_output" ] && exit 0
+# STEP 1: Get monitor outputs.
+outputs=$(hyprctl -j monitors | jq -r '.[].name')
 
-    local modes=$(swaymsg -t get_outputs | jq -r ".[] | select(.name==\"$chosen_output\") | .modes[] | \"\(.width)x\(.height)@\(.refresh/1000)Hz\"")
-    local chosen_mode=$(echo "$modes" | wofi --dmenu --prompt "Select resolution:")
-    [ -z "$chosen_mode" ] && exit 0
+[ -z "$outputs" ] && echo "ERROR: No monitor outputs detected." && exit 1
 
-    local width=$(echo "$chosen_mode" | cut -d'x' -f1)
-    local height=$(echo "$chosen_mode" | cut -d'x' -f2 | cut -d'@' -f1)
-    local refresh=$(echo "$chosen_mode" | cut -d'@' -f2 | sed 's/Hz//')
+chosen_output=$(echo "$outputs" | wofi --dmenu --prompt "Select monitor:")
+[ -z "$chosen_output" ] && exit 0
 
-    swaymsg output "$chosen_output" mode ${width}x${height}@${refresh}Hz
+# STEP 2: Get modes. Uses .availableModes[] field.
+modes=$(hyprctl -j monitors | jq -r --arg out "$chosen_output" '.[] | select(.name == $out) | .availableModes[]')
 
-    local confirm=$(echo -e "yes\nno" | wofi --dmenu --prompt "Save to sway config?")
-    if [ "$confirm" == "yes" ]; then
-        sed -i "/^output $chosen_output/d" "$CONFIG"
-        echo "output $chosen_output mode ${width}x${height}@${refresh}Hz" >> "$CONFIG"
-    fi
-}
+[ -z "$modes" ] && echo "ERROR: No modes found for $chosen_output." && exit 1
 
-# Function to select monitor and mode for Hyprland (Fully Fixed)
-function hyprland_mode() {
-    # STEP 1: Get monitor outputs.
-    local outputs=$(hyprctl -j monitors | jq -r '.[].name')
-    
-    [ -z "$outputs" ] && echo "ERROR: No monitor outputs detected." && exit 1
+# STEP 3: Second wofi prompt
+chosen_mode=$(echo "$modes" | wofi --dmenu --prompt "Select resolution:")
+[ -z "$chosen_mode" ] && exit 0
 
-    local chosen_output=$(echo "$outputs" | wofi --dmenu --prompt "Select monitor:")
-    [ -z "$chosen_output" ] && exit 0
+# Apply the setting: monitor name, mode, position (auto), scale (1)
+hyprctl keyword monitor "$chosen_output,$chosen_mode,auto,1"
 
-    # STEP 2: Get modes. Correctly uses .availableModes[] field.
-    local modes=$(hyprctl -j monitors | jq -r --arg out "$chosen_output" '.[] | select(.name == $out) | .availableModes[]')
-
-    [ -z "$modes" ] && echo "ERROR: No modes found for $chosen_output." && exit 1
-
-    # STEP 3: Second wofi prompt (should now display modes)
-    local chosen_mode=$(echo "$modes" | wofi --dmenu --prompt "Select resolution:")
-    [ -z "$chosen_mode" ] && exit 0
-
-    # Apply the setting: monitor name, mode, position (auto), scale (1)
-    hyprctl keyword monitor "$chosen_output,$chosen_mode,auto,1"
-
-    local confirm=$(echo -e "yes\nno" | wofi --dmenu --prompt "Save to hyprland config?")
-    if [ "$confirm" == "yes" ]; then
-        sed -i "/^monitor=$chosen_output/d" "$CONFIG"
-        
-        # FINAL FIX: Must include offset (0x0) and scale (1) for valid config syntax.
-        echo "monitor=$chosen_output, $chosen_mode, 0x0, 1" >> "$CONFIG"
-    fi
-}
-
-# Run appropriate function
-if [ "$COMPOSITOR" = "sway" ]; then
-    sway_mode
-elif [ "$COMPOSITOR" = "hyprland" ]; then
-    hyprland_mode
+confirm=$(echo -e "yes\nno" | wofi --dmenu --prompt "Save to hyprland config?")
+if [ "$confirm" == "yes" ]; then
+    sed -i "/^monitor=$chosen_output/d" "$CONFIG"
+    echo "monitor=$chosen_output, $chosen_mode, 0x0, 1" >> "$CONFIG"
 fi
 EOF
 chmod +x ~/.local/bin/display-settings.sh
