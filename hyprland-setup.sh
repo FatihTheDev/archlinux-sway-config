@@ -792,6 +792,8 @@ chmod +x ~/.local/bin/toggle-animations.sh
 cat > ~/.local/bin/dynamic-workspaces.sh <<'EOF'
 #!/bin/bash
 
+direction=$1
+
 if [ "$direction" = "next" ]; then
     hyprctl dispatch workspace +1
 elif [ "$direction" = "prev" ]; then
