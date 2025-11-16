@@ -792,52 +792,12 @@ chmod +x ~/.local/bin/toggle-animations.sh
 cat > ~/.local/bin/dynamic-workspaces.sh <<'EOF'
 #!/bin/bash
 
-# Detect compositor
-if pidof sway >/dev/null; then
-    compositor="sway"
-elif pidof Hyprland >/dev/null; then
-    compositor="hyprland"
+if [ "$direction" = "next" ]; then
+    hyprctl dispatch workspace +1
+elif [ "$direction" = "prev" ]; then
+    hyprctl dispatch workspace -1
 else
-    echo "Unsupported compositor"
     exit 1
-fi
-
-direction=$1
-
-if [ "$compositor" = "sway" ]; then
-    # Get current workspace number
-    current=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused) | .num')
-
-    if [ "$direction" = "next" ]; then
-        target=$((current + 1))
-    elif [ "$direction" = "prev" ]; then
-        target=$((current - 1))
-    else
-        echo "Usage: $0 {next|prev}"
-        exit 1
-    fi
-
-    # Create and switch
-    swaymsg workspace number "$target"
-
-    # Optional: remove empty workspaces after short delay
-    (
-      sleep 0.2
-      swaymsg -t get_workspaces | jq -r '.[] | select(.num > 9 or .num < 20) | .num' | \
-      while read ws; do
-        empty=$(swaymsg -t get_tree | jq ".. | select(.type? == \"workspace\" and .num == $ws) | (.nodes + .floating_nodes) | length == 0")
-        [ "$empty" = "true" ] && swaymsg workspace number "$ws", kill
-      done
-    ) &
-
-elif [ "$compositor" = "hyprland" ]; then
-    if [ "$direction" = "next" ]; then
-        hyprctl dispatch workspace +1
-    elif [ "$direction" = "prev" ]; then
-        hyprctl dispatch workspace -1
-    else
-        exit 1
-    fi
 fi
 EOF
 chmod +x ~/.local/bin/dynamic-workspaces.sh
@@ -851,24 +811,10 @@ cat > ~/.local/bin/set-wallpaper.sh <<'EOF'
 # --- Configuration Variables ---
 DIR="$HOME/Pictures/Wallpapers"
 LAST="$HOME/.cache/lastwallpaper"
-# CACHE logic removed
 
-# Detect Compositor and set paths/commands
-if [ -n "$SWAYSOCK" ]; then
-    COMPOSITOR="sway"
-    CONFIG_FILE="$HOME/.config/sway/config"
-    RELOAD_CMD="swaymsg reload"
-    echo "Detected Compositor: Sway"
-elif [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
-    COMPOSITOR="hyprland"
-    CONFIG_FILE="$HOME/.config/hypr/hyprland.conf"
-    RELOAD_CMD="hyprctl reload"
-    echo "Detected Compositor: Hyprland"
-else
-    echo "Error: Neither Sway nor Hyprland detected. Exiting."
-    exit 1
-fi
-# -------------------------------
+COMPOSITOR="hyprland"
+CONFIG_FILE="$HOME/.config/hypr/hyprland.conf"
+RELOAD_CMD="hyprctl reload"
 
 # Build list for wofi: simply list filenames
 CHOICE=$(find "$DIR" -maxdepth 1 -type f | while read -r img; do 
@@ -880,37 +826,25 @@ if [ -n "$CHOICE" ]; then
     FILE="$DIR/$CHOICE"
     echo "$FILE" > "$LAST"
     
-    # --- IMMEDIATE WALLPAPER SETTING (same for both) ---
-    # NOTE: Using 'pkill -f' is sometimes safer to kill the specific process chain
+    # --- IMMEDIATE WALLPAPER SETTING ---
     pkill -f swaybg
     swaybg -i "$FILE" -m fill &
     
-    # --- CONFIGURATION UPDATE (Compositor-specific) ---
+    # --- CONFIGURATION UPDATE ---
+
+    BG_CONFIG_LINE="exec = swaybg -i $FILE -m fill"
     
-    if [ "$COMPOSITOR" == "sway" ]; then
-        BG_CONFIG_LINE="output * bg $FILE fill"
-        # Safely replace/append the Sway config line
-        if grep -q "^output .* bg " "$CONFIG_FILE"; then
-            sed -i "s|^output .* bg .*|${BG_CONFIG_LINE}|" "$CONFIG_FILE"
-        else
-            echo "${BG_CONFIG_LINE}" >> "$CONFIG_FILE"
-        fi
-        
-    elif [ "$COMPOSITOR" == "hyprland" ]; then
-        BG_CONFIG_LINE="exec = swaybg -i $FILE -m fill"
-        
-        # 1. Escape the file path for use in sed
-        ESCAPED_FILE=$(echo "$FILE" | sed 's/[\/&]/\\&/g')
-        ESCAPED_NEW_LINE="exec = swaybg -i ${ESCAPED_FILE} -m fill"
-        
-        # 2. Check and replace (or append) the swaybg exec command
-        if grep -q "^exec = swaybg " "$CONFIG_FILE"; then
-            # Replace existing line using 'c\' (change line)
-            sed -i "/^exec = swaybg /c\\${ESCAPED_NEW_LINE}" "$CONFIG_FILE"
-        else
-            # Append to the config file
-            echo "${BG_CONFIG_LINE}" >> "$CONFIG_FILE"
-        fi
+    # 1. Escape the file path for use in sed
+    ESCAPED_FILE=$(echo "$FILE" | sed 's/[\/&]/\\&/g')
+    ESCAPED_NEW_LINE="exec = swaybg -i ${ESCAPED_FILE} -m fill"
+    
+    # 2. Check and replace (or append) the swaybg exec command
+    if grep -q "^exec = swaybg " "$CONFIG_FILE"; then
+        # Replace existing line using 'c\' (change line)
+        sed -i "/^exec = swaybg /c\\${ESCAPED_NEW_LINE}" "$CONFIG_FILE"
+    else
+        # Append to the config file
+        echo "${BG_CONFIG_LINE}" >> "$CONFIG_FILE"
     fi
 
     # --- RELOAD COMPOSITOR ---
