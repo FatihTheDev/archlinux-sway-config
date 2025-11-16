@@ -1113,7 +1113,7 @@ input {
     # Mouse Sensitivity
     sensitivity = 0.4 # -1.0 - 1.0, 0 means no modification.
     # Scroll Speed
-    scroll_factor = 1.2
+    scroll_factor = 0.8
     touchpad {
         natural_scroll = true
         tap-to-click = true
