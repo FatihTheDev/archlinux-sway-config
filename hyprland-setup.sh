@@ -17,7 +17,7 @@ sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim sl
     playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome \
     lxtask mate-calc gsimplecal gammastep cliphist gnome-font-viewer mousepad autotiling
 
-yay -S --noconfirm sway-audio-idle-inhibit-git masterpdfeditor-free wayscriber-bin
+yay -S --noconfirm masterpdfeditor-free wayscriber-bin
 
 mkdir -p ~/Desktop
 mkdir -p ~/Code
@@ -27,6 +27,8 @@ mkdir -p ~/Pictures
 mkdir -p ~/Pictures/Screenshots
 mkdir -p ~/Pictures/Wallpapers
 mkdir -p ~/Videos
+
+mkdir -p ~/.config
 
 # -----------------------
 # Adding file templates
@@ -115,7 +117,6 @@ echo "[6/15] Setting default applications..."
 
 # ensure dirs exist
 mkdir -p ~/.local/share/applications
-mkdir -p ~/.config
 
 # install xdg-utils if missing (non-blocking)
 if ! command -v xdg-mime >/dev/null 2>&1; then
@@ -698,7 +699,6 @@ EOF
 # ------------------
 # Screen Locking
 # ------------------
-
 mkdir -p ~/.local/bin
 cat > ~/.local/bin/lock.sh <<'EOF'
 #!/bin/bash
