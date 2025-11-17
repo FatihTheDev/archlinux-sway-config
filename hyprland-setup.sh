@@ -29,6 +29,59 @@ mkdir -p ~/Pictures/Wallpapers
 mkdir -p ~/Videos
 
 # -----------------------
+# Adding file templates
+# -----------------------
+cat > /tmp/templates.sh <<'EOF'
+TEMPLATES="$HOME/.local/share/templates"
+mkdir -p "$TEMPLATES"
+chmod +w "$TEMPLATES"
+rm -rf docx_template "$TEMPLATES/Document.docx"
+
+# TXT Template
+cat > "$TEMPLATES/Document.txt" <<'EOT'
+This is a blank text document.
+EOT
+
+# DOCX Template
+mkdir -p docx_template
+cat > "docx_template/[Content_Types].xml" <<'EOT'
+<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+</Types>
+EOT
+
+mkdir -p docx_template/word
+cat > docx_template/word/document.xml <<'EOT'
+<?xml version="1.0" encoding="UTF-8"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body><w:p><w:r><w:t>Blank Document</w:t></w:r></w:p></w:body>
+</w:document>
+EOT
+
+cd docx_template && zip -qr "$TEMPLATES/Document.docx" .
+
+# Code Templates
+cat > "$TEMPLATES/Script.py" <<'EOT'
+print("Hello, World!")
+EOT
+
+cat > "$TEMPLATES/Script.js" <<'EOT'
+console.log("Hello, World!");
+EOT
+
+chmod -w "$TEMPLATES"
+rm -rf docx_template
+EOF
+
+# Run the helper
+bash /tmp/templates.sh
+
+# Delete it
+rm -f /tmp/templates.sh
+
+# -----------------------
 # Audio system selection
 # -----------------------
 echo "[3/15] Selecting audio system..."
