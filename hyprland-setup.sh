@@ -1207,6 +1207,9 @@ input {
 # Draw on-screen (press ESC to close drawing mode)
 bind = $mod, D, exec, wayscriber --active
 
+# Edit this hyprland config (~/.config/hypr/hyprland.conf)
+bind = $mod SHIFT, h, exec, alacritty -e nvim ~/.config/hypr/hyprland.conf
+
 # Terminal (mod + enter)
 bind = $mod, RETURN, exec, alacritty
 # Brave Browser (mod + b)
