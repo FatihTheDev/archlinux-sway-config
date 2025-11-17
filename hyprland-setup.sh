@@ -955,10 +955,10 @@ HYPR_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
 [ ! -f "$HYPR_CONFIG" ] && notify-send "Error: Config not found at $HYPR_CONFIG" && exit 1
 
 SENSITIVITY=$(grep -E "^\s*sensitivity\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/.*=\s*([-0-9.]+).*/\1/')
-[ -z "$SENSITIVITY" ] && SENSITIVITY="0.0"
+[ -z "$SENSITIVITY" ] && SENSITIVITY="0.5"
 
 SCROLL_FACTOR=$(grep -E "^\s*scroll_factor\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/.*=\s*([0-9.]+).*/\1/')
-[ -z "$SCROLL_FACTOR" ] && SCROLL_FACTOR="1.0"
+[ -z "$SCROLL_FACTOR" ] && SCROLL_FACTOR="0.8"
 
 PROFILE=$(grep -E "^\s*accel_profile\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's/.*=\s*([a-zA-Z]+).*/\1/')
 [ -z "$PROFILE" ] && PROFILE="adaptive"
@@ -966,24 +966,52 @@ PROFILE=$(grep -E "^\s*accel_profile\s*=" "$HYPR_CONFIG" | tail -n 1 | sed -E 's
 OPTION=$(printf "Set Mouse Sensitivity\nSet Scroll Speed\nToggle Mouse Acceleration (flat / adaptive)" | wofi --dmenu --prompt "Option:")
 [ -z "$OPTION" ] && exit 0
 
+# Function to validate numeric input
+validate_number() {
+    local input="$1"
+    local min="$2"
+    local max="$3"
+    # Check if input is a valid number (optional - sign, at least one digit, optional decimal part)
+    if ! [[ "$input" =~ ^-?[0-9]+(\.[0-9]+)?$ ]]; then
+        return 1
+    fi
+    # Check bounds using bc for floating point comparison
+    if (( $(echo "$input < $min" | bc -l) )) || (( $(echo "$input > $max" | bc -l) )); then
+        return 1
+    fi
+    return 0
+}
+
 case "$OPTION" in
     "Set Mouse Sensitivity")
-        SENS_VAL=$(echo "$SENSITIVITY" | wofi --dmenu --prompt "Set sensitivity (-1.0 to 1.0):")
-        if [ -n "$SENS_VAL" ]; then
-            hyprctl keyword input:sensitivity "$SENS_VAL"
-            sed -i -E "s/^(\\s*sensitivity\\s*=\\s*)[-0-9.]+(\\s*#.*)?$/\\1$SENS_VAL\\2/" "$HYPR_CONFIG"
-            notify-send "Mouse sensitivity set to $SENS_VAL"
-        fi
+        while true; do
+            SENS_VAL=$(echo "$SENSITIVITY" | wofi --dmenu --prompt "Set sensitivity (-1.0 to 1.0):")
+            [ -z "$SENS_VAL" ] && exit 0
+            if validate_number "$SENS_VAL" -1.0 1.0; then
+                break
+            else
+                notify-send "Enter a number between -1.0 and 1.0"
+            fi
+        done
+        hyprctl keyword input:sensitivity "$SENS_VAL"
+        sed -i -E "s/^(\\s*sensitivity\\s*=\\s*)[-0-9.]+(\\s*#.*)?$/\\1$SENS_VAL\\2/" "$HYPR_CONFIG"
+        notify-send "Mouse sensitivity set to $SENS_VAL"
         ;;
     "Set Scroll Speed")
-        SCROLL_VAL=$(echo "$SCROLL_FACTOR" | wofi --dmenu --prompt "Set scroll speed (0.1 to 3.0):")
-        if [ -n "$SCROLL_VAL" ]; then
-            hyprctl keyword input:scroll_factor "$SCROLL_VAL"
-            hyprctl keyword input:touchpad:scroll_factor "$SCROLL_VAL"
-            sed -i -E "s/^(\\s*scroll_factor\\s*=\\s*)[0-9.]+(\\s*#.*)?$/\\1$SCROLL_VAL\\2/" "$HYPR_CONFIG"
-            sed -i -E "/touchpad\\s*{/,/}/ s/^(\\s*scroll_factor\\s*=\\s*)[0-9.]+(\\s*#.*)?$/\\1$SCROLL_VAL\\2/" "$HYPR_CONFIG"
-            notify-send "Scroll speed set to $SCROLL_VAL"
-        fi
+        while true; do
+            SCROLL_VAL=$(echo "$SCROLL_FACTOR" | wofi --dmenu --prompt "Set scroll speed (0.1 to 4.0):")
+            [ -z "$SCROLL_VAL" ] && exit 0
+            if validate_number "$SCROLL_VAL" 0.1 4.0; then
+                break
+            else
+                notify-send "Enter a number between 0.1 and 4.0"
+            fi
+        done
+        hyprctl keyword input:scroll_factor "$SCROLL_VAL"
+        hyprctl keyword input:touchpad:scroll_factor "$SCROLL_VAL"
+        sed -i -E "s/^(\\s*scroll_factor\\s*=\\s*)[0-9.]+(\\s*#.*)?$/\\1$SCROLL_VAL\\2/" "$HYPR_CONFIG"
+        sed -i -E "/touchpad\\s*{/,/}/ s/^(\\s*scroll_factor\\s*=\\s*)[0-9.]+(\\s*#.*)?$/\\1$SCROLL_VAL\\2/" "$HYPR_CONFIG"
+        notify-send "Scroll speed set to $SCROLL_VAL"
         ;;
     "Toggle Mouse Acceleration (flat / adaptive)")
         NEW_PROFILE="flat"
