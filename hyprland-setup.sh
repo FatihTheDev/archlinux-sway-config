@@ -80,7 +80,7 @@ rm -rf docx_template
 EOF
 
 # Run the helper
-bash /tmp/templates.sh
+cd /tmp && bash /tmp/templates.sh
 
 # Delete it
 rm -f /tmp/templates.sh
