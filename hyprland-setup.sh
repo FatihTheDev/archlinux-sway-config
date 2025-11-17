@@ -991,10 +991,9 @@ case "$OPTION" in
         hyprctl keyword input:accel_profile "$NEW_PROFILE"
         hyprctl keyword input:touchpad:accel_profile "$NEW_PROFILE"
         sed -i -E "s/^(\\s*accel_profile\\s*=\\s*)[a-zA-Z]+(\\s*#.*)?$/\\1$NEW_PROFILE\\2/" "$HYPR_CONFIG"
-        sed -i -E "/touchpad\\s*{/,/}/ s/^(\\s*accel_profile\\s*=\\s*)[a-zA-Z]+(\\s*#.*)?$/\\1$NEW_PROFILE\\2/" "$HYPR_CONFIG"
         notify-send "Mouse acceleration set to $NEW_PROFILE"
         ;;
-esac   
+esac
 EOF
 chmod +x ~/.local/bin/input-config.sh
 
@@ -1085,8 +1084,6 @@ input {
         natural_scroll = true
         tap-to-click = true
 
-	    accel_profile = adaptive
-	    sensitivity = 0.5
 	    scroll_factor = 0.8
     } 
 }
