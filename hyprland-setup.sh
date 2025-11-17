@@ -11,7 +11,7 @@ sudo pacman -Syu --noconfirm
 echo "[2/15] Installing essential packages..."
 sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim slurp wl-clipboard xorg-xwayland \
     xorg-xhost alacritty librewolf brave pamac neovim \
-    network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-utils \
+    network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
     nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar \
     playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome \
@@ -136,9 +136,9 @@ fi
 
 echo "[5/15] Enabling audio and desktop portal services..."
 if [ "$audio_choice" -eq 2 ]; then
-    systemctl --user enable pulseaudio xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
+    systemctl --user enable pulseaudio xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr
 else
-    systemctl --user enable pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland
+    systemctl --user enable pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr
 fi
 systemctl --user daemon-reload
 
