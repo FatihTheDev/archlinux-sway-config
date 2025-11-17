@@ -1200,12 +1200,12 @@ input {
     # Mouse Sensitivity
 	sensitivity = 0.5
     # Scroll Speed
-	scroll_factor = 0.8
+	scroll_factor = 0.7
     touchpad {
         natural_scroll = true
         tap-to-click = true
 
-	    scroll_factor = 0.8
+	    scroll_factor = 0.7
     } 
 }
 
@@ -1217,7 +1217,7 @@ input {
 bind = $mod, D, exec, wayscriber --active
 
 # Edit this hyprland config (~/.config/hypr/hyprland.conf)
-bind = $mod SHIFT, h, exec, alacritty -e nvim ~/.config/hypr/hyprland.conf
+bind = $mod SHIFT CTRL, H, exec, alacritty -e nvim ~/.config/hypr/hyprland.conf
 
 # Terminal (mod + enter)
 bind = $mod, RETURN, exec, alacritty
