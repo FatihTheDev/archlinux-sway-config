@@ -35,8 +35,6 @@ mkdir -p ~/.config
 # -----------------------
 echo 'XDG_TEMPLATES_DIR="$HOME/.local/share/templates"' >> ~/.config/user-dirs.dirs
 
-#!/bin/bash
-
 cat > /tmp/templates.sh <<'EOF'
 #!/bin/bash
 
