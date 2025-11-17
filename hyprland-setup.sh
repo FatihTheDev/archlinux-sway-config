@@ -534,7 +534,9 @@ EOF
 # --------------------------------------------------
 cat > ~/.config/xdg-desktop-portal/hyprland-portals.conf <<'EOF'
 [preferred]
-default=hyprland;gtk
+default=gtk
+org.freedesktop.impl.portal.Screenshot=wlr
+org.freedesktop.impl.portal.ScreenCast=wlr
 EOF
 
 # -----------------------
