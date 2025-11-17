@@ -31,6 +31,8 @@ mkdir -p ~/Videos
 # -----------------------
 # Adding file templates
 # -----------------------
+echo 'XDG_TEMPLATES_DIR="$HOME/.local/share/templates"' >> ~/.config/user-dirs.dirs
+
 cat > /tmp/templates.sh <<'EOF'
 TEMPLATES="$HOME/.local/share/templates"
 mkdir -p "$TEMPLATES"
