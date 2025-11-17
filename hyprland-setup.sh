@@ -36,10 +36,19 @@ mkdir -p ~/.config
 echo 'XDG_TEMPLATES_DIR="$HOME/.local/share/templates"' >> ~/.config/user-dirs.dirs
 
 cat > /tmp/templates.sh <<'EOF'
+#!/bin/bash
+
+# Template directory
 TEMPLATES="$HOME/.local/share/templates"
 mkdir -p "$TEMPLATES"
+
+WORKDIR=$(mktemp -d)
+
+# Make templates writable
 chmod +w "$TEMPLATES"
-rm -rf docx_template "$TEMPLATES/Document.docx"
+
+# Remove any old template files
+rm -f "$TEMPLATES/Document.docx"
 
 # TXT Template
 cat > "$TEMPLATES/Document.txt" <<'EOT'
@@ -47,8 +56,11 @@ This is a blank text document.
 EOT
 
 # DOCX Template
-mkdir -p docx_template
-cat > "docx_template/[Content_Types].xml" <<'EOT'
+
+# Create DOCX structure inside temp dir
+mkdir -p "$WORKDIR/docx_template/word"
+
+cat > "$WORKDIR/docx_template/[Content_Types].xml" <<'EOT'
 <?xml version="1.0" encoding="UTF-8"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="xml" ContentType="application/xml"/>
@@ -56,15 +68,18 @@ cat > "docx_template/[Content_Types].xml" <<'EOT'
 </Types>
 EOT
 
-mkdir -p docx_template/word
-cat > docx_template/word/document.xml <<'EOT'
+cat > "$WORKDIR/docx_template/word/document.xml" <<'EOT'
 <?xml version="1.0" encoding="UTF-8"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:body><w:p><w:r><w:t>Blank Document</w:t></w:r></w:p></w:body>
 </w:document>
 EOT
 
-cd docx_template && zip -qr "$TEMPLATES/Document.docx" .
+# Create the .docx file
+(
+  cd "$WORKDIR/docx_template"
+  zip -qr "$TEMPLATES/Document.docx" .
+)
 
 # Code Templates
 cat > "$TEMPLATES/Script.py" <<'EOT'
@@ -75,12 +90,17 @@ cat > "$TEMPLATES/Script.js" <<'EOT'
 console.log("Hello, World!");
 EOT
 
+# Lock templates directory
 chmod -w "$TEMPLATES"
-rm -rf docx_template
+
+# Clean up temporary directory
+rm -rf "$WORKDIR"
+
 EOF
 
+
 # Run the helper
-cd /tmp && bash /tmp/templates.sh
+bash /tmp/templates.sh
 
 # Delete it
 rm -f /tmp/templates.sh
