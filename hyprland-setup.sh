@@ -35,53 +35,72 @@ mkdir -p ~/.config
 # -----------------------
 echo 'XDG_TEMPLATES_DIR="$HOME/.local/share/templates"' >> ~/.config/user-dirs.dirs
 
+#!/bin/bash
+
 cat > /tmp/templates.sh <<'EOF'
 #!/bin/bash
 
-# Template directory
 TEMPLATES="$HOME/.local/share/templates"
 mkdir -p "$TEMPLATES"
-
-WORKDIR=$(mktemp -d)
-
-# Make templates writable
 chmod +w "$TEMPLATES"
 
-# Remove any old template files
-rm -f "$TEMPLATES/Document.docx"
+WORKDIR=$(mktemp -d)
 
 # TXT Template
 cat > "$TEMPLATES/Document.txt" <<'EOT'
 This is a blank text document.
 EOT
 
-# DOCX Template
+# Build proper DOCX structure
 
-# Create DOCX structure inside temp dir
+mkdir -p "$WORKDIR/docx_template/_rels"
+mkdir -p "$WORKDIR/docx_template/word/_rels"
+
+# Required root relationship file
+cat > "$WORKDIR/docx_template/_rels/.rels" <<'EOT'
+<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1"
+                Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
+                Target="word/document.xml"/>
+</Relationships>
+EOT
+
+# Required word/document.xml
 mkdir -p "$WORKDIR/docx_template/word"
+cat > "$WORKDIR/docx_template/word/document.xml" <<'EOT'
+<?xml version="1.0" encoding="UTF-8"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t></w:t></w:r></w:p>
+  </w:body>
+</w:document>
+EOT
 
+# Required word/document.xml.rels
+cat > "$WORKDIR/docx_template/word/_rels/document.xml.rels" <<'EOT'
+<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>
+EOT
+
+# Required content types
 cat > "$WORKDIR/docx_template/[Content_Types].xml" <<'EOT'
 <?xml version="1.0" encoding="UTF-8"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="xml" ContentType="application/xml"/>
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Override PartName="/word/document.xml" 
+            ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
 </Types>
 EOT
 
-cat > "$WORKDIR/docx_template/word/document.xml" <<'EOT'
-<?xml version="1.0" encoding="UTF-8"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-  <w:body><w:p><w:r><w:t>Blank Document</w:t></w:r></w:p></w:body>
-</w:document>
-EOT
-
-# Create the .docx file
+# Zip into DOCX
 (
   cd "$WORKDIR/docx_template"
   zip -qr "$TEMPLATES/Document.docx" .
 )
 
-# Code Templates
+# Code templates
 cat > "$TEMPLATES/Script.py" <<'EOT'
 print("Hello, World!")
 EOT
@@ -90,19 +109,11 @@ cat > "$TEMPLATES/Script.js" <<'EOT'
 console.log("Hello, World!");
 EOT
 
-# Lock templates directory
 chmod -w "$TEMPLATES"
-
-# Clean up temporary directory
 rm -rf "$WORKDIR"
-
 EOF
 
-
-# Run the helper
 bash /tmp/templates.sh
-
-# Delete it
 rm -f /tmp/templates.sh
 
 # -----------------------
