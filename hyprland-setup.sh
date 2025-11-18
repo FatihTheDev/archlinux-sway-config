@@ -14,7 +14,7 @@ sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim sl
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
     nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar \
-    playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome \
+    playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome power-profiles-daemon \
     lxtask mate-calc gsimplecal gammastep cliphist gnome-font-viewer mousepad autotiling
 
 yay -S --noconfirm masterpdfeditor-free wayscriber-bin
@@ -308,10 +308,11 @@ sudo pacman -S --noconfirm bluez bluez-utils blueberry
 sudo systemctl enable bluetooth
 sudo systemctl start bluetooth
 
-# -----------------------
-# Enable NetworkManager
-# -----------------------
-sudo systemctl enable --now NetworkManager
+# ------------------------------------------------
+# Enable NetworkManager and power-profiles-daemon
+# ------------------------------------------------
+sudo systemctl enable NetworkManager
+sudo systemctl enable power-profiles-daemon
 
 # -----------------------
 # Waybar configuration
@@ -346,7 +347,7 @@ cat > ~/.config/waybar/config <<'EOF'
       "warning": 20,
       "critical": 10
     },
-    "tooltip-format": "Battery"
+    "on-click": "~/.local/bin/power-profiles.sh"
   },
 
   "pulseaudio": {
@@ -392,7 +393,7 @@ cat > ~/.config/waybar/config <<'EOF'
     "active": "\u25cf",
     "default": "\u25CB"
   }
-  },
+  }
 }
 EOF
 
@@ -954,6 +955,12 @@ chmod +x ~/.local/bin/set-wallpaper.sh
 cat > ~/.local/bin/display-settings.sh <<'EOF'
 #!/bin/bash
 
+# If wofi is already opened, close it
+if pgrep -x wofi >/dev/null; then
+    pkill -x wofi
+    exit 0
+fi
+
 COMPOSITOR="hyprland"
 CONFIG="$HOME/.config/hypr/hyprland.conf"
 
@@ -990,6 +997,12 @@ chmod +x ~/.local/bin/display-settings.sh
 # ------------------
 cat > ~/.local/bin/screenshot.sh <<'EOF'
 #!/bin/bash
+
+# If wofi is already opened, close it
+if pgrep -x wofi >/dev/null; then
+    pkill -x wofi
+    exit 0
+fi
 
 # Directory for screenshots
 DIR="$HOME/Pictures/Screenshots"
@@ -1036,11 +1049,39 @@ notify-send "Screenshot saved" "$DIR/$FILENAME"
 EOF
 chmod +x ~/.local/bin/screenshot.sh
 
+# ------------------------
+# Changing power profiles
+# ------------------------
+cat > ~/.local/bin/power-profiles.sh <<'EOF'
+#!/bin/bash
+
+# Get current profile
+CURRENT=$(powerprofilesctl get | tr -d ' ')
+
+# Define options
+OPTIONS="performance\nbalanced\npower-saver"
+
+# Show current profile and let user pick
+CHOICE=$(echo -e "current: $CURRENT\n$OPTIONS" | grep -v "^$CURRENT$" | wofi --dmenu --prompt="Select Power Profile")
+
+# Apply if a valid choice is made and different from current
+if [ -n "$CHOICE" ] && [ "$CHOICE" != "current: $CURRENT" ]; then
+    powerprofilesctl set "$CHOICE" && notify-send "Power Profile" "Set to $CHOICE"
+fi
+EOF
+chmod +x ~/.local/bin/power-profiles.sh
+
 # ------------------------------------------
 # Managing Peripherals (mouse and touchpad)
 # ------------------------------------------
 cat > ~/.local/bin/input-config.sh <<'EOF'
 #!/bin/bash
+
+# If wofi is already opened, close it
+if pgrep -x wofi >/dev/null; then
+    pkill -x wofi
+    exit 0
+fi
 
 HYPR_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
 
