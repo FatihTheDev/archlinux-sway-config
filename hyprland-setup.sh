@@ -1580,7 +1580,7 @@ cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
                     ================================================================================
                         Mod + Shift + D ............... Display settings / monitor config
                         Mod + Shift + I ............... Input / peripherals config
-                        Mod + Shift + T ............... GTK theme settings (nwg-look)
+                        Mod + T ....................... Theme switcher
                         Mod + Shift + W ............... Wallpaper picker (from ~/Pictures/Wallpapers)
                         Mod + Shift + X ............... Toggle window animations
 
