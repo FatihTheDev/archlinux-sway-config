@@ -708,12 +708,16 @@ EOF
 # COnfiguring SwayOSD for colored volume and brightness indicator
 # --------------------------
 cat > ~/.config/swayosd/style.css <<'EOF'
+window#osd {
+  background: rgba(0, 0, 0, 0.8);
+}
+
 window#osd progress {
-  background: #4169E1;
+  background: #3a5f9e;
 }
 
 window#osd image {
-  color: #4169E1;
+  color: #3a5f9e;
 }
 EOF
 
@@ -1149,14 +1153,18 @@ set_hypr_border() {
 
 # --- SwayOSD ---
 set_swayosd_color() {
-    local color="$1"
+local color="$1"
 
-    sed -i -E 's|^([[:space:]]*background: ).*;|\1'"$color"';|' "$SWAYOSD_CSS"
-    sed -i -E 's|^([[:space:]]*color: ).*;|\1'"$color"';|' "$SWAYOSD_CSS"
+sed -i '/window#osd progress/ {n; s/background:.*;/background: '"$color"';/}' "$SWAYOSD_CSS"
+sed -i '/window#osd image/ {n; s/color:.*;/color: '"$color"';/}' "$SWAYOSD_CSS"
 
-    pkill -x swayosd-server >/dev/null 2>&1
-    swayosd-server -s "$SWAYOSD_CSS" >/dev/null 2>&1 &
+# Restart swayosd-server to apply changes
+pkill -x swayosd-server >/dev/null 2>&1
+swayosd-server -s "$SWAYOSD_CSS" >/dev/null 2>&1 &
+
 }
+
+
 
 # --- Theme selection ---
 case "$CHOICE" in
@@ -1164,7 +1172,7 @@ case "$CHOICE" in
         set_waybar_color "#c78cff"
         set_wofi_highlight "#702963"
         set_hypr_border "a080ccee" "5c2040ee"
-        set_swayosd_color "#c78cff"
+        set_swayosd_color "#702963"
         echo "Telva" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
@@ -1172,7 +1180,7 @@ case "$CHOICE" in
         set_waybar_color "#7FFFD4"
         set_wofi_highlight "darkgreen"
         set_hypr_border "5fd8b3ee" "2f5f2fee"
-        set_swayosd_color "#7FFFD4"
+        set_swayosd_color "#50C878"
         echo "Matrix" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
