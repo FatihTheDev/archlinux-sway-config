@@ -399,26 +399,33 @@ EOF
 
 if [[ ! -f ~/.config/waybar/style.css ]]; then
 cat > ~/.config/waybar/style.css <<'EOF'
+/* ---------- THEME VARIABLES ---------- */
+@define-color module_text #ffffff;
+
+/* ---------- GLOBAL ---------- */
 * {
   font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", "Noto Sans";
   font-size: 14px;
-  color: #ffffff;
+  color: @module_text;
 }
 
+/* Fully transparent top bar */
 window#waybar {
-  /* Fully transparent top bar */
   background-color: rgba(0, 0, 0, 0.0);
 }
 
+/* Workspaces block */
 #workspaces {
-  padding: 0px 5px 0px 5px;
+  padding: 0px 5px;
 }
 
+/* Clock styling */
 #clock {
   font-size: 16px;
   font-weight: bold;
 }
 
+/* Module container backgrounds */
 .modules-left,
 .modules-center,
 .modules-right {
@@ -428,7 +435,7 @@ window#waybar {
   margin: 0 5px;
 }
 
-
+/* Padding for modules */
 #battery,
 #pulseaudio,
 #network,
@@ -1071,6 +1078,70 @@ fi
 EOF
 chmod +x ~/.local/bin/power-profiles.sh
 
+# ------------------------
+# Theme Switcher
+# ------------------------
+cat > ~/.local/bin/theme-switcher.sh <<'EOF'
+#!/bin/bash
+
+WAYBAR_CSS="$HOME/.config/waybar/style.css"
+WOFI_CSS="$HOME/.config/wofi/style.css"
+HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
+
+CHOICE=$(printf "Default\nTelva\nMatrix" | wofi --dmenu --prompt "Select Theme")
+
+# --- Waybar ---
+set_waybar_color() {
+    local color="$1"
+    sed -i 's/@define-color module_text .*/@define-color module_text '"$color"';/' "$WAYBAR_CSS"
+}
+
+# --- Wofi ---
+set_wofi_highlight() {
+    local color="$1"
+    sed -i '/#entry:selected {/,/}/c\
+#entry:selected {\
+  background-color: '"$color"';\
+  color: #ffffff;\
+}' "$WOFI_CSS"
+}
+
+# --- Hyprland ---
+set_hypr_border() {
+    local c1="$1"
+    local c2="$2"
+
+    # Preserve indentation of the original line
+    sed -i 's/^\([[:space:]]*\)col.active_border.*/\1col.active_border = rgba('"$c1"') rgba('"$c2"') 45deg/' "$HYPR_CONF"
+
+    # Reload Hyprland config
+    hyprctl reload >/dev/null 2>&1
+}
+
+# --- Theme selection ---
+case "$CHOICE" in
+    "Telva")
+        set_waybar_color "#c78cff"
+        set_wofi_highlight "#702963"
+        set_hypr_border "a080ccee" "5c2040ee"
+        pkill -SIGUSR2 waybar
+        ;;
+    "Matrix")
+        set_waybar_color "#7FFFD4"
+        set_wofi_highlight "darkgreen"
+        set_hypr_border "5fd8b3ee" "2f5f2fee"
+        pkill -SIGUSR2 waybar
+        ;;
+    "Default")
+        set_waybar_color "#ffffff"
+        set_wofi_highlight "#3a5f9e"
+        set_hypr_border "80b8f0ee" "6090d0ee"
+        pkill -SIGUSR2 waybar
+        ;;
+esac
+EOF
+chmod +x ~/.local/bin/theme-switcher.sh
+
 # ------------------------------------------
 # Managing Peripherals (mouse and touchpad)
 # ------------------------------------------
@@ -1187,7 +1258,7 @@ exec-once = xhost +SI:localuser:root
 exec-once = wl-paste --type text --watch cliphist store
 exec-once = wl-paste --type image --watch cliphist store
 exec-once = nm-applet --indicator
-exec-once = waybar
+exec-once = sleep 1 && waybar
 exec-once = swaync
 exec-once = swayosd-server
 exec-once = gammastep -O 1510
@@ -1201,7 +1272,7 @@ exec-once = systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURR
 # ================================
 # ENVIRONMENT VARIABLES
 # ================================
-env = QT_STYLE_OVERRIDE, Adwaita-Dark
+env = QT_STYLE_OVERRIDE, Adwaita-dark
 
 # ================================
 # APPEARANCE
@@ -1241,12 +1312,12 @@ input {
     # Mouse Sensitivity
 	sensitivity = 0.5
     # Scroll Speed
-	scroll_factor = 0.7
+	scroll_factor = 0.8
     touchpad {
         natural_scroll = true
         tap-to-click = true
 
-	    scroll_factor = 0.7
+	    scroll_factor = 0.8
     } 
 }
 
@@ -1278,6 +1349,8 @@ bind = $mod SHIFT, D, exec, ~/.local/bin/display-settings.sh
 bind = $mod SHIFT, W, exec, ~/.local/bin/set-wallpaper.sh
 # GTK GUI settings (mod + shift + t)
 bind = $mod SHIFT, T, exec, nwg-look
+# Theme switcher (mod + t)
+bind = $mod, T, exec, ~/.local/bin/theme-switcher.sh
 # Toggle application Launcher (mod + space)
 bind = $mod, SPACE, exec, ~/.local/bin/toggle-wofi.sh
 # Open power menu (mod + shift + q)
