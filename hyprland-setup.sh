@@ -456,6 +456,7 @@ fi
 echo "[9/15] Configuring Hyprland..."
 mkdir -p ~/.config/hypr
 mkdir -p ~/.config/swaync
+mkdir -p ~/.config/xfce4
 mkdir -p ~/.config/xdg-desktop-portal
 
 cat > ~/.config/hypr/hyprlock.conf <<'EOF'
@@ -511,6 +512,11 @@ label {
     halign = center
     valign = center
 }
+EOF
+
+# Setting default terminal to Alacritty for Thunar
+cat > ~/.config/xfce4/helpers.rc <<'EOF'
+TerminalEmulator=alacritty
 EOF
 
 cat > ~/.config/hypr/hypridle.conf <<'EOF'
