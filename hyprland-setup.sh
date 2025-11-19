@@ -456,6 +456,7 @@ fi
 echo "[9/15] Configuring Hyprland..."
 mkdir -p ~/.config/hypr
 mkdir -p ~/.config/swaync
+mkdir -p ~/.config/swayosd
 mkdir -p ~/.config/xfce4
 mkdir -p ~/.config/xdg-desktop-portal
 
@@ -700,6 +701,19 @@ cat > ~/.config/swaync/style.css <<'EOF'
 .body {
     font-size: 1rem;
     color: #cdd6f4;
+}
+EOF
+
+# --------------------------
+# COnfiguring SwayOSD for colored volume and brightness indicator
+# --------------------------
+cat > ~/.config/swayosd/style.css <<'EOF'
+window#osd progress {
+  background: #4169E1;
+}
+
+window#osd image {
+  color: #4169E1;
 }
 EOF
 
@@ -1093,6 +1107,7 @@ cat > ~/.local/bin/theme-switcher.sh <<'EOF'
 WAYBAR_CSS="$HOME/.config/waybar/style.css"
 WOFI_CSS="$HOME/.config/wofi/style.css"
 HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
+SWAYOSD_CSS="$HOME/.config/swayosd/style.css"
 
 CHOICE=$(printf "Default\nTelva\nMatrix" | wofi --dmenu --prompt "Select Theme")
 
@@ -1124,24 +1139,44 @@ set_hypr_border() {
     hyprctl reload >/dev/null 2>&1
 }
 
+
+set_swayosd_color() {
+    local color="$1"
+
+    # Replace progress bar color
+    sed -i -E 's|^([[:space:]]*background: ).*;|\1'"$color"';|' "$SWAYOSD_CSS"
+
+    # Replace image color
+    sed -i -E 's|^([[:space:]]*color: ).*;|\1'"$color"';|' "$SWAYOSD_CSS"
+
+    # Restart swayosd-server
+    pkill -x swayosd-server >/dev/null 2>&1
+    swayosd-server -s "$SWAYOSD_CSS" >/dev/null 2>&1 &
+}
+
+
+
 # --- Theme selection ---
 case "$CHOICE" in
     "Telva")
         set_waybar_color "#c78cff"
         set_wofi_highlight "#702963"
         set_hypr_border "a080ccee" "5c2040ee"
+        set_swayosd_color "#c78cff"
         pkill -SIGUSR2 waybar
         ;;
     "Matrix")
         set_waybar_color "#7FFFD4"
         set_wofi_highlight "darkgreen"
         set_hypr_border "5fd8b3ee" "2f5f2fee"
+        set_swayosd_color "#7FFFD4"
         pkill -SIGUSR2 waybar
         ;;
     "Default")
         set_waybar_color "#ffffff"
         set_wofi_highlight "#3a5f9e"
         set_hypr_border "80b8f0ee" "6090d0ee"
+        set_swayosd_color "#4169E1"
         pkill -SIGUSR2 waybar
         ;;
 esac
@@ -1266,7 +1301,7 @@ exec-once = wl-paste --type image --watch cliphist store
 exec-once = nm-applet --indicator
 exec-once = sleep 1 && waybar
 exec-once = swaync
-exec-once = swayosd-server
+exec-once = swayosd-server -s ~/.config/swayosd/style.css
 exec-once = gammastep -O 1510
 exec-once = ~/.local/bin/lock.sh
 exec-once = /usr/bin/gnome-keyring-daemon --start --components=secrets
@@ -1289,7 +1324,7 @@ general {
     border_size = 2
     layout = dwindle
     # Active window border color
-    col.active_border = rgba(80b8f0ee) rgba(6090d0ee) 45deg
+    col.active_border = rgba(5fd8b3ee) rgba(2f5f2fee) 45deg
 }
 
 decoration {
