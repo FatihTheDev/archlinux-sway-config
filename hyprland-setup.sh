@@ -1579,7 +1579,8 @@ cat > ~/.config/hypr/cheatsheet.txt <<'EOF'
                                             CONFIGURATION & APPEARANCE
                     ================================================================================
                         Mod + Shift + D ............... Display settings / monitor config
-                        Mod + Shift + I ............... Input / peripherals config
+                        Mod + Shift + I ............... Input devices / peripherals config
+                        Mod + Shift + Ctrl + H ........ Open hyprland configuration file
                         Mod + T ....................... Theme switcher
                         Mod + Shift + W ............... Wallpaper picker (from ~/Pictures/Wallpapers)
                         Mod + Shift + X ............... Toggle window animations
