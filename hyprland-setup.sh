@@ -1109,7 +1109,18 @@ WOFI_CSS="$HOME/.config/wofi/style.css"
 HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
 SWAYOSD_CSS="$HOME/.config/swayosd/style.css"
 
+THEME_FILE="$HOME/.config/current_theme"
+
 CHOICE=$(printf "Default\nTelva\nMatrix" | wofi --dmenu --prompt "Select Theme")
+
+# Read currently applied theme
+CURRENT_THEME=""
+[ -f "$THEME_FILE" ] && CURRENT_THEME=$(cat "$THEME_FILE")
+
+# Exit if same theme chosen
+if [ "$CHOICE" = "$CURRENT_THEME" ]; then
+    exit 0
+fi
 
 # --- Waybar ---
 set_waybar_color() {
@@ -1132,29 +1143,20 @@ set_hypr_border() {
     local c1="$1"
     local c2="$2"
 
-    # Preserve indentation of the original line
     sed -i 's/^\([[:space:]]*\)col.active_border.*/\1col.active_border = rgba('"$c1"') rgba('"$c2"') 45deg/' "$HYPR_CONF"
-
-    # Reload Hyprland config
     hyprctl reload >/dev/null 2>&1
 }
 
-
+# --- SwayOSD ---
 set_swayosd_color() {
     local color="$1"
 
-    # Replace progress bar color
     sed -i -E 's|^([[:space:]]*background: ).*;|\1'"$color"';|' "$SWAYOSD_CSS"
-
-    # Replace image color
     sed -i -E 's|^([[:space:]]*color: ).*;|\1'"$color"';|' "$SWAYOSD_CSS"
 
-    # Restart swayosd-server
     pkill -x swayosd-server >/dev/null 2>&1
     swayosd-server -s "$SWAYOSD_CSS" >/dev/null 2>&1 &
 }
-
-
 
 # --- Theme selection ---
 case "$CHOICE" in
@@ -1163,6 +1165,7 @@ case "$CHOICE" in
         set_wofi_highlight "#702963"
         set_hypr_border "a080ccee" "5c2040ee"
         set_swayosd_color "#c78cff"
+        echo "Telva" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
     "Matrix")
@@ -1170,6 +1173,7 @@ case "$CHOICE" in
         set_wofi_highlight "darkgreen"
         set_hypr_border "5fd8b3ee" "2f5f2fee"
         set_swayosd_color "#7FFFD4"
+        echo "Matrix" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
     "Default")
@@ -1177,6 +1181,7 @@ case "$CHOICE" in
         set_wofi_highlight "#3a5f9e"
         set_hypr_border "80b8f0ee" "6090d0ee"
         set_swayosd_color "#4169E1"
+        echo "Default" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
 esac
