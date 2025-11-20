@@ -764,6 +764,27 @@ mkdir -p ~/.config/alacritty
 cat > ~/.config/alacritty/alacritty.toml <<'EOF'
 [window]
 opacity = 0.5
+
+# To set a custom font:
+# [font]
+# size = 11.2
+#
+# [font.normal]
+# family = "FontName"
+# style = "Regular"
+#
+# [font.bold]
+# style = "Bold"
+#
+# [font.italic]
+# style = "Italic"
+#
+# [font.bold_italic]
+# style = "Bold Italic"
+#
+# [font.offset]
+# x = 0
+# y = 1
 EOF
 
 # ------------------
