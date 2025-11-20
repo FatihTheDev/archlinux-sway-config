@@ -1145,9 +1145,8 @@ set_wofi_highlight() {
 # --- Hyprland ---
 set_hypr_border() {
     local c1="$1"
-    local c2="$2"
 
-    sed -i 's/^\([[:space:]]*\)col.active_border.*/\1col.active_border = rgba('"$c1"') rgba('"$c2"') 45deg/' "$HYPR_CONF"
+    sed -i 's/^\([[:space:]]*\)col.active_border.*/\1col.active_border = rgba('"$c1"')/' "$HYPR_CONF"
     hyprctl reload >/dev/null 2>&1
 }
 
@@ -1171,7 +1170,7 @@ case "$CHOICE" in
     "Telva")
         set_waybar_color "#c78cff"
         set_wofi_highlight "#702963"
-        set_hypr_border "a080ccee" "5c2040ee"
+        set_hypr_border "a080ccee"
         set_swayosd_color "#702963"
         echo "Telva" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
@@ -1179,7 +1178,7 @@ case "$CHOICE" in
     "Matrix")
         set_waybar_color "#7FFFD4"
         set_wofi_highlight "darkgreen"
-        set_hypr_border "5fd8b3ee" "2f5f2fee"
+        set_hypr_border "5fd8b3ee"
         set_swayosd_color "darkgreen"
         echo "Matrix" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
@@ -1187,7 +1186,7 @@ case "$CHOICE" in
     "Default")
         set_waybar_color "#ffffff"
         set_wofi_highlight "#3a5f9e"
-        set_hypr_border "80b8f0ee" "6090d0ee"
+        set_hypr_border "80b8f0ee"
         set_swayosd_color "#4169E1"
         echo "Default" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
@@ -1337,7 +1336,7 @@ general {
     border_size = 2
     layout = dwindle
     # Active window border color
-    col.active_border = rgba(5fd8b3ee) rgba(2f5f2fee) 45deg
+    col.active_border = rgba(80b8f0ee)
 }
 
 decoration {
