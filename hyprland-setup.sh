@@ -709,7 +709,7 @@ EOF
 # --------------------------
 cat > ~/.config/swayosd/style.css <<'EOF'
 window#osd {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
 }
 
 window#osd progress {
@@ -1180,7 +1180,7 @@ case "$CHOICE" in
         set_waybar_color "#7FFFD4"
         set_wofi_highlight "darkgreen"
         set_hypr_border "5fd8b3ee" "2f5f2fee"
-        set_swayosd_color "#50C878"
+        set_swayosd_color "darkgreen"
         echo "Matrix" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
