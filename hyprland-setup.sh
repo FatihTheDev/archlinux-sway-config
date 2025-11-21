@@ -1196,7 +1196,10 @@ set_zsh_syntax_color_file() {
     local color="$1" 
     cat > "$ZSH_SYNTAX_FILE" <<EOT
     ZSH_HIGHLIGHT_STYLES[command]='fg=$color'
-    ZSH_HIGHLIGHT_STYLES[path]='fg=$color'
+	ZSH_HIGHLIGHT_STYLES[precommand]='fg=$color'
+	ZSH_HIGHLIGHT_STYLES[builtin]='fg=$color'
+    ZSH_HIGHLIGHT_STYLES[path]='fg=$color,underline'
+	ZSH_HIGHLIGHT_STYLES[path_prefix]='fg=$color'
     ZSH_HIGHLIGHT_STYLES[alias]='fg=$color'
     ZSH_HIGHLIGHT_STYLES[globbing]='fg=$color'
 EOT
