@@ -463,6 +463,9 @@ mkdir -p ~/.config/swayosd
 mkdir -p ~/.config/xfce4
 mkdir -p ~/.config/xdg-desktop-portal
 
+# Start swayosd libinput backend
+systemctl enable swayosd-libinput-backend
+
 cat > ~/.config/hypr/hyprlock.conf <<'EOF'
 # Dark Mode / Eye-Friendly hyprlock.conf
 
