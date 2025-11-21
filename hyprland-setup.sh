@@ -13,7 +13,7 @@ sudo pacman -S --noconfirm hyprland swaybg hyprlock hypridle waybar wofi grim sl
     xorg-xhost alacritty librewolf brave pamac neovim \
     network-manager-applet nm-connection-editor xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-hyprland xdg-utils \
     ttf-font-awesome-4 noto-fonts papirus-icon-theme jq gnome-themes-extra adwaita-qt5-git adwaita-qt6-git qt5ct qt6ct \
-    nwg-look nwg-clipman feh thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar \
+    nwg-look nwg-clipman ristretto thunar thunar-archive-plugin thunar-volman gvfs engrampa zip unzip p7zip unrar \
     playerctl swaync swayosd libnotify inotify-tools brightnessctl polkit-gnome power-profiles-daemon \
     lxtask mate-calc gsimplecal gammastep cliphist gnome-font-viewer mousepad autotiling
 
@@ -206,21 +206,6 @@ MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;tex
 EOF
 fi
 
-# Feh desktop
-if [[ ! -f ~/.local/share/applications/feh.desktop ]]; then
-cat > ~/.local/share/applications/feh.desktop <<'EOF'
-[Desktop Entry]
-Name=Feh
-Comment=Lightweight image viewer
-Exec=feh --edit %f
-Icon=image-viewer
-Terminal=false
-Type=Application
-Categories=Graphics;Viewer;
-MimeType=image/jpeg;image/png;image/gif;image/bmp;image/webp;image/svg+xml;
-EOF
-fi
-
 # Update desktop database (user-level) if tool exists; don't fail script on error
 if command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database ~/.local/share/applications || true
@@ -237,12 +222,12 @@ text/html=brave-browser.desktop
 x-scheme-handler/http=brave-browser.desktop
 x-scheme-handler/https=brave-browser.desktop
 application/pdf=masterpdfeditor4.desktop
-image/png=feh.desktop
-image/jpeg=feh.desktop
-image/jpg=feh.desktop
-image/gif=feh.desktop
-image/bmp=feh.desktop
-image/webp=feh.desktop
+image/png=org.xfce.ristretto.desktop
+image/jpeg=org.xfce.ristretto.desktop
+image/jpg=org.xfce.ristretto.desktop
+image/gif=org.xfce.ristretto.desktop
+image/bmp=org.xfce.ristretto.desktop
+image/webp=org.xfce.ristretto.desktop
 image/svg+xml=brave-browser.desktop
 x-scheme-handler/terminal=Alacritty.desktop
 application/xhtml+xml=brave-browser.desktop
@@ -262,8 +247,8 @@ EOF
 
 # Also set via xdg-mime as a fallback (make browser open files for viewing and neovim for editing)
 
-# Images → feh
-xdg-mime default feh.desktop image/png image/jpeg image/jpg image/bmp image/gif || true
+# Images → ristretto
+xdg-mime default org.xfce.ristretto.desktop image/png image/jpeg image/jpg image/bmp image/gif || true
 
 # Default file manager -> Thunar
 xdg-mime default thunar.desktop inode/directory
