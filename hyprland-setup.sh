@@ -30,6 +30,9 @@ mkdir -p ~/Videos
 
 mkdir -p ~/.config
 
+# Create custom zsh syntax highlighing theme file
+touch ~/.config/zsh_syntax_theme
+
 # -----------------------
 # Adding file templates
 # -----------------------
