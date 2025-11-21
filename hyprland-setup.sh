@@ -1134,6 +1134,8 @@ WOFI_CSS="$HOME/.config/wofi/style.css"
 HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
 SWAYOSD_CSS="$HOME/.config/swayosd/style.css"
 
+ZSH_SYNTAX_FILE="$HOME/.config/zsh_syntax_theme"
+
 THEME_FILE="$HOME/.config/current_theme"
 
 CHOICE=$(printf "Default\nTelva\nMatrix" | wofi --dmenu --prompt "Select Theme")
@@ -1157,10 +1159,10 @@ set_waybar_color() {
 set_wofi_highlight() {
     local color="$1"
     sed -i '/#entry:selected {/,/}/c\
-#entry:selected {\
-  background-color: '"$color"';\
-  color: #ffffff;\
-}' "$WOFI_CSS"
+        #entry:selected {\
+    background-color: '"$color"';\
+        color: #ffffff;\
+    }' "$WOFI_CSS"
 }
 
 # --- Hyprland ---
@@ -1173,18 +1175,41 @@ set_hypr_border() {
 
 # --- SwayOSD ---
 set_swayosd_color() {
-local color="$1"
+    local color="$1"
 
-sed -i '/window#osd progress/ {n; s/background:.*;/background: '"$color"';/}' "$SWAYOSD_CSS"
-sed -i '/window#osd image/ {n; s/color:.*;/color: '"$color"';/}' "$SWAYOSD_CSS"
+    sed -i '/window#osd progress/ {n; s/background:.*;/background: '"$color"';/}' "$SWAYOSD_CSS"
+    sed -i '/window#osd image/ {n; s/color:.*;/color: '"$color"';/}' "$SWAYOSD_CSS"
 
-# Restart swayosd-server to apply changes
-pkill -x swayosd-server >/dev/null 2>&1
-swayosd-server -s "$SWAYOSD_CSS" >/dev/null 2>&1 &
-
+    # Restart swayosd-server to apply changes
+    pkill -x swayosd-server >/dev/null 2>&1
+    swayosd-server -s "$SWAYOSD_CSS" >/dev/null 2>&1 &
 }
 
+# --- Dircolors (for ls and similar commands output color) --
+set_dircolors() {
+    local color_code="$1"
+    local dircolors_file="$HOME/.dircolors"
+    
+    # Generate default if missing
+    [ ! -f "$dircolors_file" ] && dircolors -p > "$dircolors_file"
 
+    # Replace the DIR line safely
+    sed -i "s/^DIR[[:space:]].*/DIR ${color_code}/" "$dircolors_file"
+
+    # Reapply LS_COLORS
+    eval "$(dircolors "$dircolors_file")"
+}
+
+# --- zsh-syntax-highlighting ---
+set_zsh_syntax_color_file() {
+    local color="$1" 
+    cat > "$ZSH_SYNTAX_FILE" <<EOT
+    ZSH_HIGHLIGHT_STYLES[command]='fg=$color'
+    ZSH_HIGHLIGHT_STYLES[path]='fg=$color'
+    ZSH_HIGHLIGHT_STYLES[alias]='fg=$color'
+    ZSH_HIGHLIGHT_STYLES[globbing]='fg=$color'
+EOT
+}
 
 # --- Theme selection ---
 case "$CHOICE" in
@@ -1193,6 +1218,8 @@ case "$CHOICE" in
         set_wofi_highlight "#702963"
         set_hypr_border "a080ccee"
         set_swayosd_color "#702963"
+        set_zsh_syntax_color_file "13"
+        set_dircolors "01;38;2;180;120;220"
         echo "Telva" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
@@ -1201,6 +1228,8 @@ case "$CHOICE" in
         set_wofi_highlight "darkgreen"
         set_hypr_border "5fd8b3ee"
         set_swayosd_color "darkgreen"
+        set_zsh_syntax_color_file "120"
+        set_dircolors "01;38;2;100;200;160"
         echo "Matrix" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
@@ -1209,6 +1238,8 @@ case "$CHOICE" in
         set_wofi_highlight "#3a5f9e"
         set_hypr_border "80b8f0ee"
         set_swayosd_color "#4169E1"
+        set_zsh_syntax_color_file "12"
+        set_dircolors "01;34"
         echo "Default" > "$THEME_FILE"
         pkill -SIGUSR2 waybar
         ;;
